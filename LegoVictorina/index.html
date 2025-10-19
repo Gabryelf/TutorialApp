@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Викторина по Lego WeDo 2.0</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            background: linear-gradient(90deg, #FF6B00, #FF8E00);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .progress-container {
+            padding: 15px 20px;
+            background-color: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .progress-bar {
+            flex-grow: 1;
+            height: 12px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0 15px;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .score {
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            color: #FF6B00;
+        }
+
+        .star {
+            color: gold;
+            font-size: 1.5rem;
+            margin-right: 5px;
+            text-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .question-container {
+            padding: 30px;
+            text-align: center;
+        }
+
+        .question-number {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .question {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .answers {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .answer-btn {
+            padding: 15px;
+            background-color: #f0f0f0;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            display: flex;
+            align-items: center;
+        }
+
+        .answer-btn:hover {
+            background-color: #e0e0e0;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .answer-btn.correct {
+            background-color: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+            animation: pulse 0.5s;
+        }
+
+        .answer-btn.incorrect {
+            background-color: #f44336;
+            color: white;
+            border-color: #f44336;
+            animation: shake 0.5s;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+
+        .next-btn {
+            padding: 12px 30px;
+            background: linear-gradient(90deg, #2196F3, #21CBF3);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
+            margin: 0 auto;
+            display: block;
+        }
+
+        .next-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(33, 150, 243, 0.6);
+        }
+
+        .next-btn:active {
+            transform: translateY(1px);
+        }
+
+        .next-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .result-container {
+            padding: 40px;
+            text-align: center;
+            display: none;
+        }
+
+        .result-title {
+            font-size: 2.5rem;
+            color: #FF6B00;
+            margin-bottom: 20px;
+        }
+
+        .result-score {
+            font-size: 5rem;
+            color: #4CAF50;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .result-message {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            color: #555;
+        }
+
+        .restart-btn {
+            padding: 15px 40px;
+            background: linear-gradient(90deg, #FF6B00, #FF8E00);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 107, 0, 0.4);
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 107, 0, 0.6);
+        }
+
+        .answer-letter {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 30px;
+            height: 30px;
+            background-color: #2196F3;
+            color: white;
+            border-radius: 50%;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            .answers {
+                grid-template-columns: 1fr;
+            }
+            
+            .question {
+                font-size: 1.3rem;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Викторина по Lego WeDo 2.0</h1>
+            <p>Проверьте свои знания о робототехнике и программировании</p>
+        </div>
+        
+        <div class="progress-container">
+            <span id="current-question">Вопрос 1/20</span>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+            <div class="score">
+                <span class="star">★</span>
+                <span id="score">0</span>
+            </div>
+        </div>
+        
+        <div class="question-container" id="question-container">
+            <div class="question-number" id="question-number">Вопрос 1 из 20</div>
+            <div class="question" id="question">Какой компонент Lego WeDo 2.0 является "мозгом" робота?</div>
+            <div class="answers" id="answers">
+                <!-- Ответы будут добавлены через JavaScript -->
+            </div>
+            <button class="next-btn" id="next-btn" disabled>Далее</button>
+        </div>
+        
+        <div class="result-container" id="result-container">
+            <h2 class="result-title">Викторина завершена!</h2>
+            <div class="result-score" id="final-score">0/20</div>
+            <p class="result-message" id="result-message">Отличный результат!</p>
+            <button class="restart-btn" id="restart-btn">Пройти еще раз</button>
+        </div>
+    </div>
+
+    <script>
+        // Вопросы для викторины
+        const questions = [
+            {
+                question: "Какой компонент Lego WeDo 2.0 является 'мозгом' робота?",
+                answers: [
+                    "СмартХаб WeDo 2.0",
+                    "Сервомотор",
+                    "Датчик наклона",
+                    "Датчик движения"
+                ],
+                correct: 0
+            },
+            {
+                question: "Какой язык программирования используется в Lego WeDo 2.0?",
+                answers: [
+                    "Блочное программирование",
+                    "Python",
+                    "JavaScript",
+                    "C++"
+                ],
+                correct: 0
+            },
+            {
+                question: "Что измеряет датчик наклона в Lego WeDo 2.0?",
+                answers: [
+                    "Угол наклона в шести направлениях",
+                    "Температуру окружающей среды",
+                    "Расстояние до объекта",
+                    "Скорость движения"
+                ],
+                correct: 0
+            },
+            {
+                question: "Какой элемент позволяет передавать движение в механизмах Lego WeDo?",
+                answers: [
+                    "Зубчатая передача",
+                    "Резиновый ремень",
+                    "Магнитное соединение",
+                    "Все перечисленные"
+                ],
+                correct: 3
+            },
+            {
+                question: "Что такое 'СмартХаб' в Lego WeDo 2.0?",
+                answers: [
+                    "Центральный блок с Bluetooth",
+                    "Датчик расстояния",
+                    "Программное обеспечение",
+                    "Зарядное устройство"
+                ],
+                correct: 0
+            },
+            {
+                question: "Как подключить СмартХаб к компьютеру или планшету?",
+                answers: [
+                    "По Bluetooth",
+                    "Через USB-кабель",
+                    "Через Wi-Fi",
+                    "Через инфракрасный порт"
+                ],
+                correct: 0
+            },
+            {
+                question: "Какое максимальное количество моторов можно подключить к одному СмартХабу?",
+                answers: [
+                    "2",
+                    "1",
+                    "4",
+                    "Неограниченно"
+                ],
+                correct: 0
+            },
+            {
+                question: "Какой блок программирования отвечает за повторение действий?",
+                answers: [
+                    "Цикл",
+                    "Условие",
+                    "Старт",
+                    "Остановка"
+                ],
+                correct: 0
+            },
+            {
+                question: "Что делает датчик движения в Lego WeDo 2.0?",
+                answers: [
+                    "Обнаруживает движение и расстояние",
+                    "Измеряет скорость",
+                    "Определяет цвет объекта",
+                    "Записывает звук"
+                ],
+                correct: 0
+            },
+            {
+                question: "Какой блок программирования позволяет роботу принимать решения?",
+                answers: [
+                    "Условие (if)",
+                    "Цикл",
+                    "Старт",
+                    "Ввод"
+                ],
+                correct: 0
+            },
+            {
+                question: "Какой тип передачи увеличивает скорость вращения?",
+                answers: [
+                    "Повышающая передача",
+                    "Понижающая передача",
+                    "Ременная передача",
+                    "Червячная передача"
+                ],
+                correct: 0
+            },
+            {
+                question: "Что такое 'червячная передача' в Lego WeDo?",
+                answers: [
+                    "Передача, которая меняет направление вращения на 90 градусов",
+                    "Передача для увеличения скорости",
+                    "Передача для подключения моторов",
+                    "Передача для измерения расстояния"
+                ],
+                correct: 0
+            },
+            {
+                question: "Какой блок программирования позволяет управлять мощностью мотора?",
+                answers: [
+                    "Блок 'Мощность мотора'",
+                    "Блок 'Старт'",
+                    "Блок 'Ожидание'",
+                    "Блок 'Звук'"
+                ],
+                correct: 0
+            },
+            {
+                question: "Что означает иконка молнии на СмартХабе?",
+                answers: [
+                    "Уровень заряда батареи",
+                    "Скорость работы",
+                    "Сигнал Bluetooth",
+                    "Режим программирования"
+                ],
+                correct: 0
+            },
+            {
+                question: "Какой блок программирования позволяет воспроизводить звуки?",
+                answers: [
+                    "Блок 'Звук'",
+                    "Блок 'Дисплей'",
+                    "Блок 'Ожидание'",
+                    "Блок 'Старт'"
+                ],
+                correct: 0
+            },
+            {
+                question: "Что такое 'алгоритм' в программировании Lego WeDo?",
+                answers: [
+                    "Последовательность команд для выполнения задачи",
+                    "Название мотора",
+                    "Тип датчика",
+                    "Язык программирования"
+                ],
+                correct: 0
+            },
+            {
+                question: "Какой блок позволяет остановить выполнение программы на определенное время?",
+                answers: [
+                    "Блок 'Ожидание'",
+                    "Блок 'Стоп'",
+                    "Блок 'Пауза'",
+                    "Блок 'Перерыв'"
+                ],
+                correct: 0
+            },
+            {
+                question: "Что такое 'обратная связь' в робототехнике?",
+                answers: [
+                    "Использование данных с датчиков для корректировки поведения робота",
+                    "Передача данных по Bluetooth",
+                    "Зарядка батареи",
+                    "Обновление программного обеспечения"
+                ],
+                correct: 0
+            },
+            {
+                question: "Какой тип зубчатой передачи используется для изменения направления вращения?",
+                answers: [
+                    "Коронная шестерня",
+                    "Червячная передача",
+                    "Ременная передача",
+                    "Повышающая передача"
+                ],
+                correct: 0
+            },
+            {
+                question: "Что такое 'отладка' в программировании?",
+                answers: [
+                    "Процесс поиска и исправления ошибок в программе",
+                    "Подключение датчиков к СмартХабу",
+                    "Зарядка батареи",
+                    "Обновление программного обеспечения"
+                ],
+                correct: 0
+            }
+        ];
+
+        // Элементы DOM
+        const questionElement = document.getElementById('question');
+        const answersElement = document.getElementById('answers');
+        const nextButton = document.getElementById('next-btn');
+        const questionNumberElement = document.getElementById('question-number');
+        const currentQuestionElement = document.getElementById('current-question');
+        const progressElement = document.getElementById('progress');
+        const scoreElement = document.getElementById('score');
+        const questionContainer = document.getElementById('question-container');
+        const resultContainer = document.getElementById('result-container');
+        const finalScoreElement = document.getElementById('final-score');
+        const resultMessageElement = document.getElementById('result-message');
+        const restartButton = document.getElementById('restart-btn');
+
+        // Переменные состояния
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answerSelected = false;
+
+        // Функция инициализации викторины
+        function initQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            answerSelected = false;
+            updateScore();
+            showQuestion();
+            questionContainer.style.display = 'block';
+            resultContainer.style.display = 'none';
+        }
+
+        // Функция отображения вопроса
+        function showQuestion() {
+            answerSelected = false;
+            nextButton.disabled = true;
+            const currentQuestion = questions[currentQuestionIndex];
+            
+            questionNumberElement.textContent = `Вопрос ${currentQuestionIndex + 1} из ${questions.length}`;
+            currentQuestionElement.textContent = `Вопрос ${currentQuestionIndex + 1}/${questions.length}`;
+            questionElement.textContent = currentQuestion.question;
+            
+            // Обновление прогресс-бара
+            const progressPercentage = ((currentQuestionIndex) / questions.length) * 100;
+            progressElement.style.width = `${progressPercentage}%`;
+            
+            // Очистка предыдущих ответов
+            answersElement.innerHTML = '';
+            
+            // Добавление новых ответов
+            const answerLetters = ['A', 'B', 'C', 'D'];
+            currentQuestion.answers.forEach((answer, index) => {
+                const button = document.createElement('button');
+                button.classList.add('answer-btn');
+                button.innerHTML = `<span class="answer-letter">${answerLetters[index]}</span> ${answer}`;
+                button.addEventListener('click', () => selectAnswer(index));
+                answersElement.appendChild(button);
+            });
+        }
+
+        // Функция выбора ответа
+        function selectAnswer(selectedIndex) {
+            if (answerSelected) return;
+            
+            answerSelected = true;
+            const currentQuestion = questions[currentQuestionIndex];
+            const answerButtons = document.querySelectorAll('.answer-btn');
+            
+            // Отметить правильный и неправильный ответы
+            answerButtons.forEach((button, index) => {
+                if (index === currentQuestion.correct) {
+                    button.classList.add('correct');
+                } else if (index === selectedIndex && index !== currentQuestion.correct) {
+                    button.classList.add('incorrect');
+                }
+                button.disabled = true;
+            });
+            
+            // Обновить счет, если ответ правильный
+            if (selectedIndex === currentQuestion.correct) {
+                score++;
+                updateScore();
+            }
+            
+            nextButton.disabled = false;
+        }
+
+        // Функция обновления счета
+        function updateScore() {
+            scoreElement.textContent = score;
+        }
+
+        // Функция показа следующего вопроса
+        function showNextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                showQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        // Функция показа результатов
+        function showResults() {
+            questionContainer.style.display = 'none';
+            resultContainer.style.display = 'block';
+            
+            finalScoreElement.textContent = `${score}/${questions.length}`;
+            
+            // Определение сообщения в зависимости от результата
+            let message = '';
+            const percentage = (score / questions.length) * 100;
+            
+            if (percentage >= 90) {
+                message = 'Потрясающе! Вы настоящий эксперт по Lego WeDo 2.0!';
+            } else if (percentage >= 70) {
+                message = 'Отличный результат! Вы хорошо разбираетесь в Lego WeDo 2.0!';
+            } else if (percentage >= 50) {
+                message = 'Хороший результат! Продолжайте изучать Lego WeDo 2.0!';
+            } else {
+                message = 'Есть над чем поработать! Продолжайте изучать Lego WeDo 2.0!';
+            }
+            
+            resultMessageElement.textContent = message;
+        }
+
+        // Обработчики событий
+        nextButton.addEventListener('click', showNextQuestion);
+        restartButton.addEventListener('click', initQuiz);
+
+        // Инициализация викторины при загрузке страницы
+        window.addEventListener('load', initQuiz);
+    </script>
+</body>
+</html>
