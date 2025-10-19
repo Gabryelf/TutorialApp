@@ -1,0 +1,350 @@
+/* css/animations.css */
+/* Анимации для слайдов */
+.slide-enter {
+    animation: slideEnter 0.5s ease-out;
+}
+
+@keyframes slideEnter {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Анимации для title слайдов */
+.title-slide {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.module-badge {
+    background: var(--primary-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    animation: bounceIn 1s ease;
+}
+
+.title-slide h2 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: fadeInUp 0.8s ease 0.2s both;
+}
+
+.title-slide h3 {
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    animation: fadeInUp 0.8s ease 0.4s both;
+}
+
+.slide-description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    max-width: 600px;
+    animation: fadeInUp 0.8s ease 0.6s both;
+}
+
+/* Анимация точек */
+.pulse-dots {
+    display: flex;
+    gap: 1rem;
+    margin-top: 3rem;
+    animation: fadeIn 1s ease 1s both;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    animation: pulse 2s infinite;
+}
+
+.dot:nth-child(2) {
+    animation-delay: 0.2s;
+    background: var(--primary-color);
+}
+
+.dot:nth-child(3) {
+    animation-delay: 0.4s;
+    background: var(--secondary-color);
+}
+
+/* Анимации для контентных слайдов */
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.content-card {
+    background: var(--bg-card);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    animation: slideUp 0.6s ease both;
+}
+
+.content-card:nth-child(1) { animation-delay: 0.1s; }
+.content-card:nth-child(2) { animation-delay: 0.2s; }
+
+.content-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow);
+}
+
+.content-card h4 {
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.content-card ul {
+    list-style: none;
+    padding: 0;
+}
+
+.content-card li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.content-card li:before {
+    content: '▸';
+    color: var(--primary-color);
+    position: absolute;
+    left: 0;
+}
+
+/* Анимации для викторин */
+.quiz-slide {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.quiz-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    animation: fadeInUp 0.6s ease;
+}
+
+.quiz-header h2 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.question {
+    font-size: 1.3rem;
+    line-height: 1.5;
+    color: var(--text-primary);
+    background: var(--bg-card);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border-left: 4px solid var(--accent-color);
+}
+
+.answers-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.answer-btn {
+    background: var(--bg-card);
+    border: 2px solid var(--border-color);
+    padding: 1.5rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-align: left;
+    animation: slideUp 0.6s ease both;
+}
+
+.answer-btn:nth-child(1) { animation-delay: 0.1s; }
+.answer-btn:nth-child(2) { animation-delay: 0.2s; }
+.answer-btn:nth-child(3) { animation-delay: 0.3s; }
+.answer-btn:nth-child(4) { animation-delay: 0.4s; }
+
+.answer-btn:hover:not(:disabled) {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.answer-btn.correct {
+    border-color: var(--accent-color);
+    background: rgba(6, 214, 160, 0.1);
+    animation: pulseCorrect 0.6s ease;
+}
+
+.answer-btn.wrong {
+    border-color: var(--danger-color);
+    background: rgba(239, 68, 68, 0.1);
+    animation: shake 0.5s ease;
+}
+
+.answer-letter {
+    background: var(--border-color);
+    color: var(--text-primary);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.answer-btn:hover .answer-letter {
+    background: var(--primary-color);
+}
+
+.answer-btn.correct .answer-letter {
+    background: var(--accent-color);
+}
+
+.answer-btn.wrong .answer-letter {
+    background: var(--danger-color);
+}
+
+.answer-text {
+    flex: 1;
+    font-size: 1rem;
+}
+
+/* Анимации объяснений */
+.explanation {
+    background: var(--bg-card);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border-left: 4px solid var(--warning-color);
+    animation: fadeIn 0.5s ease;
+}
+
+.explanation h4 {
+    color: var(--warning-color);
+    margin-bottom: 0.5rem;
+}
+
+/* Код блоки */
+.code-block {
+    background: #1e1e1e;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    overflow-x: auto;
+    border: 1px solid #333;
+}
+
+.code-block pre {
+    margin: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.code-block code {
+    color: #d4d4d4;
+}
+
+/* Ключевые кадры анимаций */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes pulseCorrect {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Адаптивность анимаций */
+@media (max-width: 768px) {
+    .answers-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .title-slide h2 {
+        font-size: 2rem;
+    }
+    
+    .title-slide h3 {
+        font-size: 1.2rem;
+    }
+    
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+}
