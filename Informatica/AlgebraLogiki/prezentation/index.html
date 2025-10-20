@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Викторина по Алгебре Логики</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .quiz-container {
+            width: 90vw;
+            height: 90vh;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .header {
+            background: linear-gradient(90deg, #1a2a6c, #b21f1f);
+            color: white;
+            padding: 15px 30px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .score-display {
+            font-size: 1.2rem;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+
+        .slides-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 30px;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .slide-title {
+            color: #1a2a6c;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 2rem;
+            border-bottom: 3px solid #b21f1f;
+            padding-bottom: 10px;
+        }
+
+        .slide-content {
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        .question-text {
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+            text-align: center;
+            color: #1a2a6c;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .option-btn {
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            border: 2px solid #1a2a6c;
+            border-radius: 10px;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .option-btn.correct {
+            background: linear-gradient(135deg, #4CAF50, #8BC34A);
+            color: white;
+            border-color: #388E3C;
+        }
+
+        .option-btn.incorrect {
+            background: linear-gradient(135deg, #F44336, #E57373);
+            color: white;
+            border-color: #D32F2F;
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        .option-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background: #1a2a6c;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #f0f8ff;
+            border-left: 4px solid #1a2a6c;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .feedback-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #1a2a6c;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 30px;
+            background-color: rgba(26, 42, 108, 0.9);
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, #b21f1f, #fdbb2d);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-btn:active {
+            transform: translateY(1px);
+        }
+
+        .nav-btn:disabled {
+            background: linear-gradient(135deg, #cccccc, #999999);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .nav-btn i {
+            margin: 0 5px;
+        }
+
+        .slide-counter {
+            color: white;
+            font-size: 1.2rem;
+            align-self: center;
+        }
+
+        .progress-bar {
+            height: 5px;
+            background-color: #ddd;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #1a2a6c, #b21f1f);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .results-container {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .results-score {
+            font-size: 3rem;
+            color: #1a2a6c;
+            margin: 20px 0;
+        }
+
+        .results-message {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.7s ease forwards;
+        }
+
+        @media (max-width: 768px) {
+            .slide-title {
+                font-size: 1.5rem;
+            }
+            
+            .slide-content {
+                font-size: 1rem;
+            }
+            
+            .question-text {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="header">
+            <div>Викторина по Алгебре Логики</div>
+            <div class="score-display">Очки: <span id="score">0</span></div>
+        </div>
+        
+        <div class="slides-container">
+            <!-- Слайд 1: Введение -->
+            <div class="slide active" id="slide1">
+                <h1 class="slide-title">Викторина по Алгебре Логики</h1>
+                <div class="slide-content fade-in">
+                    <div style="text-align: center; margin-top: 50px;">
+                        <p style="font-size: 1.5rem; margin-bottom: 30px;">Проверьте свои знания операций и законов алгебры логики!</p>
+                        
+                        <div style="background: #f0f8ff; padding: 20px; border-radius: 10px; max-width: 600px; margin: 0 auto;">
+                            <h3 style="color: #1a2a6c; margin-bottom: 15px;">Правила викторины:</h3>
+                            <ul style="text-align: left; margin-left: 20px;">
+                                <li>20 вопросов с прогрессивной сложностью</li>
+                                <li>Выбор одного ответа из четырех вариантов</li>
+                                <li>+5 очков за правильный ответ</li>
+                                <li>-2 очка за неправильный ответ</li>
+                                <li>После выбора ответа будет показано пояснение</li>
+                                <li>На каждый вопрос можно ответить только один раз</li>
+                            </ul>
+                        </div>
+                        
+                        <button class="restart-btn" onclick="startQuiz()" style="margin-top: 40px;">
+                            Начать викторину
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Вопросы викторины -->
+            <div class="slide" id="slide2">
+                <div class="slide-content">
+                    <div class="question-text">Какое значение имеет выражение: 1 ∧ 0?</div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="checkAnswer(0, this, 2)">
+                            <span class="option-letter">A</span> 1
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(1, this, 2)">
+                            <span class="option-letter">B</span> 0
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(2, this, 2)">
+                            <span class="option-letter">C</span> Не определено
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(3, this, 2)">
+                            <span class="option-letter">D</span> 10
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback2">
+                        <div class="feedback-title">Пояснение:</div>
+                        <p>Конъюнкция (И) возвращает 1 только если оба операнда равны 1. В данном случае 1 ∧ 0 = 0.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slide" id="slide3">
+                <div class="slide-content">
+                    <div class="question-text">Чему равно выражение: ¬(0)?</div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="checkAnswer(0, this, 3)">
+                            <span class="option-letter">A</span> 0
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(1, this, 3)">
+                            <span class="option-letter">B</span> 1
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(2, this, 3)">
+                            <span class="option-letter">C</span> Не определено
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(3, this, 3)">
+                            <span class="option-letter">D</span> 00
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback3">
+                        <div class="feedback-title">Пояснение:</div>
+                        <p>Отрицание (НЕ) инвертирует значение: ¬0 = 1, ¬1 = 0.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slide" id="slide4">
+                <div class="slide-content">
+                    <div class="question-text">Какая операция соответствует таблице истинности: 0⊕0=0, 0⊕1=1, 1⊕0=1, 1⊕1=0?</div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="checkAnswer(0, this, 4)">
+                            <span class="option-letter">A</span> Конъюнкция
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(1, this, 4)">
+                            <span class="option-letter">B</span> Дизъюнкция
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(2, this, 4)">
+                            <span class="option-letter">C</span> Исключающее ИЛИ
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(3, this, 4)">
+                            <span class="option-letter">D</span> Импликация
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback4">
+                        <div class="feedback-title">Пояснение:</div>
+                        <p>Исключающее ИЛИ (XOR) возвращает 1, когда операнды различны, и 0, когда они одинаковы.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slide" id="slide5">
+                <div class="slide-content">
+                    <div class="question-text">Какой закон описывает тождество: A ∨ ¬A = 1?</div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="checkAnswer(0, this, 5)">
+                            <span class="option-letter">A</span> Закон противоречия
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(1, this, 5)">
+                            <span class="option-letter">B</span> Закон исключённого третьего
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(2, this, 5)">
+                            <span class="option-letter">C</span> Закон двойного отрицания
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(3, this, 5)">
+                            <span class="option-letter">D</span> Закон де Моргана
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback5">
+                        <div class="feedback-title">Пояснение:</div>
+                        <p>Закон исключённого третьего утверждает, что высказывание либо истинно, либо ложно, третьего не дано.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slide" id="slide6">
+                <div class="slide-content">
+                    <div class="question-text">Упростите выражение: A ∧ (A ∨ B)</div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="checkAnswer(0, this, 6)">
+                            <span class="option-letter">A</span> A ∧ B
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(1, this, 6)">
+                            <span class="option-letter">B</span> A
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(2, this, 6)">
+                            <span class="option-letter">C</span> B
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(3, this, 6)">
+                            <span class="option-letter">D</span> A ∨ B
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback6">
+                        <div class="feedback-title">Пояснение:</div>
+                        <p>Это закон поглощения: A ∧ (A ∨ B) = A. Если A истинно, то всё выражение истинно, если A ложно, то всё выражение ложно.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slide" id="slide7">
+                <div class="slide-content">
+                    <div class="question-text">Чему равно выражение: 1 → 0?</div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="checkAnswer(0, this, 7)">
+                            <span class="option-letter">A</span> 1
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(1, this, 7)">
+                            <span class="option-letter">B</span> 0
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(2, this, 7)">
+                            <span class="option-letter">C</span> Не определено
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(3, this, 7)">
+                            <span class="option-letter">D</span> 10
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback7">
+                        <div class="feedback-title">Пояснение:</div>
+                        <p>Импликация ложна только в одном случае: когда из истины следует ложь (1 → 0 = 0). Во всех остальных случаях она истинна.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slide" id="slide8">
+                <div class="slide-content">
+                    <div class="question-text">Какой закон описывает тождество: ¬(A ∧ B) = ¬A ∨ ¬B?</div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="checkAnswer(0, this, 8)">
+                            <span class="option-letter">A</span> Закон противоречия
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(1, this, 8)">
+                            <span class="option-letter">B</span> Закон де Моргана
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(2, this, 8)">
+                            <span class="option-letter">C</span> Закон дистрибутивности
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(3, this, 8)">
+                            <span class="option-letter">D</span> Закон ассоциативности
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback8">
+                        <div class="feedback-title">Пояснение:</div>
+                        <p>Это первый закон де Моргана: отрицание конъюнкции эквивалентно дизъюнкции отрицаний.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slide" id="slide9">
+                <div class="slide-content">
+                    <div class="question-text">Чему равно выражение: A ∨ 1?</div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="checkAnswer(0, this, 9)">
+                            <span class="option-letter">A</span> A
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(1, this, 9)">
+                            <span class="option-letter">B</span> 1
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(2, this, 9)">
+                            <span class="option-letter">C</span> 0
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(3, this, 9)">
+                            <span class="option-letter">D</span> ¬A
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback9">
+                        <div class="feedback-title">Пояснение:</div>
+                        <p>Это закон для констант: A ∨ 1 = 1. Дизъюнкция с истиной всегда дает истину.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slide" id="slide10">
+                <div class="slide-content">
+                    <div class="question-text">Какая операция возвращает 1 только когда оба операнда равны 1?</div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="checkAnswer(0, this, 10)">
+                            <span class="option-letter">A</span> Дизъюнкция
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(1, this, 10)">
+                            <span class="option-letter">B</span> Конъюнкция
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(2, this, 10)">
+                            <span class="option-letter">C</span> Импликация
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(3, this, 10)">
+                            <span class="option-letter">D</span> Эквивалентность
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback10">
+                        <div class="feedback-title">Пояснение:</div>
+                        <p>Конъюнкция (И) возвращает 1 только если оба операнда равны 1.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Остальные вопросы (11-20) -->
+            <div class="slide" id="slide11">
+                <div class="slide-content">
+                    <div class="question-text">Упростите выражение: (A ∧ B) ∨ (A ∧ ¬B)</div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="checkAnswer(0, this, 11)">
+                            <span class="option-letter">A</span> A
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(1, this, 11)">
+                            <span class="option-letter">B</span> B
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(2, this, 11)">
+                            <span class="option-letter">C</span> A ∧ B
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(3, this, 11)">
+                            <span class="option-letter">D</span> 1
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback11">
+                        <div class="feedback-title">Пояснение:</div>
+                        <p>Применяем дистрибутивность: A ∧ (B ∨ ¬B) = A ∧ 1 = A.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slide" id="slide12">
+                <div class="slide-content">
+                    <div class="question-text">Чему равно выражение: A ↔ A?</div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="checkAnswer(0, this, 12)">
+                            <span class="option-letter">A</span> A
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(1, this, 12)">
+                            <span class="option-letter">B</span> 0
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(2, this, 12)">
+                            <span class="option-letter">C</span> 1
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(3, this, 12)">
+                            <span class="option-letter">D</span> ¬A
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback12">
+                        <div class="feedback-title">Пояснение:</div>
+                        <p>Эквивалентность истинна, когда оба операнда равны. A всегда равно A, поэтому A ↔ A = 1.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slide" id="slide13">
+                <div class="slide-content">
+                    <div class="question-text">Какой закон описывает тождество: A ∧ (B ∨ C) = (A ∧ B) ∨ (A ∧ C)?</div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="checkAnswer(0, this, 13)">
+                            <span class="option-letter">A</span> Закон ассоциативности
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(1, this, 13)">
+                            <span class="option-letter">B</span> Закон дистрибутивности
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(2, this, 13)">
+                            <span class="option-letter">C</span> Закон коммутативности
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(3, this, 13)">
+                            <span class="option-letter">D</span> Закон поглощения
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback13">
+                        <div class="feedback-title">Пояснение:</div>
+                        <p>Это закон дистрибутивности конъюнкции относительно дизъюнкции.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slide" id="slide14">
+                <div class="slide-content">
+                    <div class="question-text">Чему равно выражение: ¬(¬A)?</div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="checkAnswer(0, this, 14)">
+                            <span class="option-letter">A</span> 0
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(1, this, 14)">
+                            <span class="option-letter">B</span> 1
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(2, this, 14)">
+                            <span class="option-letter">C</span> A
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(3, this, 14)">
+                            <span class="option-letter">D</span> ¬A
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback14">
+                        <div class="feedback-title">Пояснение:</div>
+                        <p>Это закон двойного отрицания: два отрицания эквивалентны исходному выражению.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slide" id="slide15">
+                <div class="slide-content">
+                    <div class="question-text">Какая операция возвращает 1 когда операнды различны?</div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="checkAnswer(0, this, 15)">
+                            <span class="option-letter">A</span> Конъюнкция
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(1, this, 15)">
+                            <span class="option-letter">B</span> Дизъюнкция
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(2, this, 15)">
+                            <span class="option-letter">C</span> Исключающее ИЛИ
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(3, this, 15)">
+                            <span class="option-letter">D</span> Эквивалентность
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback15">
+                        <div class="feedback-title">Пояснение:</div>
+                        <p>Исключающее ИЛИ (XOR) возвращает 1, когда операнды различны, и 0, когда они одинаковы.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slide" id="slide16">
+                <div class="slide-content">
+                    <div class="question-text">Упростите выражение: A ∨ (A ∧ B)</div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="checkAnswer(0, this, 16)">
+                            <span class="option-letter">A</span> A ∧ B
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(1, this, 16)">
+                            <span class="option-letter">B</span> A
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(2, this, 16)">
+                            <span class="option-letter">C</span> B
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(3, this, 16)">
+                            <span class="option-letter">D</span> A ∨ B
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback16">
+                        <div class="feedback-title">Пояснение:</div>
+                        <p>Это закон поглощения: A ∨ (A ∧ B) = A. Если A истинно, то всё выражение истинно.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slide" id="slide17">
+                <div class="slide-content">
+                    <div class="question-text">Чему равно выражение: 0 → 1?</div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="checkAnswer(0, this, 17)">
+                            <span class="option-letter">A</span> 0
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(1, this, 17)">
+                            <span class="option-letter">B</span> 1
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(2, this, 17)">
+                            <span class="option-letter">C</span> Не определено
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(3, this, 17)">
+                            <span class="option-letter">D</span> 01
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback17">
+                        <div class="feedback-title">Пояснение:</div>
+                        <p>Импликация ложна только когда из истины следует ложь (1 → 0). В данном случае 0 → 1 = 1.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slide" id="slide18">
+                <div class="slide-content">
+                    <div class="question-text">Какой закон описывает тождество: A ∧ A = A?</div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="checkAnswer(0, this, 18)">
+                            <span class="option-letter">A</span> Закон идемпотентности
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(1, this, 18)">
+                            <span class="option-letter">B</span> Закон коммутативности
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(2, this, 18)">
+                            <span class="option-letter">C</span> Закон ассоциативности
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(3, this, 18)">
+                            <span class="option-letter">D</span> Закон поглощения
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback18">
+                        <div class="feedback-title">Пояснение:</div>
+                        <p>Это закон идемпотентности: повторение одного и того же операнда не меняет результат.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slide" id="slide19">
+                <div class="slide-content">
+                    <div class="question-text">Чему равно выражение: A ∧ 0?</div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="checkAnswer(0, this, 19)">
+                            <span class="option-letter">A</span> A
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(1, this, 19)">
+                            <span class="option-letter">B</span> 0
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(2, this, 19)">
+                            <span class="option-letter">C</span> 1
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(3, this, 19)">
+                            <span class="option-letter">D</span> ¬A
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback19">
+                        <div class="feedback-title">Пояснение:</div>
+                        <p>Это закон для констант: A ∧ 0 = 0. Конъюнкция с ложью всегда дает ложь.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slide" id="slide20">
+                <div class="slide-content">
+                    <div class="question-text">Упростите выражение: ¬(A ∨ B)</div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="checkAnswer(0, this, 20)">
+                            <span class="option-letter">A</span> ¬A ∧ ¬B
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(1, this, 20)">
+                            <span class="option-letter">B</span> ¬A ∨ ¬B
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(2, this, 20)">
+                            <span class="option-letter">C</span> A ∧ B
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer(3, this, 20)">
+                            <span class="option-letter">D</span> A ∨ B
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback20">
+                        <div class="feedback-title">Пояснение:</div>
+                        <p>Это второй закон де Моргана: отрицание дизъюнкции эквивалентно конъюнкции отрицаний.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Слайд с результатами -->
+            <div class="slide" id="slide21">
+                <div class="slide-content">
+                    <div class="results-container fade-in">
+                        <h1 class="slide-title">Результаты викторины</h1>
+                        <div class="results-score" id="final-score">0</div>
+                        <div class="results-message" id="results-message"></div>
+                        <p>Вы ответили правильно на <span id="correct-answers">0</span> из 20 вопросов</p>
+                        <button class="restart-btn" onclick="restartQuiz()">
+                            Пройти викторину снова
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="navigation">
+            <button class="nav-btn" id="prev-btn" disabled>
+                < Назад
+            </button>
+            <div class="slide-counter">
+                <span id="current-slide">1</span> / <span id="total-slides">21</span>
+            </div>
+            <button class="nav-btn" id="next-btn">
+                Вперед >
+            </button>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+    </div>
+
+    <script>
+        // Правильные ответы для каждого вопроса (индекс правильного варианта)
+        const correctAnswers = [
+            1, // Вопрос 1: 1 ∧ 0 = 0 (вариант B)
+            1, // Вопрос 2: ¬(0) = 1 (вариант B)
+            2, // Вопрос 3: Исключающее ИЛИ (вариант C)
+            1, // Вопрос 4: Закон исключённого третьего (вариант B)
+            1, // Вопрос 5: A ∧ (A ∨ B) = A (вариант B)
+            1, // Вопрос 6: 1 → 0 = 0 (вариант B)
+            1, // Вопрос 7: Закон де Моргана (вариант B)
+            1, // Вопрос 8: A ∨ 1 = 1 (вариант B)
+            1, // Вопрос 9: Конъюнкция (вариант B)
+            0, // Вопрос 10: (A ∧ B) ∨ (A ∧ ¬B) = A (вариант A)
+            2, // Вопрос 11: A ↔ A = 1 (вариант C)
+            1, // Вопрос 12: Закон дистрибутивности (вариант B)
+            2, // Вопрос 13: ¬(¬A) = A (вариант C)
+            2, // Вопрос 14: Исключающее ИЛИ (вариант C)
+            1, // Вопрос 15: A ∨ (A ∧ B) = A (вариант B)
+            1, // Вопрос 16: 0 → 1 = 1 (вариант B)
+            0, // Вопрос 17: Закон идемпотентности (вариант A)
+            1, // Вопрос 18: A ∧ 0 = 0 (вариант B)
+            0, // Вопрос 19: ¬(A ∨ B) = ¬A ∧ ¬B (вариант A)
+        ];
+
+        let currentSlide = 0;
+        let score = 0;
+        let answeredQuestions = new Array(20).fill(false);
+        let correctCount = 0;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.querySelectorAll('.slide');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const currentSlideElement = document.getElementById('current-slide');
+            const totalSlidesElement = document.getElementById('total-slides');
+            const progressBar = document.getElementById('progress');
+            const scoreElement = document.getElementById('score');
+            
+            const totalSlides = slides.length;
+            
+            // Устанавливаем общее количество слайдов
+            totalSlidesElement.textContent = totalSlides;
+            
+            // Функция для обновления отображения слайдов
+            function updateSlides() {
+                // Скрываем все слайды
+                slides.forEach(slide => {
+                    slide.classList.remove('active');
+                });
+                
+                // Показываем текущий слайд
+                slides[currentSlide].classList.add('active');
+                
+                // Обновляем счетчик слайдов
+                currentSlideElement.textContent = currentSlide + 1;
+                
+                // Обновляем прогресс-бар
+                progressBar.style.width = `${(currentSlide + 1) / totalSlides * 100}%`;
+                
+                // Обновляем состояние кнопок
+                prevBtn.disabled = currentSlide === 0;
+                nextBtn.disabled = currentSlide === totalSlides - 1;
+                
+                // Обновляем отображение счета
+                scoreElement.textContent = score;
+            }
+            
+            // Обработчики для кнопок навигации
+            prevBtn.addEventListener('click', function() {
+                if (currentSlide > 0) {
+                    currentSlide--;
+                    updateSlides();
+                }
+            });
+            
+            nextBtn.addEventListener('click', function() {
+                if (currentSlide < totalSlides - 1) {
+                    currentSlide++;
+                    updateSlides();
+                }
+            });
+            
+            // Обработчики для клавиатуры
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'ArrowLeft' && currentSlide > 0) {
+                    currentSlide--;
+                    updateSlides();
+                } else if (event.key === 'ArrowRight' && currentSlide < totalSlides - 1) {
+                    currentSlide++;
+                    updateSlides();
+                }
+            });
+            
+            // Инициализация
+            updateSlides();
+        });
+
+        function startQuiz() {
+            currentSlide = 1; // Переходим к первому вопросу
+            updateSlides();
+        }
+
+        function checkAnswer(selectedIndex, button, questionNumber) {
+            // Если на вопрос уже отвечали, ничего не делаем
+            if (answeredQuestions[questionNumber - 2]) return;
+            
+            // Помечаем вопрос как отвеченный
+            answeredQuestions[questionNumber - 2] = true;
+            
+            // Получаем все кнопки с вариантами ответов для этого вопроса
+            const optionButtons = button.parentElement.querySelectorAll('.option-btn');
+            
+            // Отключаем все кнопки
+            optionButtons.forEach(btn => {
+                btn.disabled = true;
+            });
+            
+            // Проверяем ответ
+            const correctIndex = correctAnswers[questionNumber - 2];
+            
+            if (selectedIndex === correctIndex) {
+                // Правильный ответ
+                button.classList.add('correct');
+                score += 5;
+                correctCount++;
+            } else {
+                // Неправильный ответ
+                button.classList.add('incorrect');
+                score -= 2;
+                
+                // Подсвечиваем правильный ответ
+                optionButtons[correctIndex].classList.add('correct');
+            }
+            
+            // Показываем пояснение
+            const feedback = document.getElementById(`feedback${questionNumber}`);
+            feedback.classList.add('show');
+            
+            // Обновляем отображение счета
+            document.getElementById('score').textContent = score;
+            
+            // Если это последний вопрос, переходим к результатам
+            if (questionNumber === 20) {
+                setTimeout(() => {
+                    showResults();
+                }, 3000);
+            }
+        }
+
+        function showResults() {
+            currentSlide = 21; // Переходим к слайду с результатами
+            updateSlides();
+            
+            const finalScoreElement = document.getElementById('final-score');
+            const correctAnswersElement = document.getElementById('correct-answers');
+            const resultsMessageElement = document.getElementById('results-message');
+            
+            finalScoreElement.textContent = score;
+            correctAnswersElement.textContent = correctCount;
+            
+            // Определяем сообщение в зависимости от результата
+            let message = "";
+            if (score >= 90) {
+                message = "Отличный результат! Вы отлично разбираетесь в алгебре логики!";
+            } else if (score >= 70) {
+                message = "Хороший результат! Вы хорошо знаете алгебру логики!";
+            } else if (score >= 50) {
+                message = "Неплохой результат! Есть что повторить.";
+            } else {
+                message = "Вам стоит повторить материал по алгебре логики.";
+            }
+            
+            resultsMessageElement.textContent = message;
+        }
+
+        function restartQuiz() {
+            // Сброс всех переменных
+            currentSlide = 0;
+            score = 0;
+            correctCount = 0;
+            answeredQuestions = new Array(20).fill(false);
+            
+            // Сброс всех кнопок и пояснений
+            const optionButtons = document.querySelectorAll('.option-btn');
+            optionButtons.forEach(btn => {
+                btn.classList.remove('correct', 'incorrect');
+                btn.disabled = false;
+            });
+            
+            const feedbacks = document.querySelectorAll('.feedback');
+            feedbacks.forEach(feedback => {
+                feedback.classList.remove('show');
+            });
+            
+            // Обновление отображения
+            updateSlides();
+            document.getElementById('score').textContent = score;
+        }
+    </script>
+</body>
+</html>
