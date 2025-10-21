@@ -1,0 +1,129 @@
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes typewriter {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes slideIn {
+    from { transform: translateX(-100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 5px rgba(243, 156, 18, 0.5); }
+    50% { box-shadow: 0 0 20px rgba(243, 156, 18, 0.8); }
+}
+
+@keyframes threadSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Анимации для элементов */
+.terminal-window {
+    animation: slideIn 0.5s ease-out;
+}
+
+.game-title {
+    font-size: 3em;
+    background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: pulse 2s infinite;
+}
+
+.typewriter {
+    overflow: hidden;
+    border-right: 2px solid var(--primary-color);
+    white-space: nowrap;
+    animation: typewriter 3s steps(40, end), blink 0.8s infinite;
+}
+
+.btn-primary {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+}
+
+.btn-primary:hover::before {
+    left: 100%;
+}
+
+.answer-option {
+    transform: translateX(0);
+    transition: transform 0.3s ease;
+}
+
+.result-content {
+    animation: fadeIn 0.5s ease;
+}
+
+.rank-icon {
+    animation: pulse 1.5s infinite;
+}
+
+/* Анимации для процессов и потоков */
+.process-item {
+    animation: processPulse 3s infinite;
+}
+
+.thread-item {
+    animation: threadSpin 2s linear infinite;
+}
+
+.memory-item {
+    animation: memoryGlow 2s ease-in-out infinite;
+}
+
+@keyframes processPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
+@keyframes memoryGlow {
+    0%, 100% { background: rgba(211, 84, 0, 0.2); }
+    50% { background: rgba(211, 84, 0, 0.4); }
+}
+
+.progress-fill {
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Анимация выбора для диаграмм */
+.diagram-option {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.diagram-option.selected {
+    animation: glow 1s ease-in-out;
+}
+
+/* Анимация для кода */
+.python-code {
+    animation: fadeIn 0.8s ease;
+}

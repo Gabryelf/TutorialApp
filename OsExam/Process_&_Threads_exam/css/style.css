@@ -1,0 +1,493 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #ff6b6b;
+    --secondary-color: #4ecdc4;
+    --accent-color: #45b7d1;
+    --background-color: #1a1a1a;
+    --terminal-bg: #2d2d2d;
+    --text-color: #ffffff;
+    --success-color: #4CAF50;
+    --error-color: #f44336;
+    --warning-color: #ff9800;
+    --process-color: #ff6b6b;
+    --thread-color: #4ecdc4;
+}
+
+body {
+    font-family: 'Ubuntu', sans-serif;
+    background: linear-gradient(135deg, #0c0c0c, #1a1a2e);
+    color: var(--text-color);
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.screen {
+    display: none;
+}
+
+.screen.active {
+    display: block;
+    animation: fadeIn 0.5s ease-in;
+}
+
+/* Терминал стиль */
+.terminal-window {
+    background: var(--terminal-bg);
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+
+.terminal-header {
+    background: #3c3c3c;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.terminal-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.terminal-btn {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.terminal-btn.close { background: var(--error-color); }
+.terminal-btn.minimize { background: var(--warning-color); }
+.terminal-btn.maximize { background: var(--success-color); }
+
+.terminal-title {
+    font-family: 'Ubuntu Mono', monospace;
+    font-size: 14px;
+    color: #ccc;
+}
+
+.terminal-body {
+    padding: 30px;
+}
+
+/* Кнопки */
+.btn-primary, .btn-secondary, .btn-tertiary {
+    font-family: 'Ubuntu Mono', monospace;
+    font-size: 18px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 10px 5px;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: #000;
+    font-weight: bold;
+}
+
+.btn-primary:hover {
+    background: #ff5252;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: var(--secondary-color);
+    color: white;
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background: #3dbeb6;
+}
+
+.btn-tertiary {
+    background: transparent;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+}
+
+.btn-tertiary:hover {
+    background: rgba(255, 107, 107, 0.1);
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Игровой интерфейс */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+
+.progress-container {
+    flex: 1;
+    max-width: 300px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--primary-color);
+    width: 0%;
+    transition: width 0.5s ease;
+}
+
+.progress-text {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #ccc;
+}
+
+.score {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+/* Контейнер заданий */
+.task-container {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 30px;
+    margin-bottom: 20px;
+    min-height: 300px;
+}
+
+.task-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+}
+
+.task-description {
+    font-size: 18px;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+/* Типы заданий */
+.definition-task, .multiple-choice-task, .comparison-task, .synchronization-task, .scenario-task {
+    margin: 20px 0;
+}
+
+.answer-options {
+    display: grid;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.answer-option {
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.answer-option:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--primary-color);
+}
+
+.answer-option.selected {
+    background: rgba(255, 107, 107, 0.1);
+    border-color: var(--primary-color);
+}
+
+/* Диаграммы и визуализации */
+.process-diagram {
+    background: rgba(255, 107, 107, 0.1);
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+    border-left: 4px solid var(--process-color);
+}
+
+.thread-diagram {
+    background: rgba(78, 205, 196, 0.1);
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+    border-left: 4px solid var(--thread-color);
+}
+
+.diagram-item {
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 4px;
+    font-family: 'Ubuntu Mono', monospace;
+}
+
+.process-item {
+    background: rgba(255, 107, 107, 0.2);
+    border: 1px solid var(--process-color);
+}
+
+.thread-item {
+    background: rgba(78, 205, 196, 0.2);
+    border: 1px solid var(--thread-color);
+    margin-left: 20px;
+}
+
+/* Обратная связь */
+.feedback-area {
+    min-height: 80px;
+    padding: 15px;
+    border-radius: 4px;
+    margin: 20px 0;
+}
+
+.feedback-hint {
+    background: rgba(255, 152, 0, 0.2);
+    border: 1px solid var(--warning-color);
+    color: var(--warning-color);
+}
+
+/* Панель результата */
+.result-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.result-panel.hidden {
+    display: none;
+}
+
+.result-content {
+    background: var(--terminal-bg);
+    padding: 40px;
+    border-radius: 12px;
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+    border: 2px solid var(--primary-color);
+    animation: slideIn 0.5s ease-out;
+}
+
+.result-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+}
+
+.result-title {
+    font-size: 28px;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+}
+
+.result-message {
+    font-size: 18px;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.correct-answer {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 6px;
+    margin: 20px 0;
+    border-left: 4px solid var(--primary-color);
+}
+
+.result-correct .result-content {
+    border-color: var(--success-color);
+}
+
+.result-correct .result-title {
+    color: var(--success-color);
+}
+
+.result-incorrect .result-content {
+    border-color: var(--error-color);
+}
+
+.result-incorrect .result-title {
+    color: var(--error-color);
+}
+
+/* Результаты */
+.rank-container {
+    text-align: center;
+    margin: 30px 0;
+}
+
+.rank-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+}
+
+.rank-title {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.rank-description {
+    font-size: 18px;
+    margin: 20px 0;
+    line-height: 1.6;
+}
+
+.score-result {
+    font-size: 24px;
+    text-align: center;
+    margin: 20px 0;
+    color: var(--primary-color);
+}
+
+.answers-review {
+    margin: 30px 0;
+}
+
+.answer-item {
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.answer-correct {
+    border-left: 4px solid var(--success-color);
+}
+
+.answer-incorrect {
+    border-left: 4px solid var(--error-color);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .terminal-body {
+        padding: 20px;
+    }
+    
+    .game-header {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .progress-container {
+        max-width: 100%;
+    }
+    
+    .task-title {
+        font-size: 20px;
+    }
+    
+    .task-description {
+        font-size: 16px;
+    }
+
+    /* Стили для исправления бага с диаграммами */
+    /* Стили для диаграмм */
+.diagram-option {
+    position: relative;
+    cursor: pointer;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid transparent;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    margin-bottom: 15px;
+}
+
+.diagram-option:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.diagram-option.selected {
+    background: rgba(255, 107, 107, 0.1);
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.diagram-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.selection-indicator {
+    font-size: 18px;
+    font-weight: bold;
+    color: #666;
+    transition: all 0.3s ease;
+}
+
+.diagram-option.selected .selection-indicator {
+    color: var(--success-color);
+}
+
+/* Отключаем события мыши на содержимом диаграмм */
+.diagram-option .process-diagram,
+.diagram-option .thread-diagram,
+.diagram-option .process-item,
+.diagram-option .thread-item {
+    pointer-events: none;
+}
+
+/* Улучшаем отображение диаграмм внутри options */
+.diagram-option .process-diagram,
+.diagram-option .thread-diagram {
+    background: transparent;
+    border-left: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Анимация при выборе */
+@keyframes selectPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+.diagram-option.selected {
+    animation: selectPulse 0.3s ease;
+}
+}
