@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python: ООП, SOLID и Паттерны</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="page-container">
+        <div class="container">
+            <div class="header">
+                <div class="logo">
+                    <span class="logo-icon">🐍</span>
+                    <h1>Python: ООП, SOLID и Паттерны</h1>
+                </div>
+                
+                <div class="header-controls">
+                    <div class="nav-buttons">
+                        <button class="btn" id="prevBtn">
+                            <span>←</span> Назад
+                        </button>
+                        <button class="btn" id="nextBtn">
+                            Вперед <span>→</span>
+                        </button>
+                    </div>
+                    
+                    <div class="slide-info">
+                        Слайд <span id="current-slide">1</span> из <span id="total-slides">40</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="main-content">
+                <div class="slide-sidebar">
+                    <div class="slider-container">
+                        <div class="slider-track">
+                            <div class="slider-thumb" id="sliderThumb"></div>
+                        </div>
+                        <div class="slider-labels">
+                            <span>1</span>
+                            <span>40</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="slide-container" id="slideContainer">
+                    <!-- Слайды будут вставлены с помощью JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
