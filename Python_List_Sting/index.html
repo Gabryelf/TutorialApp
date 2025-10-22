@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python: Строки и Списки</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .presentation {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .slides-container {
+            position: relative;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            min-height: 600px;
+        }
+
+        .slide {
+            display: none;
+            padding: 40px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-align: center;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h2 {
+            color: #34495e;
+            font-size: 1.8em;
+            margin: 25px 0 15px 0;
+            border-left: 5px solid #667eea;
+            padding-left: 15px;
+        }
+
+        h3 {
+            color: #2c3e50;
+            margin: 20px 0 10px 0;
+        }
+
+        .theory {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #3498db;
+        }
+
+        .theory h3 {
+            color: #2980b9;
+            margin-top: 0;
+        }
+
+        .code-container {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            position: relative;
+        }
+
+        .code-header {
+            background: #1a1a1a;
+            padding: 10px 20px;
+            border-radius: 10px 10px 0 0;
+            margin: -20px -20px 20px -20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .language {
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+
+        .copy-btn:hover {
+            background: #764ba2;
+        }
+
+        .code-keyword { color: #ff79c6; }
+        .code-string { color: #f1fa8c; }
+        .code-comment { color: #6272a4; }
+        .code-function { color: #50fa7b; }
+        .code-number { color: #bd93f9; }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding: 20px 0;
+        }
+
+        .nav-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .nav-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .slide-indicator {
+            text-align: center;
+            color: white;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .example {
+            background: #e8f4fc;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #3498db;
+        }
+
+        .output {
+            background: #2d2d2d;
+            color: #50fa7b;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-family: 'Consolas', monospace;
+        }
+
+        .tip {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .interactive-demo {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #27ae60;
+        }
+
+        .demo-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-size: 1em;
+        }
+
+        .demo-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        .demo-result {
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <div class="slides-container">
+            <!-- Слайд 1: Заглавный -->
+            <div class="slide active" id="slide1">
+                <h1>🐍 Python: Строки и Списки</h1>
+                <div class="theory">
+                    <h3>Полное руководство с примерами</h3>
+                    <p>Изучим основные структуры данных Python: строки и списки</p>
+                </div>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="language">Python</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+                    </div>
+                    <pre><code><span class="code-comment"># Добро пожаловать в мир Python!</span>
+<span class="code-keyword">print</span>(<span class="code-string">"Готовы к изучению?"</span>)</code></pre>
+                </div>
+            </div>
+
+            <!-- Слайд 2: Кодировки -->
+            <div class="slide" id="slide2">
+                <h1>Кодировки символов</h1>
+                <div class="theory">
+                    <h3>Основные понятия:</h3>
+                    <ul>
+                        <li><strong>ASCII</strong> - американская кодировка (128 символов)</li>
+                        <li><strong>Unicode</strong> - универсальная кодировка всех языков</li>
+                        <li><strong>UTF-8</strong> - популярная кодировка Unicode</li>
+                        <li><strong>Byte-code</strong> - байтовое представление</li>
+                    </ul>
+                </div>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="language">Python</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+                    </div>
+                    <pre><code><span class="code-comment"># Работа с кодировками</span>
+text = <span class="code-string">"Привет мир"</span>
+byte_text = text.<span class="code-function">encode</span>(<span class="code-string">'utf-8'</span>)
+<span class="code-keyword">print</span>(<span class="code-string">"Байты:"</span>, byte_text)
+<span class="code-comment"># b'\xd0\x9f\xd1\x80\xd0\xb8\xd0\xb2\xd0\xb5\xd1\x82 \xd0\xbc\x0b8\xd1\x80'</span>
+
+decoded_text = byte_text.<span class="code-function">decode</span>(<span class="code-string">'utf-8'</span>)
+<span class="code-keyword">print</span>(<span class="code-string">"Текст:"</span>, decoded_text)
+<span class="code-comment"># Привет мир</span></code></pre>
+                </div>
+                <div class="interactive-demo">
+                    <h3>Попробуйте сами:</h3>
+                    <input type="text" class="demo-input" id="encodeInput" placeholder="Введите текст для кодирования" value="Hello">
+                    <button class="demo-btn" onclick="encodeText()">Закодировать в байты</button>
+                    <div class="demo-result" id="encodeResult"></div>
+                </div>
+            </div>
+
+            <!-- Слайд 3: Методы строк -->
+            <div class="slide" id="slide3">
+                <h1>Методы строк</h1>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="language">Python</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+                    </div>
+                    <pre><code>text = <span class="code-string">"  Hello, World!  "</span>
+
+<span class="code-comment"># Основные методы</span>
+<span class="code-keyword">print</span>(text.<span class="code-function">strip</span>())           <span class="code-comment"># "Hello, World!"</span>
+<span class="code-keyword">print</span>(text.<span class="code-function">lower</span>())           <span class="code-comment"># "  hello, world!  "</span>
+<span class="code-keyword">print</span>(text.<span class="code-function">upper</span>())           <span class="code-comment"># "  HELLO, WORLD!  "</span>
+<span class="code-keyword">print</span>(text.<span class="code-function">replace</span>(<span class="code-string">"Hello"</span>, <span class="code-string">"Hi"</span>))  <span class="code-comment"># "  Hi, World!  "</span>
+<span class="code-keyword">print</span>(text.<span class="code-function">split</span>(<span class="code-string">","</span>))        <span class="code-comment"># ['  Hello', ' World!  ']</span>
+
+<span class="code-comment"># Поиск и проверки</span>
+<span class="code-keyword">print</span>(<span class="code-string">"hello"</span>.<span class="code-function">startswith</span>(<span class="code-string">"he"</span>))  <span class="code-comment"># True</span>
+<span class="code-keyword">print</span>(<span class="code-string">"hello"</span>.<span class="code-function">find</span>(<span class="code-string">"l"</span>))         <span class="code-comment"># 2</span></code></pre>
+                </div>
+                <div class="interactive-demo">
+                    <h3>Поэкспериментируйте с методами:</h3>
+                    <input type="text" class="demo-input" id="stringMethodsInput" placeholder="Введите текст" value="  Test String  ">
+                    <div>
+                        <button class="demo-btn" onclick="applyStringMethod('strip')">strip()</button>
+                        <button class="demo-btn" onclick="applyStringMethod('upper')">upper()</button>
+                        <button class="demo-btn" onclick="applyStringMethod('lower')">lower()</button>
+                        <button class="demo-btn" onclick="applyStringMethod('title')">title()</button>
+                    </div>
+                    <div class="demo-result" id="stringMethodsResult"></div>
+                </div>
+            </div>
+
+            <!-- Слайд 4: Срезы строк -->
+            <div class="slide" id="slide4">
+                <h1>Срезы строк</h1>
+                <div class="theory">
+                    <h3>Синтаксис: строка[начало:конец:шаг]</h3>
+                    <p>Отрицательные индексы считаются с конца строки</p>
+                </div>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="language">Python</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+                    </div>
+                    <pre><code>text = <span class="code-string">"Python Programming"</span>
+
+<span class="code-keyword">print</span>(text[<span class="code-number">0</span>:<span class="code-number">6</span>])      <span class="code-comment"># Python</span>
+<span class="code-keyword">print</span>(text[<span class="code-number">7</span>:])       <span class="code-comment"># Programming</span>
+<span class="code-keyword">print</span>(text[:<span class="code-number">6</span>])       <span class="code-comment"># Python</span>
+<span class="code-keyword">print</span>(text[-<span class="code-number">11</span>:])     <span class="code-comment"># Programming</span>
+<span class="code-keyword">print</span>(text[::<span class="code-number">2</span>])      <span class="code-comment"># Pto rgamn</span>
+<span class="code-keyword">print</span>(text[::-<span class="code-number">1</span>])     <span class="code-comment"># gnimmargorP nohtyP</span></code></pre>
+                </div>
+                <div class="interactive-demo">
+                    <h3>Поиграйте со срезами:</h3>
+                    <input type="text" class="demo-input" id="sliceInput" placeholder="Введите текст" value="Python Programming">
+                    <input type="text" class="demo-input" id="sliceParams" placeholder="Срез [start:end:step]" value="0:6:1">
+                    <button class="demo-btn" onclick="applySlice()">Применить срез</button>
+                    <div class="demo-result" id="sliceResult"></div>
+                </div>
+            </div>
+
+            <!-- Слайд 5: Списки -->
+            <div class="slide" id="slide5">
+                <h1>Списки в Python</h1>
+                <div class="theory">
+                    <h3>Что такое список?</h3>
+                    <ul>
+                        <li>Упорядоченная изменяемая коллекция</li>
+                        <li>Может содержать элементы разных типов</li>
+                        <li>Поддерживает индексацию и срезы</li>
+                    </ul>
+                </div>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="language">Python</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+                    </div>
+                    <pre><code><span class="code-comment"># Создание списков</span>
+empty_list = []
+numbers = [<span class="code-number">1</span>, <span class="code-number">2</span>, <span class="code-number">3</span>, <span class="code-number">4</span>, <span class="code-number">5</span>]
+mixed = [<span class="code-number">1</span>, <span class="code-string">"hello"</span>, <span class="code-number">3.14</span>, <span class="code-keyword">True</span>]
+from_string = <span class="code-function">list</span>(<span class="code-string">"hello"</span>)  <span class="code-comment"># ['h', 'e', 'l', 'l', 'o']</span>
+
+<span class="code-comment"># Индексация</span>
+fruits = [<span class="code-string">"apple"</span>, <span class="code-string">"banana"</span>, <span class="code-string">"orange"</span>]
+<span class="code-keyword">print</span>(fruits[<span class="code-number">0</span>])   <span class="code-comment"># apple</span>
+<span class="code-keyword">print</span>(fruits[-<span class="code-number">1</span>])  <span class="code-comment"># orange</span>
+
+<span class="code-comment"># Изменение элементов</span>
+fruits[<span class="code-number">1</span>] = <span class="code-string">"kiwi"</span>
+<span class="code-keyword">print</span>(fruits)  <span class="code-comment"># ['apple', 'kiwi', 'orange']</span></code></pre>
+                </div>
+            </div>
+
+            <!-- Слайд 6: Методы списков -->
+            <div class="slide" id="slide6">
+                <h1>Методы списков</h1>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="language">Python</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+                    </div>
+                    <pre><code>numbers = [<span class="code-number">1</span>, <span class="code-number">2</span>, <span class="code-number">3</span>]
+
+<span class="code-comment"># Добавление элементов</span>
+numbers.<span class="code-function">append</span>(<span class="code-number">4</span>)           <span class="code-comment"># [1, 2, 3, 4]</span>
+numbers.<span class="code-function">insert</span>(<span class="code-number">1</span>, <span class="code-number">1.5</span>)      <span class="code-comment"># [1, 1.5, 2, 3, 4]</span>
+numbers.<span class="code-function">extend</span>([<span class="code-number">5</span>, <span class="code-number">6</span>])      <span class="code-comment"># [1, 1.5, 2, 3, 4, 5, 6]</span>
+
+<span class="code-comment"># Удаление элементов</span>
+removed = numbers.<span class="code-function">pop</span>()     <span class="code-comment"># удаляет последний (6)</span>
+removed = numbers.<span class="code-function">pop</span>(<span class="code-number">1</span>)    <span class="code-comment"># удаляет по индексу (1.5)</span>
+numbers.<span class="code-function">remove</span>(<span class="code-number">2</span>)           <span class="code-comment"># удаляет значение 2</span>
+
+<span class="code-comment"># Сортировка</span>
+numbers.<span class="code-function">sort</span>()              <span class="code-comment"># сортировка на месте</span>
+numbers.<span class="code-function">reverse</span>()           <span class="code-comment"># реверс на месте</span></code></pre>
+                </div>
+                <div class="interactive-demo">
+                    <h3>Управление списком:</h3>
+                    <input type="text" class="demo-input" id="listInput" placeholder="Введите элемент" value="новый элемент">
+                    <div>
+                        <button class="demo-btn" onclick="listOperation('append')">append()</button>
+                        <button class="demo-btn" onclick="listOperation('pop')">pop()</button>
+                        <button class="demo-btn" onclick="listOperation('sort')">sort()</button>
+                        <button class="demo-btn" onclick="listOperation('reverse')">reverse()</button>
+                    </div>
+                    <div class="demo-result">
+                        <strong>Текущий список:</strong> <span id="currentList">[1, 2, 3]</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Слайд 7: Генераторы списков -->
+            <div class="slide" id="slide7">
+                <h1>Генераторы списков</h1>
+                <div class="theory">
+                    <h3>Синтаксис: [выражение for элемент in последовательность if условие]</h3>
+                </div>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="language">Python</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+                    </div>
+                    <pre><code><span class="code-comment"># Простой генератор</span>
+squares = [x**<span class="code-number">2</span> <span class="code-keyword">for</span> x <span class="code-keyword">in</span> <span class="code-function">range</span>(<span class="code-number">1</span>, <span class="code-number">6</span>)]
+<span class="code-keyword">print</span>(squares)  <span class="code-comment"># [1, 4, 9, 16, 25]</span>
+
+<span class="code-comment"># С условием</span>
+even_squares = [x**<span class="code-number">2</span> <span class="code-keyword">for</span> x <span class="code-keyword">in</span> <span class="code-function">range</span>(<span class="code-number">10</span>) <span class="code-keyword">if</span> x % <span class="code-number">2</span> == <span class="code-number">0</span>]
+<span class="code-keyword">print</span>(even_squares)  <span class="code-comment"># [0, 4, 16, 36, 64]</span>
+
+<span class="code-comment"># Работа со строками</span>
+words = [<span class="code-string">"hello"</span>, <span class="code-string">"world"</span>, <span class="code-string">"python"</span>]
+upper_words = [word.<span class="code-function">upper</span>() <span class="code-keyword">for</span> word <span class="code-keyword">in</span> words]
+<span class="code-keyword">print</span>(upper_words)  <span class="code-comment"># ['HELLO', 'WORLD', 'PYTHON']</span></code></pre>
+                </div>
+                <div class="interactive-demo">
+                    <h3>Создайте свой генератор:</h3>
+                    <input type="text" class="demo-input" id="listCompInput" placeholder="Введите числа через запятую" value="1,2,3,4,5">
+                    <div>
+                        <button class="demo-btn" onclick="generateList('squares')">Квадраты</button>
+                        <button class="demo-btn" onclick="generateList('even')">Четные</button>
+                        <button class="demo-btn" onclick="generateList('upper')">В верхний регистр</button>
+                    </div>
+                    <div class="demo-result" id="listCompResult"></div>
+                </div>
+            </div>
+
+            <!-- Слайд 8: Функции для списков -->
+            <div class="slide" id="slide8">
+                <h1>Функции для работы со списками</h1>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="language">Python</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+                    </div>
+                    <pre><code>numbers = [<span class="code-number">3</span>, <span class="code-number">1</span>, <span class="code-number">4</span>, <span class="code-number">1</span>, <span class="code-number">5</span>, <span class="code-number">9</span>, <span class="code-number">2</span>]
+
+<span class="code-comment"># Основные функции</span>
+<span class="code-keyword">print</span>(<span class="code-function">len</span>(numbers))    <span class="code-comment"># 7 - длина</span>
+<span class="code-keyword">print</span>(<span class="code-function">min</span>(numbers))    <span class="code-comment"># 1 - минимальный</span>
+<span class="code-keyword">print</span>(<span class="code-function">max</span>(numbers))    <span class="code-comment"># 9 - максимальный</span>
+<span class="code-keyword">print</span>(<span class="code-function">sum</span>(numbers))    <span class="code-comment"># 25 - сумма</span>
+
+<span class="code-comment"># Функции высшего порядка</span>
+even_numbers = <span class="code-function">list</span>(<span class="code-function">filter</span>(<span class="code-keyword">lambda</span> x: x % <span class="code-number">2</span> == <span class="code-number">0</span>, numbers))
+<span class="code-keyword">print</span>(even_numbers)  <span class="code-comment"># [4, 2]</span>
+
+doubled = <span class="code-function">list</span>(<span class="code-function">map</span>(<span class="code-keyword">lambda</span> x: x * <span class="code-number">2</span>, numbers))
+<span class="code-keyword">print</span>(doubled)  <span class="code-comment"># [6, 2, 8, 2, 10, 18, 4]</span></code></pre>
+                </div>
+            </div>
+
+            <!-- Слайд 9: Практические примеры -->
+            <div class="slide" id="slide9">
+                <h1>Практические примеры</h1>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="language">Python</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+                    </div>
+                    <pre><code><span class="code-comment"># 1. Управление задачами</span>
+tasks = []
+
+<span class="code-keyword">def</span> <span class="code-function">add_task</span>(task):
+    tasks.<span class="code-function">append</span>(task)
+    <span class="code-keyword">print</span>(<span class="code-string">f"Задача '{task}' добавлена"</span>)
+
+<span class="code-keyword">def</span> <span class="code-function">complete_task</span>():
+    <span class="code-keyword">if</span> tasks:
+        completed = tasks.<span class="code-function">pop</span>(<span class="code-number">0</span>)
+        <span class="code-keyword">print</span>(<span class="code-string">f"Задача '{completed}' выполнена"</span>)
+    <span class="code-keyword">else</span>:
+        <span class="code-keyword">print</span>(<span class="code-string">"Нет задач"</span>)
+
+<span class="code-comment"># 2. Анализ данных</span>
+ages = [<span class="code-number">15</span>, <span class="code-number">22</span>, <span class="code-number">17</span>, <span class="code-number">30</span>, <span class="code-number">16</span>, <span class="code-number">25</span>]
+adults = [age <span class="code-keyword">for</span> age <span class="code-keyword">in</span> ages <span class="code-keyword">if</span> age >= <span class="code-number">18</span>]
+average_age = <span class="code-function">sum</span>(ages) / <span class="code-function">len</span>(ages)
+
+<span class="code-keyword">print</span>(<span class="code-string">f"Совершеннолетние: {adults}"</span>)
+<span class="code-keyword">print</span>(<span class="code-string">f"Средний возраст: {average_age:.1f}"</span>)</code></pre>
+                </div>
+                <div class="tip">
+                    <strong>💡 Совет:</strong> Используйте списки для хранения коллекций данных, а строки - для работы с текстом.
+                    Обе структуры отлично сочетаются в реальных проектах!
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)" disabled>← Назад</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Вперед →</button>
+        </div>
+        <div class="slide-indicator">
+            Слайд <span id="currentSlide">1</span> из <span id="totalSlides">9</span>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 9;
+
+        // Инициализация
+        document.getElementById('currentSlide').textContent = currentSlide;
+        document.getElementById('totalSlides').textContent = totalSlides;
+
+        function changeSlide(direction) {
+            const oldSlide = document.getElementById(`slide${currentSlide}`);
+            oldSlide.classList.remove('active');
+            
+            currentSlide += direction;
+            
+            // Обновление кнопок
+            document.getElementById('prevBtn').disabled = currentSlide === 1;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+            
+            const newSlide = document.getElementById(`slide${currentSlide}`);
+            newSlide.classList.add('active');
+            
+            document.getElementById('currentSlide').textContent = currentSlide;
+        }
+
+        function copyCode(button) {
+            const codeContainer = button.closest('.code-container');
+            const code = codeContainer.querySelector('code').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Скопировано!';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 2000);
+            });
+        }
+
+        // Интерактивные демо
+        function encodeText() {
+            const input = document.getElementById('encodeInput').value;
+            const encoder = new TextEncoder();
+            const bytes = encoder.encode(input);
+            const result = Array.from(bytes).map(b => '\\x' + b.toString(16).padStart(2, '0')).join('');
+            document.getElementById('encodeResult').innerHTML = 
+                `<strong>Байты:</strong> ${result}<br>
+                 <strong>Длина:</strong> ${bytes.length} байт`;
+        }
+
+        function applyStringMethod(method) {
+            const input = document.getElementById('stringMethodsInput').value;
+            let result;
+            
+            switch(method) {
+                case 'strip': result = input.trim(); break;
+                case 'upper': result = input.toUpperCase(); break;
+                case 'lower': result = input.toLowerCase(); break;
+                case 'title': result = input.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()); break;
+            }
+            
+            document.getElementById('stringMethodsResult').innerHTML = 
+                `<strong>Исходный:</strong> "${input}"<br>
+                 <strong>Результат:</strong> "${result}"`;
+        }
+
+        function applySlice() {
+            const input = document.getElementById('sliceInput').value;
+            const params = document.getElementById('sliceParams').value;
+            
+            try {
+                const [start, end, step] = params.split(':').map(val => val === '' ? undefined : parseInt(val));
+                let result;
+                
+                if (step !== undefined) {
+                    result = input.slice(start, end).split('').filter((_, i) => i % step === 0).join('');
+                } else {
+                    result = input.slice(start, end);
+                }
+                
+                document.getElementById('sliceResult').innerHTML = 
+                    `<strong>Исходный:</strong> "${input}"<br>
+                     <strong>Срез [${params}]:</strong> "${result}"`;
+            } catch (e) {
+                document.getElementById('sliceResult').innerHTML = 
+                    '<strong>Ошибка:</strong> Проверьте формат среза (например: 0:6:1)';
+            }
+        }
+
+        // Демо для списков
+        let demoList = [1, 2, 3];
+
+        function listOperation(operation) {
+            const input = document.getElementById('listInput').value;
+            
+            switch(operation) {
+                case 'append':
+                    demoList.push(input);
+                    break;
+                case 'pop':
+                    if (demoList.length > 0) {
+                        demoList.pop();
+                    }
+                    break;
+                case 'sort':
+                    demoList.sort((a, b) => a - b);
+                    break;
+                case 'reverse':
+                    demoList.reverse();
+                    break;
+            }
+            
+            document.getElementById('currentList').textContent = JSON.stringify(demoList);
+        }
+
+        function generateList(type) {
+            const input = document.getElementById('listCompInput').value;
+            const numbers = input.split(',').map(num => num.trim());
+            let result;
+            
+            switch(type) {
+                case 'squares':
+                    result = numbers.map(num => Math.pow(parseInt(num), 2));
+                    break;
+                case 'even':
+                    result = numbers.filter(num => parseInt(num) % 2 === 0);
+                    break;
+                case 'upper':
+                    result = numbers.map(num => num.toUpperCase());
+                    break;
+            }
+            
+            document.getElementById('listCompResult').innerHTML = 
+                `<strong>Исходный:</strong> [${numbers.join(', ')}]<br>
+                 <strong>Результат:</strong> [${result.join(', ')}]`;
+        }
+
+        // Инициализация первого слайда
+        document.addEventListener('DOMContentLoaded', function() {
+            encodeText();
+            applyStringMethod('strip');
+            applySlice();
+            document.getElementById('currentList').textContent = JSON.stringify(demoList);
+        });
+    </script>
+</body>
+</html>
