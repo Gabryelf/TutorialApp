@@ -1,0 +1,1010 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #2c3e50;
+    --secondary: #3498db;
+    --accent: #e74c3c;
+    --success: #2ecc71;
+    --warning: #f39c12;
+    --light: #ecf0f1;
+    --dark: #2c3e50;
+    --overlay: rgba(44, 62, 80, 0.8);
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: #000;
+    color: var(--light);
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* Навигация */
+.nav-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: var(--overlay);
+    backdrop-filter: blur(10px);
+    padding: 15px 20px;
+}
+
+.nav-progress {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: var(--secondary);
+    width: 6.25%; /* 1/16 */
+    transition: width 0.3s ease;
+}
+
+.nav-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-btn {
+    background: var(--secondary);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-btn:hover:not(:disabled) {
+    background: #2980b9;
+    transform: scale(1.1);
+}
+
+.nav-btn:disabled {
+    background: #7f8c8d;
+    cursor: not-allowed;
+}
+
+.slide-counter {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* Слайды */
+.slides-container {
+    height: 100vh;
+    position: relative;
+}
+
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.slide.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slide::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--overlay);
+    z-index: 1;
+}
+
+.slide-content {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    width: 90%;
+    text-align: center;
+    padding: 40px;
+}
+
+/* Заголовки */
+h1, h2 {
+    font-weight: 900;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+h1 {
+    font-size: 4.5rem;
+    background: linear-gradient(45deg, var(--secondary), var(--success));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+h2 {
+    font-size: 3.5rem;
+    color: var(--light);
+}
+
+.subtitle {
+    font-size: 1.8rem;
+    color: var(--light);
+    margin-bottom: 40px;
+    font-weight: 300;
+}
+
+/* Заглавный слайд */
+.title-container {
+    position: relative;
+}
+
+.decoration {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 300px;
+    z-index: -1;
+}
+
+.pulse-circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    border: 3px solid var(--secondary);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+.network-lines {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 250px;
+    height: 250px;
+}
+
+.line {
+    position: absolute;
+    background: var(--secondary);
+    height: 2px;
+    width: 100px;
+    top: 50%;
+    left: 50%;
+    transform-origin: left center;
+}
+
+.line:nth-child(1) { transform: translate(-50%, -50%) rotate(0deg); }
+.line:nth-child(2) { transform: translate(-50%, -50%) rotate(120deg); }
+.line:nth-child(3) { transform: translate(-50%, -50%) rotate(240deg); }
+
+@keyframes pulse {
+    0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.7; }
+    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.3; }
+    100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.7; }
+}
+
+/* Карточки */
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 50px;
+}
+
+.info-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 30px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-10px);
+}
+
+.card-icon {
+    font-size: 3rem;
+    color: var(--secondary);
+    margin-bottom: 20px;
+}
+
+.info-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: var(--light);
+}
+
+.info-card p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--light);
+}
+
+/* Типы сетей */
+.network-types {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    margin-top: 60px;
+}
+
+.network-type {
+    text-align: center;
+}
+
+.type-icon {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 3rem;
+    color: white;
+}
+
+.type-icon.pan { background: linear-gradient(45deg, #9b59b6, #8e44ad); }
+.type-icon.lan { background: linear-gradient(45deg, #3498db, #2980b9); }
+.type-icon.wan { background: linear-gradient(45deg, #e74c3c, #c0392b); }
+
+.network-type h3 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+.network-type p {
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+/* Устройства */
+.devices-showcase {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    margin-top: 50px;
+}
+
+.device {
+    text-align: center;
+}
+
+.device-image {
+    width: 140px;
+    height: 140px;
+    background: var(--secondary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 3.5rem;
+    color: white;
+    transition: transform 0.3s ease;
+}
+
+.device:hover .device-image {
+    transform: scale(1.1) rotate(10deg);
+}
+
+.device h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.device p {
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+/* IP-адреса */
+.ip-showcase {
+    display: flex;
+    justify-content: center;
+    gap: 100px;
+    margin: 50px 0;
+}
+
+.ip-example {
+    text-align: center;
+}
+
+.ip-address {
+    font-family: 'Courier New', monospace;
+    font-size: 2.5rem;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 20px 40px;
+    border-radius: 15px;
+    border: 2px solid var(--secondary);
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.comparison {
+    display: flex;
+    justify-content: center;
+    gap: 80px;
+    margin-top: 40px;
+}
+
+.comparison-item {
+    text-align: center;
+}
+
+.comparison-item h3 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: var(--secondary);
+}
+
+.comparison-item p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+}
+
+/* Диаграмма сети */
+.network-diagram {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 50px 0;
+}
+
+.node {
+    text-align: center;
+}
+
+.node-icon {
+    width: 100px;
+    height: 100px;
+    background: var(--secondary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    font-size: 2.5rem;
+    color: white;
+}
+
+.node-label {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.connection {
+    width: 100px;
+    height: 3px;
+    background: var(--secondary);
+    margin: 0 20px;
+    position: relative;
+}
+
+.connection::after {
+    content: '→';
+    position: absolute;
+    right: -15px;
+    top: -12px;
+    font-size: 1.5rem;
+    color: var(--secondary);
+}
+
+.network-features {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    margin-top: 30px;
+}
+
+.feature {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.2rem;
+}
+
+.feature i {
+    color: var(--success);
+    font-size: 1.5rem;
+}
+
+/* Путь интернета */
+.internet-path {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 50px;
+    flex-wrap: wrap;
+}
+
+.path-step {
+    text-align: center;
+    flex: 1;
+    min-width: 200px;
+}
+
+.step-number {
+    width: 60px;
+    height: 60px;
+    background: var(--secondary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin: 0 auto 20px;
+}
+
+.step-content h3 {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+}
+
+.step-content p {
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+/* DNS */
+.dns-process {
+    margin: 50px 0;
+}
+
+.dns-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.step-visual {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    font-size: 3rem;
+}
+
+.arrow {
+    font-size: 2rem;
+    color: var(--secondary);
+}
+
+.step-description h3 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+.dns-hierarchy {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    margin-top: 50px;
+}
+
+.hierarchy-level {
+    text-align: center;
+    flex: 1;
+}
+
+.hierarchy-level h4 {
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+    color: var(--secondary);
+}
+
+.hierarchy-level p {
+    font-size: 1.1rem;
+}
+
+/* Протоколы */
+.protocols-comparison {
+    display: flex;
+    justify-content: center;
+    gap: 80px;
+    margin: 50px 0;
+}
+
+.protocol {
+    text-align: center;
+    padding: 40px;
+    border-radius: 20px;
+    flex: 1;
+    max-width: 300px;
+}
+
+.protocol.http {
+    background: rgba(231, 76, 60, 0.2);
+    border: 2px solid var(--accent);
+}
+
+.protocol.https {
+    background: rgba(46, 204, 113, 0.2);
+    border: 2px solid var(--success);
+}
+
+.protocol-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+}
+
+.protocol.http .protocol-icon {
+    color: var(--accent);
+}
+
+.protocol.https .protocol-icon {
+    color: var(--success);
+}
+
+.protocol h3 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.protocol p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.warning, .safe {
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.warning {
+    background: var(--accent);
+    color: white;
+}
+
+.safe {
+    background: var(--success);
+    color: white;
+}
+
+.security-tip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    font-size: 1.3rem;
+    margin-top: 30px;
+}
+
+.security-tip i {
+    color: var(--success);
+    font-size: 2rem;
+}
+
+/* Электронная почта */
+.email-flow {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    margin: 50px 0;
+}
+
+.email-step {
+    text-align: center;
+    flex: 1;
+}
+
+.step-icon {
+    width: 100px;
+    height: 100px;
+    background: var(--secondary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 2.5rem;
+    color: white;
+}
+
+.email-step h3 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+}
+
+.email-step p {
+    font-size: 1.1rem;
+}
+
+.email-tip {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 30px;
+    border-radius: 15px;
+    margin-top: 40px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.email-tip h4 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: var(--secondary);
+}
+
+.email-tip p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+}
+
+/* Хранилище */
+.storage-options {
+    display: flex;
+    justify-content: center;
+    gap: 80px;
+    margin: 50px 0;
+}
+
+.storage-type {
+    text-align: center;
+    flex: 1;
+    max-width: 300px;
+}
+
+.storage-icon {
+    width: 120px;
+    height: 120px;
+    background: var(--secondary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 3rem;
+    color: white;
+}
+
+.storage-type h3 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.storage-type p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+}
+
+.use-case {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    margin-top: 40px;
+}
+
+.case {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 1.3rem;
+}
+
+.case i {
+    color: var(--secondary);
+    font-size: 1.8rem;
+}
+
+/* Облачные модели */
+.cloud-models {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 50px;
+    flex-wrap: wrap;
+}
+
+.cloud-model {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 40px 30px;
+    border-radius: 20px;
+    text-align: center;
+    flex: 1;
+    min-width: 250px;
+    max-width: 300px;
+    border: 2px solid var(--secondary);
+}
+
+.model-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--secondary);
+    margin-bottom: 10px;
+}
+
+.model-subtitle {
+    font-size: 1.3rem;
+    margin-bottom: 25px;
+    color: var(--light);
+}
+
+.model-content p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+/* Команды */
+.commands-showcase {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin: 50px 0;
+}
+
+.command {
+    background: rgba(0, 0, 0, 0.6);
+    padding: 30px;
+    border-radius: 15px;
+    border-left: 5px solid var(--success);
+}
+
+.command-code {
+    font-family: 'Courier New', monospace;
+    font-size: 1.5rem;
+    color: var(--success);
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.command-desc {
+    font-size: 1.2rem;
+    line-height: 1.5;
+}
+
+.practice-tip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    font-size: 1.4rem;
+    margin-top: 30px;
+}
+
+.practice-tip i {
+    color: var(--secondary);
+    font-size: 2rem;
+}
+
+/* Безопасность */
+.security-features {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    margin: 50px 0;
+}
+
+.security-item {
+    text-align: center;
+    flex: 1;
+    max-width: 250px;
+}
+
+.security-icon {
+    width: 100px;
+    height: 100px;
+    background: var(--secondary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 2.5rem;
+    color: white;
+}
+
+.security-item h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+.security-item p {
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+.security-rules {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 30px;
+    border-radius: 15px;
+    max-width: 600px;
+    margin: 40px auto 0;
+}
+
+.security-rules h4 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: var(--secondary);
+    text-align: center;
+}
+
+.security-rules ul {
+    list-style: none;
+    text-align: left;
+}
+
+.security-rules li {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    padding-left: 30px;
+    position: relative;
+}
+
+.security-rules li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--success);
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+
+/* Будущее */
+.future-tech {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    margin-top: 50px;
+}
+
+.tech-item {
+    text-align: center;
+    flex: 1;
+    max-width: 250px;
+}
+
+.tech-icon {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(45deg, var(--secondary), var(--success));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 3rem;
+    color: white;
+}
+
+.tech-item h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+.tech-item p {
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+/* Заключение */
+.conclusion {
+    text-align: center;
+}
+
+.conclusion h2 {
+    font-size: 3.5rem;
+    margin-bottom: 50px;
+    background: linear-gradient(45deg, var(--secondary), var(--success));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.key-points {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    margin-bottom: 50px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.point {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 1.4rem;
+}
+
+.point i {
+    color: var(--success);
+    font-size: 1.8rem;
+}
+
+.final-message {
+    font-size: 1.8rem;
+    color: var(--secondary);
+    font-weight: bold;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    h1 { font-size: 2.5rem; }
+    h2 { font-size: 2rem; }
+    .subtitle { font-size: 1.2rem; }
+    
+    .content-grid,
+    .network-types,
+    .devices-showcase,
+    .protocols-comparison,
+    .email-flow,
+    .storage-options,
+    .security-features,
+    .future-tech {
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .internet-path,
+    .dns-hierarchy,
+    .cloud-models {
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .ip-showcase,
+    .comparison {
+        flex-direction: column;
+        gap: 40px;
+    }
+    
+    .network-diagram {
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .connection {
+        width: 3px;
+        height: 50px;
+        margin: 10px 0;
+    }
+    
+    .connection::after {
+        content: '↓';
+        right: -8px;
+        top: auto;
+        bottom: -25px;
+    }
+    
+    .slide-content {
+        padding: 20px;
+    }
+}

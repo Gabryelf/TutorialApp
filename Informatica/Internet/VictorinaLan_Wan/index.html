@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Викторина по компьютерным сетям</title>
+    <link rel="stylesheet" href="styles/quiz.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="quiz-container">
+        <!-- Стартовый экран -->
+        <div class="start-screen active">
+            <div class="start-content">
+                <div class="quiz-icon">
+                    <i class="fas fa-network-wired"></i>
+                </div>
+                <h1>ВИКТОРИНА ПО СЕТЯМ</h1>
+                <p class="subtitle">Проверь свои знания компьютерных сетей!</p>
+                <div class="features">
+                    <div class="feature">
+                        <i class="fas fa-brain"></i>
+                        <span>10 интересных вопросов</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-bolt"></i>
+                        <span>Мгновенная проверка</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-trophy"></i>
+                        <span>Получи свой результат</span>
+                    </div>
+                </div>
+                <button class="start-btn" id="startBtn">
+                    <span>НАЧАТЬ ВИКТОРИНУ</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Экран викторины -->
+        <div class="quiz-screen">
+            <div class="quiz-header">
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text">
+                        Вопрос <span id="currentQuestion">1</span>/10
+                    </div>
+                </div>
+                <div class="score-display">
+                    <i class="fas fa-star"></i>
+                    <span id="score">0</span>
+                </div>
+            </div>
+
+            <div class="question-container">
+                <div class="question-number">ВОПРОС <span id="questionNum">1</span></div>
+                <h2 class="question-text" id="questionText"></h2>
+                
+                <div class="options-container" id="optionsContainer">
+                    <!-- Варианты ответов будут здесь -->
+                </div>
+
+                <div class="quiz-controls">
+                    <button class="control-btn prev-btn" id="prevBtn" disabled>
+                        <i class="fas fa-arrow-left"></i>
+                        Назад
+                    </button>
+                    <button class="control-btn next-btn" id="nextBtn">
+                        Далее
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Экран результатов -->
+        <div class="results-screen">
+            <div class="results-content">
+                <div class="result-icon" id="resultIcon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <h1>ВИКТОРИНА ЗАВЕРШЕНА!</h1>
+                
+                <div class="score-circle">
+                    <div class="circle-background"></div>
+                    <div class="circle-progress"></div>
+                    <div class="score-text">
+                        <span class="score-percent" id="scorePercent">0%</span>
+                        <span class="score-label">правильных ответов</span>
+                    </div>
+                </div>
+
+                <div class="score-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Правильные ответы:</span>
+                        <span class="detail-value" id="correctAnswers">0</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Неправильные ответы:</span>
+                        <span class="detail-value" id="wrongAnswers">0</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Общее время:</span>
+                        <span class="detail-value" id="totalTime">0с</span>
+                    </div>
+                </div>
+
+                <div class="result-message" id="resultMessage"></div>
+
+                <div class="results-buttons">
+                    <button class="result-btn retry-btn" id="retryBtn">
+                        <i class="fas fa-redo"></i>
+                        Пройти еще раз
+                    </button>
+                    <button class="result-btn review-btn" id="reviewBtn">
+                        <i class="fas fa-list"></i>
+                        Посмотреть ответы
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Обзор ответов -->
+        <div class="review-screen">
+            <div class="review-header">
+                <h2>Обзор ответов</h2>
+                <button class="close-review" id="closeReview">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="review-content" id="reviewContent">
+                <!-- Ответы будут здесь -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Анимационные элементы -->
+    <div class="floating-elements">
+        <div class="floating-element element-1"><i class="fas fa-server"></i></div>
+        <div class="floating-element element-2"><i class="fas fa-wifi"></i></div>
+        <div class="floating-element element-3"><i class="fas fa-globe"></i></div>
+        <div class="floating-element element-4"><i class="fas fa-cloud"></i></div>
+        <div class="floating-element element-5"><i class="fas fa-shield-alt"></i></div>
+    </div>
+
+    <script src="scripts/quiz.js"></script>
+</body>
+</html>

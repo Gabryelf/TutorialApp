@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Компьютерные сети - Погружение в цифровой мир</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="nav-container">
+        <div class="nav-progress">
+            <div class="progress-bar"></div>
+        </div>
+        <div class="nav-controls">
+            <button id="prevBtn" class="nav-btn">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <span class="slide-counter">1 / 16</span>
+            <button id="nextBtn" class="nav-btn">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Слайды -->
+    <main class="slides-container">
+        <!-- Слайд 1: Заглавный -->
+        <section class="slide active" data-bg="https://images.unsplash.com/photo-1547658719-da2b51169166?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80">
+            <div class="slide-content">
+                <div class="title-container">
+                    <h1 class="main-title">КОМПЬЮТЕРНЫЕ СЕТИ</h1>
+                    <p class="subtitle">От локальных соединений к глобальной паутине</p>
+                    <div class="decoration">
+                        <div class="pulse-circle"></div>
+                        <div class="network-lines">
+                            <div class="line"></div>
+                            <div class="line"></div>
+                            <div class="line"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Слайд 2: Что такое сети -->
+        <section class="slide" data-bg="https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80">
+            <div class="slide-content">
+                <h2>ЧТО ТАКОЕ КОМПЬЮТЕРНЫЕ СЕТИ?</h2>
+                <div class="content-grid">
+                    <div class="info-card">
+                        <div class="card-icon">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <h3>ОБМЕН ДАННЫМИ</h3>
+                        <p>Мгновенная передача информации между устройствами</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">
+                            <i class="fas fa-share-alt"></i>
+                        </div>
+                        <h3>СОВМЕСТНЫЕ РЕСУРСЫ</h3>
+                        <p>Общие принтеры, файлы, интернет-подключение</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h3>КОММУНИКАЦИЯ</h3>
+                        <p>Электронная почта, видеозвонки, мессенджеры</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Слайд 3: Типы сетей -->
+        <section class="slide" data-bg="https://images.unsplash.com/photo-1526378800657-84d6d7238c6f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80">
+            <div class="slide-content">
+                <h2>ТИПЫ СЕТЕЙ ПО МАСШТАБУ</h2>
+                <div class="network-types">
+                    <div class="network-type">
+                        <div class="type-icon pan">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3>PAN</h3>
+                        <p>Персональная сеть<br>Ваши устройства</p>
+                    </div>
+                    <div class="network-type">
+                        <div class="type-icon lan">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <h3>LAN</h3>
+                        <p>Локальная сеть<br>Офис, дом, колледж</p>
+                    </div>
+                    <div class="network-type">
+                        <div class="type-icon wan">
+                            <i class="fas fa-globe-americas"></i>
+                        </div>
+                        <h3>WAN</h3>
+                        <p>Глобальная сеть<br>Интернет</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Слайд 4: Устройства сети -->
+        <section class="slide" data-bg="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80">
+            <div class="slide-content">
+                <h2>ГЛАВНЫЕ УСТРОЙСТВА СЕТИ</h2>
+                <div class="devices-showcase">
+                    <div class="device">
+                        <div class="device-image">
+                            <i class="fas fa-route"></i>
+                        </div>
+                        <h3>МАРШРУТИЗАТОР</h3>
+                        <p>Начальник сети<br>Связывает разные сети</p>
+                    </div>
+                    <div class="device">
+                        <div class="device-image">
+                            <i class="fas fa-sitemap"></i>
+                        </div>
+                        <h3>КОММУТАТОР</h3>
+                        <p>Сортировщик трафика<br>Внутри одной сети</p>
+                    </div>
+                    <div class="device">
+                        <div class="device-image">
+                            <i class="fas fa-wifi"></i>
+                        </div>
+                        <h3>ТОЧКА ДОСТУПА</h3>
+                        <p>Беспроводной мост<br>Создает Wi-Fi</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Слайд 5: IP-адреса -->
+        <section class="slide" data-bg="https://images.unsplash.com/photo-1434493650001-88c0e05de8b7?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80">
+            <div class="slide-content">
+                <h2>IP-АДРЕС: ПАСПОРТ УСТРОЙСТВА</h2>
+                <div class="ip-showcase">
+                    <div class="ip-example">
+                        <div class="ip-address">192.168.1.15</div>
+                        <p>Внутренний IP</p>
+                    </div>
+                    <div class="ip-example">
+                        <div class="ip-address">95.165.234.128</div>
+                        <p>Внешний IP</p>
+                    </div>
+                </div>
+                <div class="comparison">
+                    <div class="comparison-item">
+                        <h3>MAC-АДРЕС</h3>
+                        <p>Физический, постоянный<br>AA:BB:CC:DD:EE:FF</p>
+                    </div>
+                    <div class="comparison-item">
+                        <h3>IP-АДРЕС</h3>
+                        <p>Логический, изменяемый<br>192.168.1.1</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Слайд 6: Локальная сеть -->
+        <section class="slide" data-bg="https://images.unsplash.com/photo-1563013541-2dcc4e4f87cf?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80">
+            <div class="slide-content">
+                <h2>КАК РАБОТАЕТ ЛОКАЛЬНАЯ СЕТЬ</h2>
+                <div class="network-diagram">
+                    <div class="node">
+                        <div class="node-icon">
+                            <i class="fas fa-laptop"></i>
+                        </div>
+                        <div class="node-label">Ваш компьютер</div>
+                    </div>
+                    <div class="connection"></div>
+                    <div class="node">
+                        <div class="node-icon">
+                            <i class="fas fa-sitemap"></i>
+                        </div>
+                        <div class="node-label">Коммутатор</div>
+                    </div>
+                    <div class="connection"></div>
+                    <div class="node">
+                        <div class="node-icon">
+                            <i class="fas fa-route"></i>
+                        </div>
+                        <div class="node-label">Маршрутизатор</div>
+                    </div>
+                </div>
+                <div class="network-features">
+                    <div class="feature">
+                        <i class="fas fa-bolt"></i>
+                        <span>Высокая скорость</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Безопасность</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-cogs"></i>
+                        <span>Полный контроль</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Слайд 7: Интернет архитектура -->
+        <section class="slide" data-bg="https://images.unsplash.com/photo-1526379879527-8559ecfcaec0?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80">
+            <div class="slide-content">
+                <h2>АРХИТЕКТУРА ИНТЕРНЕТА</h2>
+                <div class="internet-path">
+                    <div class="path-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>ВАШЕ УСТРОЙСТВО</h3>
+                            <p>Ноутбук, телефон, компьютер</p>
+                        </div>
+                    </div>
+                    <div class="path-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>ПРОВАЙДЕР</h3>
+                            <p>Ростелеком, МТС, Билайн</p>
+                        </div>
+                    </div>
+                    <div class="path-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>МАГИСТРАЛЬНЫЕ КАНАЛЫ</h3>
+                            <p>Оптоволокно по всему миру</p>
+                        </div>
+                    </div>
+                    <div class="path-step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h3>СЕРВЕР</h3>
+                            <p>Хранит сайты и приложения</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Слайд 8: DNS система -->
+        <section class="slide" data-bg="https://images.unsplash.com/photo-1531297484001-80022131f5a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80">
+            <div class="slide-content">
+                <h2>DNS: ТЕЛЕФОННАЯ КНИГА ИНТЕРНЕТА</h2>
+                <div class="dns-process">
+                    <div class="dns-step">
+                        <div class="step-visual">
+                            <i class="fas fa-desktop"></i>
+                            <div class="arrow">→</div>
+                            <i class="fas fa-address-book"></i>
+                            <div class="arrow">→</div>
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <div class="step-description">
+                            <h3>yandex.ru → 77.88.55.60</h3>
+                            <p>DNS преобразует имена в IP-адреса</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="dns-hierarchy">
+                    <div class="hierarchy-level">
+                        <h4>КОРНЕВЫЕ СЕРВЕРЫ</h4>
+                        <p>13 групп по всему миру</p>
+                    </div>
+                    <div class="hierarchy-level">
+                        <h4>TLD СЕРВЕРЫ</h4>
+                        <p>.ru, .com, .org</p>
+                    </div>
+                    <div class="hierarchy-level">
+                        <h4>ДОМЕННЫЕ СЕРВЕРЫ</h4>
+                        <p>yandex.ru, google.com</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Слайд 9: Веб-протоколы -->
+        <section class="slide" data-bg="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80">
+            <div class="slide-content">
+                <h2>ПРОТОКОЛЫ ВЕБ-СЕРФИНГА</h2>
+                <div class="protocols-comparison">
+                    <div class="protocol http">
+                        <div class="protocol-icon">
+                            <i class="fas fa-unlock"></i>
+                        </div>
+                        <h3>HTTP</h3>
+                        <p>Открытая передача<br>Данные не защищены</p>
+                        <div class="warning">НЕ БЕЗОПАСНО</div>
+                    </div>
+                    <div class="protocol https">
+                        <div class="protocol-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h3>HTTPS</h3>
+                        <p>Зашифрованное соединение<br>Данные защищены</p>
+                        <div class="safe">БЕЗОПАСНО</div>
+                    </div>
+                </div>
+                <div class="security-tip">
+                    <i class="fas fa-shield-alt"></i>
+                    <p>Всегда проверяйте значок 🔒 перед вводом паролей!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Слайд 10: Электронная почта -->
+        <section class="slide" data-bg="https://images.unsplash.com/photo-1497366811353-6870744d04b2?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80">
+            <div class="slide-content">
+                <h2>ЭЛЕКТРОННАЯ ПОЧТА: КАК ЭТО РАБОТАЕТ</h2>
+                <div class="email-flow">
+                    <div class="email-step">
+                        <div class="step-icon">
+                            <i class="fas fa-paper-plane"></i>
+                        </div>
+                        <h3>SMTP</h3>
+                        <p>Отправка писем</p>
+                    </div>
+                    <div class="email-step">
+                        <div class="step-icon">
+                            <i class="fas fa-inbox"></i>
+                        </div>
+                        <h3>POP3</h3>
+                        <p>Скачивание на устройство</p>
+                    </div>
+                    <div class="email-step">
+                        <div class="step-icon">
+                            <i class="fas fa-cloud"></i>
+                        </div>
+                        <h3>IMAP</h3>
+                        <p>Работа на сервере</p>
+                    </div>
+                </div>
+                <div class="email-tip">
+                    <h4>POP3 vs IMAP</h4>
+                    <p><strong>POP3</strong> - письма хранятся на вашем устройстве<br>
+                    <strong>IMAP</strong> - письма остаются на сервере, доступны везде</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Слайд 11: Сетевое хранилище -->
+        <section class="slide" data-bg="https://images.unsplash.com/photo-1614064641938-3bbee52942c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80">
+            <div class="slide-content">
+                <h2>СЕТЕВОЕ ХРАНЕНИЕ ДАННЫХ</h2>
+                <div class="storage-options">
+                    <div class="storage-type">
+                        <div class="storage-icon">
+                            <i class="fas fa-hdd"></i>
+                        </div>
+                        <h3>NAS</h3>
+                        <p>Сетевой диск в вашей сети<br>Быстрый доступ<br>Полный контроль</p>
+                    </div>
+                    <div class="storage-type">
+                        <div class="storage-icon">
+                            <i class="fas fa-cloud"></i>
+                        </div>
+                        <h3>ОБЛАКО</h3>
+                        <p>Яндекс.Диск, Google Drive<br>Доступ откуда угодно<br>Автосинхронизация</p>
+                    </div>
+                </div>
+                <div class="use-case">
+                    <div class="case">
+                        <i class="fas fa-home"></i>
+                        <span>Дома: NAS для фильмов и фото</span>
+                    </div>
+                    <div class="case">
+                        <i class="fas fa-briefcase"></i>
+                        <span>Работа: Облако для документов</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Слайд 12: Облачные модели -->
+        <section class="slide" data-bg="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80">
+            <div class="slide-content">
+                <h2>МОДЕЛИ ОБЛАЧНЫХ УСЛУГ</h2>
+                <div class="cloud-models">
+                    <div class="cloud-model">
+                        <div class="model-title">IaaS</div>
+                        <div class="model-subtitle">Инфраструктура как услуга</div>
+                        <div class="model-content">
+                            <p>Аренда виртуальных серверов</p>
+                            <p><strong>Пример:</strong> Yandex Cloud Compute</p>
+                        </div>
+                    </div>
+                    <div class="cloud-model">
+                        <div class="model-title">PaaS</div>
+                        <div class="model-subtitle">Платформа как услуга</div>
+                        <div class="model-content">
+                            <p>Готовая среда для разработки</p>
+                            <p><strong>Пример:</strong> Yandex Cloud Functions</p>
+                        </div>
+                    </div>
+                    <div class="cloud-model">
+                        <div class="model-title">SaaS</div>
+                        <div class="model-subtitle">ПО как услуга</div>
+                        <div class="model-content">
+                            <p>Готовые приложения</p>
+                            <p><strong>Пример:</strong> Google Workspace</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Слайд 13: Практические команды -->
+        <section class="slide" data-bg="https://images.unsplash.com/photo-1542831371-29b0f74f9713?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80">
+            <div class="slide-content">
+                <h2>ПРАКТИКА: КОМАНДЫ ДИАГНОСТИКИ</h2>
+                <div class="commands-showcase">
+                    <div class="command">
+                        <div class="command-code">ipconfig</div>
+                        <div class="command-desc">Узнать IP-адрес и настройки сети</div>
+                    </div>
+                    <div class="command">
+                        <div class="command-code">ping google.com</div>
+                        <div class="command-desc">Проверить связь с сайтом</div>
+                    </div>
+                    <div class="command">
+                        <div class="command-code">tracert yandex.ru</div>
+                        <div class="command-desc">Проследить путь до сайта</div>
+                    </div>
+                    <div class="command">
+                        <div class="command-code">nslookup vk.com</div>
+                        <div class="command-desc">Узнать IP-адрес сайта</div>
+                    </div>
+                </div>
+                <div class="practice-tip">
+                    <i class="fas fa-laptop-code"></i>
+                    <p>Откройте командную строку и попробуйте эти команды!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Слайд 14: Безопасность -->
+        <section class="slide" data-bg="https://images.unsplash.com/photo-1563013541-5cc316248f8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80">
+            <div class="slide-content">
+                <h2>БЕЗОПАСНОСТЬ В СЕТЯХ</h2>
+                <div class="security-features">
+                    <div class="security-item">
+                        <div class="security-icon">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <h3>МЕЖСЕТЕВОЙ ЭКРАН</h3>
+                        <p>Фильтрует входящий и исходящий трафик</p>
+                    </div>
+                    <div class="security-item">
+                        <div class="security-icon">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <h3>VPN</h3>
+                        <p>Шифрует соединение и скрывает местоположение</p>
+                    </div>
+                    <div class="security-item">
+                        <div class="security-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h3>HTTPS</h3>
+                        <p>Защищает данные между вами и сайтом</p>
+                    </div>
+                </div>
+                <div class="security-rules">
+                    <h4>ПРАВИЛА БЕЗОПАСНОСТИ:</h4>
+                    <ul>
+                        <li>Всегда используйте HTTPS</li>
+                        <li>Не подключайтесь к публичным Wi-Fi без VPN</li>
+                        <li>Регулярно обновляйте ПО</li>
+                        <li>Используйте сложные пароли</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Слайд 15: Будущее сетей -->
+        <section class="slide" data-bg="https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80">
+            <div class="slide-content">
+                <h2>БУДУЩЕЕ КОМПЬЮТЕРНЫХ СЕТЕЙ</h2>
+                <div class="future-tech">
+                    <div class="tech-item">
+                        <div class="tech-icon">
+                            <i class="fas fa-satellite"></i>
+                        </div>
+                        <h3>5G/6G СВЯЗЬ</h3>
+                        <p>Сверхвысокие скорости и минимальные задержки</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">
+                            <i class="fas fa-cloud-moon"></i>
+                        </div>
+                        <h3>EDGE COMPUTING</h3>
+                        <p>Обработка данных ближе к пользователю</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">
+                            <i class="fas fa-infinity"></i>
+                        </div>
+                        <h3>ИНТЕРНЕТ ВЕЩЕЙ</h3>
+                        <p>Миллиарды подключенных устройств</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Слайд 16: Заключение -->
+        <section class="slide" data-bg="https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80">
+            <div class="slide-content">
+                <div class="conclusion">
+                    <h2>ВЫ ОСВОИЛИ ОСНОВЫ СЕТЕЙ!</h2>
+                    <div class="key-points">
+                        <div class="point">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Понимаете архитектуру сетей</span>
+                        </div>
+                        <div class="point">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Знаете ключевые протоколы</span>
+                        </div>
+                        <div class="point">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Умеете диагностировать проблемы</span>
+                        </div>
+                        <div class="point">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Осознаете важность безопасности</span>
+                        </div>
+                    </div>
+                    <div class="final-message">
+                        <p>Эти знания - фундамент для работы в IT!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="scripts/script.js"></script>
+</body>
+</html>
