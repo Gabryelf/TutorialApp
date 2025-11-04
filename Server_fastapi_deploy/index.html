@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Деплой Маркетплейса - Презентация</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .presentation {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            display: none;
+            min-height: 100vh;
+            padding: 60px 40px;
+            animation: slideIn 0.8s ease-out;
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-content {
+            max-width: 900px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 60px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-size: 3.5em;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 20px #667eea;
+            }
+            to {
+                text-shadow: 0 0 30px #764ba2, 0 0 40px #764ba2;
+            }
+        }
+
+        h2 {
+            font-size: 2.5em;
+            margin-bottom: 25px;
+            color: #4a5568;
+        }
+
+        h3 {
+            font-size: 1.8em;
+            margin: 25px 0 15px;
+            color: #2d3748;
+        }
+
+        p {
+            font-size: 1.3em;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            color: #4a5568;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px 20px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-card i {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .steps-container {
+            text-align: left;
+            margin: 30px 0;
+        }
+
+        .step {
+            background: white;
+            margin: 15px 0;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .step:hover {
+            transform: translateX(10px);
+            border-left-color: #764ba2;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            overflow-x: auto;
+        }
+
+        .architecture {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .arch-item {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .tech-item {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-btn:active {
+            transform: translateY(0);
+        }
+
+        .slide-indicators {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .indicator.active {
+            background: white;
+            transform: scale(1.2);
+        }
+
+        .demo-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+        }
+
+        .demo-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(72, 187, 120, 0.4);
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #fed7e2, #fbb6ce);
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .file-structure {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: left;
+            font-family: 'Courier New', monospace;
+        }
+
+        .file-item {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+
+        .file-item::before {
+            content: '📁 ';
+        }
+
+        .file-item.file::before {
+            content: '📄 ';
+        }
+
+        .success-badge {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            margin: 10px 0;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 40px 20px;
+            }
+            
+            .slide-content {
+                padding: 40px 20px;
+            }
+            
+            h1 {
+                font-size: 2.5em;
+            }
+            
+            h2 {
+                font-size: 2em;
+            }
+            
+            .navigation {
+                bottom: 20px;
+            }
+            
+            .nav-btn {
+                padding: 12px 25px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <!-- Слайд 1: Заголовок -->
+        <div class="slide active" id="slide1">
+            <div class="slide-content">
+                <h1>🚀 Деплой Маркетплейса</h1>
+                <p style="font-size: 1.5em; color: #4a5568;">Полное руководство по созданию и развертыванию FullStack приложения</p>
+                <div class="tech-stack">
+                    <div class="tech-item">FastAPI</div>
+                    <div class="tech-item">Python</div>
+                    <div class="tech-item">SQLite</div>
+                    <div class="tech-item">Docker</div>
+                    <div class="tech-item">Railway</div>
+                </div>
+                <p style="margin-top: 30px;">Создадим современный маркетплейс с нуля и запустим его в облаке!</p>
+            </div>
+        </div>
+
+        <!-- Слайд 2: Архитектура проекта -->
+        <div class="slide" id="slide2">
+            <div class="slide-content">
+                <h2>🏗 Архитектура проекта</h2>
+                <p>Четкое разделение ответственности по модулям</p>
+                
+                <div class="architecture">
+                    <div class="arch-item">
+                        <i class="fas fa-server fa-3x" style="color: #667eea;"></i>
+                        <h3>Backend</h3>
+                        <p>FastAPI + SQLite</p>
+                    </div>
+                    <div class="arch-item">
+                        <i class="fas fa-desktop fa-3x" style="color: #764ba2;"></i>
+                        <h3>Frontend</h3>
+                        <p>HTML/CSS/JS</p>
+                    </div>
+                    <div class="arch-item">
+                        <i class="fas fa-database fa-3x" style="color: #48bb78;"></i>
+                        <h3>База данных</h3>
+                        <p>SQLite + ORM</p>
+                    </div>
+                    <div class="arch-item">
+                        <i class="fas fa-ship fa-3x" style="color: #ed8936;"></i>
+                        <h3>Деплой</h3>
+                        <p>Docker + Railway</p>
+                    </div>
+                </div>
+
+                <div class="file-structure">
+                    <div class="file-item">marketplace/</div>
+                    <div class="file-item file">Dockerfile</div>
+                    <div class="file-item file">requirements.txt</div>
+                    <div class="file-item">backend/</div>
+                    <div class="file-item file" style="padding-left: 40px;">main.py</div>
+                    <div class="file-item file" style="padding-left: 40px;">auth.py</div>
+                    <div class="file-item file" style="padding-left: 40px;">products.py</div>
+                    <div class="file-item file" style="padding-left: 40px;">orders.py</div>
+                    <div class="file-item">frontend/</div>
+                    <div class="file-item file" style="padding-left: 40px;">index.html</div>
+                    <div class="file-item file" style="padding-left: 40px;">css/style.css</div>
+                    <div class="file-item file" style="padding-left: 40px;">js/app.js</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 3: Ключевые особенности -->
+        <div class="slide" id="slide3">
+            <div class="slide-content">
+                <h2>⭐ Ключевые особенности</h2>
+                <p>Все необходимое для современного веб-приложения</p>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-user-shield"></i>
+                        <h3>Аутентификация</h3>
+                        <p>Basic Auth с ролями пользователей</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-shopping-cart"></i>
+                        <h3>Товары и заказы</h3>
+                        <p>Полный цикл покупки</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-users"></i>
+                        <h3>Роли</h3>
+                        <p>Покупатель, Продавец, Админ</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-shield-alt"></i>
+                        <h3>Безопасность</h3>
+                        <p>Хеширование паролей</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-mobile-alt"></i>
+                        <h3>Адаптивность</h3>
+                        <p>Работает на всех устройствах</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-rocket"></i>
+                        <h3>Масштабируемость</h3>
+                        <p>Готово к росту</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 4: Шаги создания - 1 -->
+        <div class="slide" id="slide4">
+            <div class="slide-content">
+                <h2>🔧 Шаги создания: Backend</h2>
+                <p>Создаем мощный API с FastAPI</p>
+                
+                <div class="steps-container">
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <strong>Структура проекта</strong>
+                        <p>Создаем модульную архитектуру с разделением на auth, products, orders</p>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <strong>Модели данных</strong>
+                        <p>Определяем User, Product, Order с Pydantic</p>
+                        <div class="code-block">
+class User(BaseModel):
+    id: int
+    username: str
+    role: str  # 'customer', 'seller', 'admin'
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <strong>API Endpoints</strong>
+                        <p>Создаем эндпоинты для регистрации, товаров, заказов</p>
+                        <div class="code-block">
+@app.post("/register")
+def register(user_data: UserCreate):
+    return auth_service.register_user(user_data)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 5: Шаги создания - 2 -->
+        <div class="slide" id="slide5">
+            <div class="slide-content">
+                <h2>🎨 Шаги создания: Frontend</h2>
+                <p>Создаем интуитивный интерфейс</p>
+                
+                <div class="steps-container">
+                    <div class="step">
+                        <span class="step-number">4</span>
+                        <strong>Модульная архитектура</strong>
+                        <p>Разделяем логику на AuthService, ProductsService, UIService</p>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">5</span>
+                        <strong>Интерактивность</strong>
+                        <p>Добавляем анимации, обработку ошибок, loading states</p>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">6</span>
+                        <strong>Адаптивный дизайн</strong>
+                        <p>Используем CSS Grid и Flexbox для мобильных устройств</p>
+                    </div>
+                </div>
+
+                <div class="code-block">
+// Пример модульной архитектуры
+class AuthService {
+    static async login() {
+        // Логика входа
+    }
+    
+    static async register() {
+        // Логика регистрации
+    }
+}
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 6: Деплой на Railway -->
+        <div class="slide" id="slide6">
+            <div class="slide-content">
+                <h2>🚀 Деплой на Railway</h2>
+                <p class="success-badge">БЕЗ привязки карты! 🎉</p>
+                
+                <div class="steps-container">
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <strong>Создаем Dockerfile</strong>
+                        <p>Подготавливаем контейнеризацию приложения</p>
+                        <div class="code-block">
+FROM python:3.11-slim
+WORKDIR /app
+COPY backend/requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+EXPOSE 10000
+CMD ["python", "backend/main.py"]
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <strong>Регистрируемся на Railway</strong>
+                        <p>Переходим на <span class="highlight">railway.app</span> и входим через GitHub</p>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <strong>Подключаем репозиторий</strong>
+                        <p>Выбираем "Deploy from GitHub repo" и находим наш проект</p>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">4</span>
+                        <strong>Автоматический деплой</strong>
+                        <p>Railway сам определит Dockerfile и запустит приложение!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 7: Тестирование -->
+        <div class="slide" id="slide7">
+            <div class="slide-content">
+                <h2>🧪 Тестирование приложения</h2>
+                <p>Проверяем что всё работает корректно</p>
+                
+                <div class="steps-container">
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <strong>Проверка здоровья</strong>
+                        <p>Открываем: <span class="highlight">https://your-app.railway.app/health</span></p>
+                        <div class="code-block">
+{"status": "healthy", "service": "marketplace"}
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <strong>API Документация</strong>
+                        <p>Проверяем Swagger: <span class="highlight">/docs</span></p>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <strong>Тестовые пользователи</strong>
+                        <p>Проверяем вход с тестовыми аккаунтами</p>
+                        <div style="text-align: left; margin-top: 15px;">
+                            <p>👨‍💼 <strong>Продавец:</strong> seller1 / 123</p>
+                            <p>👥 <strong>Покупатель:</strong> customer1 / 123</p>
+                            <p>👑 <strong>Админ:</strong> admin / admin</p>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="#" class="demo-link" onclick="event.preventDefault(); alert('Ваше приложение будет доступно по URL: https://your-app-name.railway.app')">
+                    🎯 Проверить демо
+                </a>
+            </div>
+        </div>
+
+        <!-- Слайд 8: Итоги и преимущества -->
+        <div class="slide" id="slide8">
+            <div class="slide-content">
+                <h2>🎉 Преимущества нашего подхода</h2>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-graduation-cap"></i>
+                        <h3>Образовательный</h3>
+                        <p>Идеально для обучения студентов</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-bolt"></i>
+                        <h3>Быстрый старт</h3>
+                        <p>От идеи до продакшена за 1 час</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-wallet"></i>
+                        <h3>Бесплатный</h3>
+                        <p>Никаких скрытых платежей</p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px;">
+                    <h3>🚀 Что мы создали:</h3>
+                    <div class="tech-stack">
+                        <div class="tech-item">Полный FullStack</div>
+                        <div class="tech-item">REST API</div>
+                        <div class="tech-item">База данных</div>
+                        <div class="tech-item">Аутентификация</div>
+                        <div class="tech-item">Деплой в облако</div>
+                    </div>
+                </div>
+
+                <div class="success-badge" style="margin-top: 30px;">
+                    ✅ Готово к использованию в продакшене!
+                </div>
+            </div>
+        </div>
+
+        <!-- Навигация -->
+        <div class="navigation">
+            <button class="nav-btn" onclick="prevSlide()">
+                <i class="fas fa-arrow-left"></i> Назад
+            </button>
+            <button class="nav-btn" onclick="nextSlide()">
+                Вперед <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <!-- Индикаторы слайдов -->
+        <div class="slide-indicators" id="indicators">
+            <!-- Индикаторы будут добавлены через JS -->
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 8;
+
+        // Создаем индикаторы
+        const indicatorsContainer = document.getElementById('indicators');
+        for (let i = 1; i <= totalSlides; i++) {
+            const indicator = document.createElement('div');
+            indicator.className = `indicator ${i === 1 ? 'active' : ''}`;
+            indicator.onclick = () => goToSlide(i);
+            indicatorsContainer.appendChild(indicator);
+        }
+
+        function showSlide(n) {
+            // Скрываем все слайды
+            document.querySelectorAll('.slide').forEach(slide => {
+                slide.classList.remove('active');
+            });
+            
+            // Показываем нужный слайд
+            document.getElementById(`slide${n}`).classList.add('active');
+            
+            // Обновляем индикаторы
+            document.querySelectorAll('.indicator').forEach((ind, index) => {
+                ind.classList.toggle('active', index + 1 === n);
+            });
+            
+            currentSlide = n;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        function goToSlide(n) {
+            showSlide(n);
+        }
+
+        // Обработка клавиатуры
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+
+        // Инициализация
+        showSlide(1);
+    </script>
+</body>
+</html>
