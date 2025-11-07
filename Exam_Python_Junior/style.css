@@ -1,0 +1,342 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    color: white;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.presentation-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.header {
+    text-align: center;
+    padding: 20px 0;
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 2px solid #00ffff;
+    flex-shrink: 0;
+}
+
+.header h1 {
+    font-size: 2.2em;
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px #00ffff;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    background: linear-gradient(90deg, #00ffff, #0080ff);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.slide-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
+    position: relative;
+    min-height: 0;
+}
+
+.slide {
+    display: none;
+    width: 100%;
+    max-width: 900px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    overflow-y: auto;
+    max-height: 100%;
+}
+
+.slide.active {
+    display: block;
+    animation: slideIn 0.5s ease;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-title {
+    font-size: 1.8em;
+    margin-bottom: 15px;
+    color: #00ffff;
+    text-align: center;
+}
+
+.slide-content {
+    font-size: 1.1em;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.code-block {
+    background: #1e1e1e;
+    border: 2px solid #00ffff;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.95em;
+    position: relative;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #333;
+}
+
+.copy-btn {
+    background: #0080ff;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background 0.3s;
+    flex-shrink: 0;
+}
+
+.copy-btn:hover {
+    background: #00ffff;
+}
+
+.hint-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #ffcc00;
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: transform 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hint-btn:hover {
+    transform: scale(1.1);
+}
+
+.code-content {
+    color: #f8f8f2;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.comment {
+    color: #6a9955;
+}
+
+.keyword {
+    color: #569cd6;
+}
+
+.string {
+    color: #ce9178;
+}
+
+.function {
+    color: #dcdcaa;
+}
+
+.number {
+    color: #b5cea8;
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    background: rgba(0, 0, 0, 0.3);
+    border-top: 2px solid #00ffff;
+    flex-shrink: 0;
+    margin-top: auto;
+}
+
+.btn {
+    background: linear-gradient(45deg, #0080ff, #00ffff);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: all 0.3s;
+    min-width: 100px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4);
+}
+
+.btn:disabled {
+    background: #666;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.slide-counter {
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
+    flex: 1;
+}
+
+/* Модальное окно */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    padding: 25px;
+    border-radius: 15px;
+    border: 2px solid #ffcc00;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5em;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content h3 {
+    color: #ffcc00;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+}
+
+.hint-content {
+    margin-top: 10px;
+    font-size: 1em;
+    line-height: 1.5;
+    color: #ffffff;
+}
+
+/* Анимации */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+/* Адаптивность */
+@media (max-height: 700px) {
+    .slide-title {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+    
+    .slide-content {
+        font-size: 1em;
+        margin-bottom: 15px;
+    }
+    
+    .code-block {
+        padding: 15px;
+        max-height: 300px;
+    }
+    
+    .header {
+        padding: 15px 0;
+    }
+    
+    .footer {
+        padding: 10px 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .presentation-container {
+        padding: 0 10px;
+    }
+    
+    .header h1 {
+        font-size: 1.8em;
+    }
+    
+    .btn {
+        padding: 8px 15px;
+        font-size: 0.9em;
+        min-width: 80px;
+    }
+    
+    .code-header {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+}

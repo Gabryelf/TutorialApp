@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создаем Космическую Игру на Pygame!</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="presentation-container">
+        <header class="header">
+            <h1>🐍 Создаем Космическую Игру</h1>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+        </header>
+
+        <main class="slide-container">
+            <div class="slide active" id="slide1">
+                <!-- Содержание слайдов будет загружаться здесь -->
+            </div>
+        </main>
+
+        <footer class="footer">
+            <button class="btn prev-btn" onclick="prevSlide()">◀ Назад</button>
+            <span class="slide-counter" id="slideCounter">Слайд 1 из 15</span>
+            <button class="btn next-btn" onclick="nextSlide()">Вперед ▶</button>
+        </footer>
+    </div>
+
+    <!-- Модальное окно подсказки -->
+    <div class="modal" id="hintModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeHint()">×</button>
+            <h3>💡 Подсказка</h3>
+            <div class="hint-content" id="hintContent"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
