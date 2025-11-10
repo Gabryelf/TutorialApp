@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Проектирование БД | Колледж</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="presentation">
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        
+        <!-- Header Container с заголовком и навигацией -->
+        <div class="header-container">
+            <!-- Заголовок слайда (75%) -->
+            <div class="slide-header" id="slideHeader">
+                <div class="slide-icon" id="slideIcon">🚀</div>
+                <div class="slide-title-content">
+                    <h1 class="slide-title" id="slideTitle">Проектирование Баз Данных</h1>
+                    <p class="slide-subtitle" id="slideSubtitle">Полное руководство от концепции до реализации</p>
+                </div>
+            </div>
+            
+            <!-- Навигация (20%) -->
+            <div class="navigation">
+                <div class="nav-buttons">
+                    <button class="nav-btn" id="prevBtn">
+                        <span class="nav-icon">←</span>
+                        Назад
+                    </button>
+                    <button class="nav-btn" id="nextBtn">
+                        Вперед
+                        <span class="nav-icon">→</span>
+                    </button>
+                </div>
+                <div class="slide-counter" id="slideCounter">1/40</div>
+            </div>
+        </div>
+        
+        <!-- Контейнер для слайдов -->
+        <div class="slides-container" id="slidesContainer"></div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
