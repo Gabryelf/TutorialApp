@@ -1,0 +1,71 @@
+/* Анимации */
+@keyframes glow {
+    0% { text-shadow: 0 0 20px rgba(255,255,255,0.5); }
+    50% { text-shadow: 0 0 30px rgba(255,255,255,0.8), 0 0 40px rgba(255,255,255,0.6); }
+    100% { text-shadow: 0 0 20px rgba(255,255,255,0.5); }
+}
+
+.glow {
+    animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+}
+
+.bounce {
+    animation: bounce 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.slide-in {
+    animation: slideIn 0.5s ease-out;
+}
+
+@keyframes confetti {
+    0% { transform: translateY(0) rotate(0); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+}
+
+.confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    background: #ff0000;
+    animation: confetti 3s ease-in forwards;
+}
+
+/* Ролевые фоны */
+.role-client { background: linear-gradient(135deg, #ff9a9e, #fad0c4); }
+.role-dns { background: linear-gradient(135deg, #a1c4fd, #c2e9fb); }
+.role-router { background: linear-gradient(135deg, #ffecd2, #fcb69f); }
+.role-firewall { background: linear-gradient(135deg, #ff9a9e, #fecfef); }
+.role-server { background: linear-gradient(135deg, #a1c4fd, #d4fc79); }
+.role-database { background: linear-gradient(135deg, #e6deff, #a8edea); }
+.role-browser { background: linear-gradient(135deg, #ffd1ff, #fad0c4); }
+.role-loadbalancer { background: linear-gradient(135deg, #fbc2eb, #a6c1ee); }
+.role-cache { background: linear-gradient(135deg, #84fab0, #8fd3f4); }
+.role-cdn { background: linear-gradient(135deg, #d4fc79, #96e6a1); }
+.role-proxy { background: linear-gradient(135deg, #fad0c4, #ffd1ff); }
+.role-api { background: linear-gradient(135deg, #a1c4fd, #d4fc79); }
+.role-websocket { background: linear-gradient(135deg, #ffecd2, #fcb69f); }
+.role-ssl { background: linear-gradient(135deg, #84fab0, #8fd3f4); }
+.role-http { background: linear-gradient(135deg, #a6c1ee, #fbc2eb); }
+.role-tcp { background: linear-gradient(135deg, #ff9a9e, #fecfef); }
+.role-admin { background: linear-gradient(135deg, #667eea, #764ba2); }
