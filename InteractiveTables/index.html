@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Найди ошибку в Базе Данных | Интерактивный тренажер</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --accent: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            
+            --bg-primary: #0f0f23;
+            --bg-secondary: #1a1a2e;
+            --bg-card: #252547;
+            --bg-accent: #2d2d5a;
+            
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0c0;
+            --text-accent: #d0d0ff;
+            
+            --border-primary: #333366;
+            --border-accent: #404080;
+            
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --shadow-hover: 0 12px 48px rgba(0, 0, 0, 0.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .app-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: var(--bg-card);
+            border-radius: 20px;
+            border: 2px solid var(--border-primary);
+            box-shadow: var(--shadow);
+        }
+
+        .app-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .app-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Progress */
+        .progress-container {
+            background: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-primary);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-accent);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        /* Game Area */
+        .game-area {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        /* Table Container */
+        .table-container {
+            background: var(--bg-card);
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid var(--border-primary);
+            box-shadow: var(--shadow);
+        }
+
+        .table-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-accent);
+            text-align: center;
+        }
+
+        .table-description {
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .data-table th {
+            background: var(--primary);
+            color: white;
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-right: 1px solid var(--primary-dark);
+        }
+
+        .data-table th:last-child {
+            border-right: none;
+        }
+
+        .data-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-primary);
+            border-right: 1px solid var(--border-primary);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .data-table td:last-child {
+            border-right: none;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tr:hover td {
+            background: var(--bg-accent);
+        }
+
+        .error-cell {
+            background: rgba(239, 68, 68, 0.1) !important;
+            border: 1px solid var(--error) !important;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .error-cell:hover {
+            background: rgba(239, 68, 68, 0.2) !important;
+            transform: scale(1.02);
+        }
+
+        .error-cell.selected {
+            background: rgba(239, 68, 68, 0.3) !important;
+            box-shadow: 0 0 0 2px var(--error);
+        }
+
+        .error-marker {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--error);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        /* Controls Panel */
+        .controls-panel {
+            background: var(--bg-card);
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid var(--border-primary);
+            box-shadow: var(--shadow);
+        }
+
+        .panel-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-accent);
+        }
+
+        .selected-cell-info {
+            background: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-primary);
+        }
+
+        .cell-coordinates {
+            font-weight: 600;
+            color: var(--text-accent);
+            margin-bottom: 10px;
+        }
+
+        .cell-value {
+            color: var(--text-secondary);
+            font-family: monospace;
+            background: var(--bg-primary);
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border-primary);
+        }
+
+        .error-types {
+            margin-bottom: 25px;
+        }
+
+        .error-type-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+
+        .error-buttons {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .error-btn {
+            background: var(--bg-accent);
+            border: 2px solid var(--border-primary);
+            padding: 12px 15px;
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .error-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .error-btn.selected {
+            background: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent), #059669);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Feedback */
+        .feedback-container {
+            background: var(--bg-card);
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid var(--border-primary);
+            box-shadow: var(--shadow);
+            margin-top: 20px;
+        }
+
+        .feedback-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--text-accent);
+        }
+
+        .feedback-content {
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .feedback-correct {
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .feedback-incorrect {
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid var(--error);
+            color: var(--error);
+        }
+
+        .next-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .next-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Results */
+        .results-container {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .results-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .results-score {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin: 20px 0;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Utilities */
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="app-header">
+            <h1 class="app-title">🔍 Найди ошибку в Базе Данных</h1>
+            <p class="app-subtitle">Интерактивный тренажер по проектированию баз данных</p>
+        </div>
+
+        <!-- Progress -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-info">
+                <span id="progressText">Таблица 1 из 5</span>
+                <span id="progressPercent">0%</span>
+            </div>
+        </div>
+
+        <!-- Game Area -->
+        <div class="game-area" id="gameArea">
+            <!-- Table Container -->
+            <div class="table-container">
+                <h2 class="table-title" id="tableTitle">Все данные вперемешку</h2>
+                <p class="table-description" id="tableDescription">Найдите ошибки в этой таблице и выберите их тип</p>
+                
+                <div class="table-wrapper">
+                    <table class="data-table" id="dataTable">
+                        <!-- Table content will be generated by JavaScript -->
+                    </table>
+                </div>
+            </div>
+
+            <!-- Controls Panel -->
+            <div class="controls-panel">
+                <h3 class="panel-title">🎯 Выберите ошибку</h3>
+                
+                <div class="selected-cell-info" id="selectedCellInfo">
+                    <div class="cell-coordinates">Выберите ячейку с ошибкой</div>
+                    <div class="cell-value">-</div>
+                </div>
+
+                <div class="error-types">
+                    <div class="error-type-title">Типы ошибок:</div>
+                    <div class="error-buttons" id="errorButtons">
+                        <button class="error-btn" data-error-type="atomicity">
+                            🚫 Нарушение атомарности
+                        </button>
+                        <button class="error-btn" data-error-type="redundancy">
+                            🔄 Дублирование данных
+                        </button>
+                        <button class="error-btn" data-error-type="integrity">
+                            🛡️ Нарушение целостности
+                        </button>
+                        <button class="error-btn" data-error-type="normalization">
+                            🏗️ Нарушение нормализации
+                        </button>
+                        <button class="error-btn" data-error-type="constraint">
+                            ⚠️ Отсутствие проверок
+                        </button>
+                    </div>
+                </div>
+
+                <button class="submit-btn" id="submitBtn" disabled>
+                    ✅ Подтвердить выбор
+                </button>
+            </div>
+        </div>
+
+        <!-- Feedback -->
+        <div class="feedback-container hidden" id="feedbackContainer">
+            <h3 class="feedback-title">Результат проверки</h3>
+            <div class="feedback-content" id="feedbackContent">
+                <!-- Feedback content will be filled by JavaScript -->
+            </div>
+            <button class="next-btn" id="nextBtn">Следующая таблица →</button>
+        </div>
+
+        <!-- Results -->
+        <div class="results-container hidden" id="resultsContainer">
+            <h2 class="results-title">🎉 Поздравляем!</h2>
+            <p class="app-subtitle mb-20">Вы завершили все задания</p>
+            <div class="results-score" id="finalScore">0/5</div>
+            <p id="resultsMessage">Отличная работа! Вы хорошо разбираетесь в проектировании баз данных.</p>
+            <button class="restart-btn" id="restartBtn">
+                <i class="fas fa-redo"></i> Начать заново
+            </button>
+        </div>
+    </div>
+
+    <script>
+        class DatabaseErrorGame {
+            constructor() {
+                this.currentTable = 0;
+                this.totalTables = 5;
+                this.score = 0;
+                this.selectedCell = null;
+                this.selectedErrorType = null;
+                this.tables = [];
+                
+                this.init();
+            }
+
+            init() {
+                this.createTables();
+                this.bindEvents();
+                this.loadTable(this.currentTable);
+                this.updateProgress();
+            }
+
+            createTables() {
+                this.tables = [
+                    {
+                        title: "Все данные вперемешку",
+                        description: "Найдите ошибки в этой таблице, где данные хранятся неправильно",
+                        headers: ["ID", "Информация о студенте", "Курсы", "Оценки", "Преподаватель", "Расписание"],
+                        data: [
+                            [1, "Иванов Иван; ivan@mail.com; IT-101", "Базы данных, Алгоритмы, Сети", "5,4,5", "Петров П.П.; petrov@college.ru", "Пн 9:00, Вт 11:00"],
+                            [2, "Петрова Мария; maria@mail.com; IT-101", "Базы данных, Математика", "4,5", "Петров П.П.; petrov@college.ru", "Пн 9:00, Ср 10:00"],
+                            [3, "Сидоров Алексей; alex@mail.com; IT-102", "Алгоритмы, Физика", "5,3", "Сидоров С.С.; sidorov@college.ru", "Вт 14:00, Чт 16:00"]
+                        ],
+                        errors: [
+                            { cell: "1-1", type: "atomicity", description: "ФИО, email и группа в одной ячейке" },
+                            { cell: "1-2", type: "atomicity", description: "Список курсов через запятую" },
+                            { cell: "1-3", type: "atomicity", description: "Список оценок через запятую" },
+                            { cell: "1-4", type: "redundancy", description: "Информация о преподавателе дублируется" },
+                            { cell: "2-4", type: "redundancy", description: "Повторение данных о преподавателе" }
+                        ]
+                    },
+                    {
+                        title: "Студенты с лишней информацией", 
+                        description: "Найдите нарушения нормализации и избыточные данные",
+                        headers: ["ID", "Имя", "Группа", "Куратор группы", "Кафедра", "Курс 1", "Оценка 1", "Курс 2", "Оценка 2", "Средний балл"],
+                        data: [
+                            [1, "Иван", "IT-101", "Петров П.П.", "Информатика", "Базы данных", 5, "Алгоритмы", 4, 4.5],
+                            [2, "Мария", "IT-101", "Петров П.П.", "Информатика", "Базы данных", 4, "Математика", 5, 4.5],
+                            [3, "Петр", "IT-102", "Сидоров С.С.", "Информатика", "Базы данных", 5, "Физика", 3, 4.0]
+                        ],
+                        errors: [
+                            { cell: "1-3", type: "normalization", description: "Куратор зависит от группы, а не от студента" },
+                            { cell: "1-4", type: "normalization", description: "Кафедра зависит от группы" },
+                            { cell: "1-9", type: "constraint", description: "Вычисляемое поле (можно посчитать)" },
+                            { cell: "1-5", type: "atomicity", description: "Жесткие колонки для курсов" }
+                        ]
+                    },
+                    {
+                        title: "Оценки без проверок",
+                        description: "Найдите нарушения целостности данных",
+                        headers: ["ID", "Студент", "Курс", "Преподаватель", "Оценка", "Дата"],
+                        data: [
+                            [1, "Иванов Иван", "Базы данных", "Петров П.П.", 5, "2024-01-15"],
+                            [2, "Несуществующий", "Базы данных", "Петров П.П.", 4, "2024-01-15"],
+                            [3, "Иванов Иван", "Неизвестный курс", "Петров П.П.", 3, "2024-01-16"],
+                            [4, "Иванов Иван", "Базы данных", "Петров П.П.", 6, "2024-01-17"],
+                            [5, "Иванов Иван", "Базы данных", "Петров П.П.", 5, "2024-02-30"]
+                        ],
+                        errors: [
+                            { cell: "2-2", type: "integrity", description: "Несуществующий студент" },
+                            { cell: "3-3", type: "integrity", description: "Неизвестный курс" },
+                            { cell: "4-5", type: "constraint", description: "Оценка вне диапазона 2-5" },
+                            { cell: "5-6", type: "constraint", description: "Некорректная дата" }
+                        ]
+                    },
+                    {
+                        title: "Расписание с противоречиями",
+                        description: "Найдите дублирование и противоречивые данные",
+                        headers: ["ID", "Группа", "Курс", "Преподаватель", "Аудитория", "Корпус", "День недели", "Номер дня", "Время начала", "Время конца"],
+                        data: [
+                            [1, "IT-101", "Базы данных", "Петров П.П.", "301", "Главный", "Понедельник", 2, "09:00", "08:30"],
+                            [2, "IT-101", "Алгоритмы", "Сидоров С.С.", "301", "Главный", "Понедельник", 1, "09:00", "10:30"],
+                            [3, "IT-102", "Базы данных", "Петров П.П.", "301", "Второй", "Понедельник", 1, "09:00", "10:30"]
+                        ],
+                        errors: [
+                            { cell: "1-8", type: "integrity", description: "Противоречие: Понедельник ≠ день №2" },
+                            { cell: "1-10", type: "constraint", description: "Время окончания раньше начала" },
+                            { cell: "2-5", type: "integrity", description: "Конфликт аудиторий в одно время" },
+                            { cell: "3-6", type: "integrity", description: "Аудитория 301 в разных корпусах?" }
+                        ]
+                    },
+                    {
+                        title: "Смешанные роли",
+                        description: "Найдите нарушения нормализации и проблемы с NULL",
+                        headers: ["ID", "Тип", "Имя", "Группа", "Должность", "Зарплата", "Email", "Телефоны"],
+                        data: [
+                            [1, "Студент", "Иван Иванов", "IT-101", "-", "-", "ivan@mail.com", "89991112233"],
+                            [2, "Преподаватель", "Петр Петров", "-", "Профессор", "75000", "petrov@college.ru", "89992223344"],
+                            [3, "Преподаватель", "Сергей Сидоров", "-", "Доцент", "65000", "petrov@college.ru", "89993334455"],
+                            [4, "Администратор", "Анна Андреева", "-", "-", "50000", "admin@college.ru", "89994445566,89997778899"]
+                        ],
+                        errors: [
+                            { cell: "3-7", type: "integrity", description: "Дублирование email преподавателя" },
+                            { cell: "4-8", type: "atomicity", description: "Несколько телефонов в одной ячейке" },
+                            { cell: "1-4", type: "normalization", description: "Смешение разных сущностей в одной таблице" },
+                            { cell: "2-4", type: "normalization", description: "NULL значения для неподходящих типов" }
+                        ]
+                    }
+                ];
+            }
+
+            bindEvents() {
+                // Error type buttons
+                document.querySelectorAll('.error-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        this.selectErrorType(e.target.dataset.errorType);
+                    });
+                });
+
+                // Submit button
+                document.getElementById('submitBtn').addEventListener('click', () => {
+                    this.checkAnswer();
+                });
+
+                // Next button
+                document.getElementById('nextBtn').addEventListener('click', () => {
+                    this.nextTable();
+                });
+
+                // Restart button
+                document.getElementById('restartBtn').addEventListener('click', () => {
+                    this.restartGame();
+                });
+            }
+
+            loadTable(tableIndex) {
+                const table = this.tables[tableIndex];
+                if (!table) return;
+
+                // Update UI
+                document.getElementById('tableTitle').textContent = table.title;
+                document.getElementById('tableDescription').textContent = table.description;
+
+                // Create table
+                this.createTable(table);
+                
+                // Reset selection
+                this.selectedCell = null;
+                this.selectedErrorType = null;
+                this.updateSelectionUI();
+                
+                // Hide feedback, show game area
+                document.getElementById('feedbackContainer').classList.add('hidden');
+                document.getElementById('gameArea').classList.remove('hidden');
+                document.getElementById('resultsContainer').classList.add('hidden');
+            }
+
+            createTable(table) {
+                const tableElement = document.getElementById('dataTable');
+                tableElement.innerHTML = '';
+
+                // Create header
+                const headerRow = document.createElement('tr');
+                table.headers.forEach(header => {
+                    const th = document.createElement('th');
+                    th.textContent = header;
+                    headerRow.appendChild(th);
+                });
+                tableElement.appendChild(headerRow);
+
+                // Create data rows
+                table.data.forEach((row, rowIndex) => {
+                    const tr = document.createElement('tr');
+                    row.forEach((cell, cellIndex) => {
+                        const td = document.createElement('td');
+                        td.textContent = cell;
+                        td.dataset.row = rowIndex + 1;
+                        td.dataset.col = cellIndex + 1;
+                        
+                        // Check if this cell has an error
+                        const cellId = `${rowIndex + 1}-${cellIndex + 1}`;
+                        const hasError = table.errors.some(error => error.cell === cellId);
+                        
+                        if (hasError) {
+                            td.classList.add('error-cell');
+                            const marker = document.createElement('div');
+                            marker.className = 'error-marker';
+                            marker.textContent = '!';
+                            td.appendChild(marker);
+                            
+                            td.addEventListener('click', () => {
+                                this.selectCell(cellId, cell);
+                            });
+                        }
+                        
+                        tr.appendChild(td);
+                    });
+                    tableElement.appendChild(tr);
+                });
+            }
+
+            selectCell(cellId, cellValue) {
+                this.selectedCell = cellId;
+                
+                // Remove previous selection
+                document.querySelectorAll('.error-cell.selected').forEach(cell => {
+                    cell.classList.remove('selected');
+                });
+                
+                // Add selection to current cell
+                const cellElement = document.querySelector(`[data-row="${cellId.split('-')[0]}"][data-col="${cellId.split('-')[1]}"]`);
+                if (cellElement) {
+                    cellElement.classList.add('selected');
+                }
+                
+                this.updateSelectionUI(cellId, cellValue);
+            }
+
+            selectErrorType(errorType) {
+                this.selectedErrorType = errorType;
+                
+                // Update UI
+                document.querySelectorAll('.error-btn').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+                document.querySelector(`[data-error-type="${errorType}"]`).classList.add('selected');
+                
+                this.updateSubmitButton();
+            }
+
+            updateSelectionUI(cellId = null, cellValue = null) {
+                const infoElement = document.getElementById('selectedCellInfo');
+                
+                if (cellId && cellValue) {
+                    const [row, col] = cellId.split('-');
+                    infoElement.innerHTML = `
+                        <div class="cell-coordinates">Ячейка: Строка ${row}, Колонка ${col}</div>
+                        <div class="cell-value">${cellValue}</div>
+                    `;
+                } else {
+                    infoElement.innerHTML = `
+                        <div class="cell-coordinates">Выберите ячейку с ошибкой</div>
+                        <div class="cell-value">-</div>
+                    `;
+                }
+                
+                this.updateSubmitButton();
+            }
+
+            updateSubmitButton() {
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.disabled = !(this.selectedCell && this.selectedErrorType);
+            }
+
+            checkAnswer() {
+                if (!this.selectedCell || !this.selectedErrorType) return;
+
+                const currentTable = this.tables[this.currentTable];
+                const correctError = currentTable.errors.find(error => 
+                    error.cell === this.selectedCell && error.type === this.selectedErrorType
+                );
+
+                const feedbackContainer = document.getElementById('feedbackContainer');
+                const feedbackContent = document.getElementById('feedbackContent');
+                
+                feedbackContainer.classList.remove('hidden');
+
+                if (correctError) {
+                    // Correct answer
+                    this.score++;
+                    feedbackContent.className = 'feedback-content feedback-correct';
+                    feedbackContent.innerHTML = `
+                        <h4>✅ Правильно!</h4>
+                        <p><strong>Найдена ошибка:</strong> ${correctError.description}</p>
+                        <p>Отличная работа! Вы правильно определили тип ошибки.</p>
+                    `;
+                } else {
+                    // Incorrect answer
+                    feedbackContent.className = 'feedback-content feedback-incorrect';
+                    const actualError = currentTable.errors.find(error => error.cell === this.selectedCell);
+                    
+                    if (actualError) {
+                        feedbackContent.innerHTML = `
+                            <h4>❌ Не совсем правильно</h4>
+                            <p><strong>Выбранная ошибка:</strong> ${this.getErrorTypeDescription(this.selectedErrorType)}</p>
+                            <p><strong>Правильный тип:</strong> ${this.getErrorTypeDescription(actualError.type)}</p>
+                            <p><strong>Описание:</strong> ${actualError.description}</p>
+                        `;
+                    } else {
+                        feedbackContent.innerHTML = `
+                            <h4>❌ Ошибка не найдена</h4>
+                            <p>Эта ячейка не содержит ошибки или содержит другую проблему.</p>
+                        `;
+                    }
+                }
+            }
+
+            getErrorTypeDescription(type) {
+                const descriptions = {
+                    'atomicity': 'Нарушение атомарности',
+                    'redundancy': 'Дублирование данных', 
+                    'integrity': 'Нарушение целостности',
+                    'normalization': 'Нарушение нормализации',
+                    'constraint': 'Отсутствие проверок'
+                };
+                return descriptions[type] || type;
+            }
+
+            nextTable() {
+                this.currentTable++;
+                
+                if (this.currentTable < this.totalTables) {
+                    this.loadTable(this.currentTable);
+                    this.updateProgress();
+                } else {
+                    this.showResults();
+                }
+            }
+
+            updateProgress() {
+                const progress = (this.currentTable / this.totalTables) * 100;
+                document.getElementById('progressFill').style.width = `${progress}%`;
+                document.getElementById('progressText').textContent = `Таблица ${this.currentTable + 1} из ${this.totalTables}`;
+                document.getElementById('progressPercent').textContent = `${Math.round(progress)}%`;
+            }
+
+            showResults() {
+                document.getElementById('gameArea').classList.add('hidden');
+                document.getElementById('feedbackContainer').classList.add('hidden');
+                document.getElementById('resultsContainer').classList.remove('hidden');
+                
+                document.getElementById('finalScore').textContent = `${this.score}/${this.totalTables}`;
+                
+                let message = '';
+                if (this.score === this.totalTables) {
+                    message = 'Идеальный результат! Вы отлично разбираетесь в проектировании баз данных! 🎉';
+                } else if (this.score >= this.totalTables * 0.7) {
+                    message = 'Отличный результат! Вы хорошо понимаете принципы проектирования БД! 👍';
+                } else if (this.score >= this.totalTables * 0.5) {
+                    message = 'Хороший результат! Продолжайте изучать нормализацию и целостность данных. 💪';
+                } else {
+                    message = 'Есть над чем поработать! Рекомендуем повторить принципы нормализации. 📚';
+                }
+                
+                document.getElementById('resultsMessage').textContent = message;
+            }
+
+            restartGame() {
+                this.currentTable = 0;
+                this.score = 0;
+                this.loadTable(this.currentTable);
+                this.updateProgress();
+            }
+        }
+
+        // Initialize the game when page loads
+        let game;
+        document.addEventListener('DOMContentLoaded', () => {
+            game = new DatabaseErrorGame();
+        });
+    </script>
+</body>
+</html>
