@@ -1,0 +1,1856 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 Код-Дуэль - Готовый проект</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Consolas', monospace;
+        }
+        
+        :root {
+            --github-bg: #0d1117;
+            --github-border: #30363d;
+            --github-text: #c9d1d9;
+            --github-blue: #58a6ff;
+            --github-green: #7ee787;
+            --github-purple: #bc8cff;
+            --github-red: #ff7b72;
+            --github-orange: #ffa657;
+        }
+        
+        body {
+            background: var(--github-bg);
+            color: var(--github-text);
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .repo-header {
+            border-bottom: 1px solid var(--github-border);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .repo-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .repo-icon {
+            font-size: 2.5rem;
+        }
+        
+        h1 {
+            color: var(--github-blue);
+            font-size: 2.2rem;
+        }
+        
+        .repo-description {
+            color: #8b949e;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        
+        .repo-meta {
+            display: flex;
+            gap: 20px;
+            color: #8b949e;
+            font-size: 0.9rem;
+        }
+        
+        .repo-tags {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+        
+        .tag {
+            background: rgba(88, 166, 255, 0.1);
+            border: 1px solid rgba(88, 166, 255, 0.4);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+        
+        .game-container {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .game-container.active {
+            display: block;
+        }
+        
+        .file-explorer {
+            background: #161b22;
+            border: 1px solid var(--github-border);
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.2s;
+            margin: 2px 0;
+        }
+        
+        .file-item:hover {
+            background: rgba(88, 166, 255, 0.1);
+        }
+        
+        .file-item.active {
+            background: rgba(88, 166, 255, 0.2);
+            border-left: 3px solid var(--github-blue);
+        }
+        
+        .file-icon {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .folder {
+            color: var(--github-blue);
+        }
+        
+        .markdown-file {
+            color: var(--github-green);
+        }
+        
+        .file-content {
+            background: #161b22;
+            border: 1px solid var(--github-border);
+            border-radius: 6px;
+            padding: 25px;
+            min-height: 500px;
+            overflow-y: auto;
+            max-height: 70vh;
+        }
+        
+        .markdown-content h1, .markdown-content h2, .markdown-content h3 {
+            color: var(--github-blue);
+            margin: 20px 0 10px 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--github-border);
+        }
+        
+        .markdown-content h1 {
+            font-size: 1.8rem;
+        }
+        
+        .markdown-content h2 {
+            font-size: 1.5rem;
+        }
+        
+        .markdown-content p {
+            margin: 15px 0;
+        }
+        
+        .markdown-content ul, .markdown-content ol {
+            margin: 15px 0 15px 25px;
+        }
+        
+        .markdown-content li {
+            margin: 8px 0;
+        }
+        
+        .markdown-content code {
+            background: rgba(110, 118, 129, 0.4);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+        }
+        
+        .markdown-content pre {
+            background: rgba(110, 118, 129, 0.1);
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 20px 0;
+            border-left: 4px solid var(--github-green);
+        }
+        
+        .markdown-content blockquote {
+            border-left: 4px solid var(--github-orange);
+            padding-left: 20px;
+            margin: 20px 0;
+            color: #8b949e;
+            font-style: italic;
+        }
+        
+        .markdown-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .markdown-content th, .markdown-content td {
+            border: 1px solid var(--github-border);
+            padding: 10px;
+            text-align: left;
+        }
+        
+        .markdown-content th {
+            background: rgba(88, 166, 255, 0.1);
+            color: var(--github-blue);
+        }
+        
+        .game-button {
+            display: inline-block;
+            background: var(--github-green);
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 10px 5px;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+        }
+        
+        .game-button:hover {
+            transform: translateY(-2px);
+            background: #63d471;
+        }
+        
+        .game-button.secondary {
+            background: var(--github-blue);
+            color: white;
+        }
+        
+        .game-button.danger {
+            background: var(--github-red);
+            color: white;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .stat-card {
+            background: rgba(88, 166, 255, 0.05);
+            border: 1px solid var(--github-border);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--github-green);
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            color: #8b949e;
+            font-size: 0.9rem;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(110, 118, 129, 0.4);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--github-green), var(--github-blue));
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        .ascii-art {
+            font-family: 'Consolas', monospace;
+            line-height: 1.2;
+            margin: 20px 0;
+            white-space: pre;
+            color: var(--github-purple);
+        }
+        
+        .choice-list {
+            margin: 25px 0;
+        }
+        
+        .choice-item {
+            display: block;
+            background: rgba(88, 166, 255, 0.1);
+            border: 1px solid var(--github-border);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .choice-item:hover {
+            background: rgba(88, 166, 255, 0.2);
+            border-color: var(--github-blue);
+            transform: translateX(5px);
+        }
+        
+        .choice-item input[type="radio"] {
+            margin-right: 10px;
+        }
+        
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .inventory-item {
+            background: rgba(126, 231, 135, 0.1);
+            border: 1px solid rgba(126, 231, 135, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .item-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .battle-container {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .enemy-ascii {
+            font-size: 1.2rem;
+            line-height: 1.3;
+            margin: 30px 0;
+            color: var(--github-red);
+        }
+        
+        .battle-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+        }
+        
+        .health-bar {
+            height: 30px;
+            width: 300px;
+            background: rgba(255, 123, 114, 0.2);
+            border: 2px solid var(--github-red);
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+        
+        .health-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff7b72, #ffa657);
+            transition: width 0.5s ease;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--github-green);
+            color: #000;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(13, 17, 23, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: #161b22;
+            border: 2px solid var(--github-blue);
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .close-modal {
+            float: right;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--github-red);
+        }
+        
+        .character-sheet {
+            background: rgba(88, 166, 255, 0.05);
+            border: 1px solid var(--github-border);
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+        
+        .download-section {
+            background: rgba(126, 231, 135, 0.1);
+            border: 2px dashed var(--github-green);
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .battle-stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .health-bar {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка репозитория -->
+    <div class="repo-header">
+        <div class="repo-title">
+            <span class="repo-icon">🎮</span>
+            <div>
+                <h1>code-duel-game</h1>
+                <div class="repo-description">Текстовая RPG-игра про программистов и багов, написанная на Markdown</div>
+            </div>
+        </div>
+        
+        <div class="repo-meta">
+            <span>⭐ <strong>42</strong> stars</span>
+            <span>👁️ <strong>156</strong> watching</span>
+            <span>🍴 <strong>23</strong> forks</span>
+            <span>🔄 Updated today</span>
+        </div>
+        
+        <div class="repo-tags">
+            <span class="tag">markdown</span>
+            <span class="tag">game</span>
+            <span class="tag">educational</span>
+            <span class="tag">rpg</span>
+            <span class="tag">github</span>
+            <span class="tag">students</span>
+        </div>
+    </div>
+    
+    <!-- Файловый explorer -->
+    <div class="file-explorer">
+        <h3>📁 Файлы проекта</h3>
+        <div class="file-item active" onclick="showFile('readme')">
+            <span class="file-icon markdown-file">📄</span>
+            <span>README.md</span>
+        </div>
+        <div class="file-item" onclick="showFile('character')">
+            <span class="file-icon markdown-file">👤</span>
+            <span>CHARACTER_CREATION.md</span>
+        </div>
+        <div class="file-item" onclick="showFile('skills')">
+            <span class="file-icon markdown-file">🧠</span>
+            <span>SKILLS.md</span>
+        </div>
+        <div class="file-item" onclick="showFile('battle')">
+            <span class="file-icon markdown-file">⚔️</span>
+            <span>BATTLE_SYNTAX_ERROR.md</span>
+        </div>
+        <div class="file-item" onclick="showFile('quest')">
+            <span class="file-icon markdown-file">📚</span>
+            <span>QUEST_FIX_BUG.md</span>
+        </div>
+        <div class="file-item" onclick="showFile('shop')">
+            <span class="file-icon markdown-file">🛒</span>
+            <span>SKILL_SHOP.md</span>
+        </div>
+        <div class="file-item" onclick="showFile('leaderboard')">
+            <span class="file-icon markdown-file">🏆</span>
+            <span>LEADERBOARD.md</span>
+        </div>
+    </div>
+    
+    <!-- Контейнер для контента -->
+    <div id="file-content" class="file-content">
+        <!-- Контент будет загружаться динамически -->
+    </div>
+    
+    <!-- Секция для скачивания -->
+    <div class="download-section">
+        <h2>📥 Скачать полный проект</h2>
+        <p>Все файлы игры в одном архиве для использования в классе</p>
+        <button class="game-button" onclick="downloadProject()">⬇️ Скачать ZIP (готовый проект)</button>
+        <button class="game-button secondary" onclick="showInstructions()">📚 Инструкция для преподавателя</button>
+    </div>
+    
+    <!-- Модальное окно с инструкцией -->
+    <div id="instructionModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">×</span>
+            <h2>📚 Инструкция для преподавателя</h2>
+            
+            <h3>🎯 Как использовать этот проект:</h3>
+            <ol>
+                <li><strong>Скачайте проект</strong> - нажмите "Скачать ZIP"</li>
+                <li><strong>Распакуйте</strong> в папку для занятия</li>
+                <li><strong>Создайте репозиторий</strong> на GitHub</li>
+                <li><strong>Загрузите файлы</strong> в репозиторий</li>
+                <li><strong>Добавьте студентов</strong> как collaborators</li>
+                <li><strong>Проведите занятие</strong> по плану ниже</li>
+            </ol>
+            
+            <h3>📝 План занятия (90 минут):</h3>
+            <table>
+                <tr><td>0-15</td><td>Знакомство с игрой, создание персонажей</td></tr>
+                <tr><td>15-30</td><td>Изучение механик, первый баг</td></tr>
+                <tr><td>30-50</td><td>Решение квестов, изучение навыков</td></tr>
+                <tr><td>50-70</td><td>PvP дуэли, турнир</td></tr>
+                <tr><td>70-85</td><td>Создание своего контента</td></tr>
+                <tr><td>85-90</td><td>Подведение итогов</td></tr>
+            </table>
+            
+            <h3>🎮 Что изучают студенты:</h3>
+            <ul>
+                <li>✅ Работу с Markdown</li>
+                <li>✅ Основы Git и GitHub</li>
+                <li>✅ Командную разработку</li>
+                <li>✅ Проектирование БД через документацию</li>
+                <li>✅ Решение реальных задач</li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- Уведомления -->
+    <div id="notification" class="notification" style="display: none;">
+        Сообщение игры
+    </div>
+    
+    <script>
+        // Данные игры
+        const gameState = {
+            player: {
+                name: "Новичок",
+                class: null,
+                level: 1,
+                xp: 0,
+                hp: 100,
+                maxHp: 100,
+                energy: 100,
+                maxEnergy: 100,
+                coins: 100,
+                skills: [],
+                inventory: []
+            },
+            battle: {
+                enemy: "SyntaxError",
+                enemyHp: 30,
+                enemyMaxHp: 30,
+                turn: 1
+            }
+        };
+        
+        // Файлы игры
+        const gameFiles = {
+            readme: `# 🎮 КОД-ДУЭЛЬ: Битва с Багами
+
+## 👋 Добро пожаловать в мир программирования!
+
+**Код-Дуэль** — это текстовая RPG-игра, где вы становитесь программистом-героем, сражающимся с багами, изучающим языки программирования и решающим сложные задачи.
+
+## 🚀 Быстрый старт
+
+1. **Создайте персонажа** → [CHARACTER_CREATION.md](./CHARACTER_CREATION.md)
+2. **Изучите навыки** → [SKILLS.md](./SKILLS.md)
+3. **Сразитесь с первым багом** → [BATTLE_SYNTAX_ERROR.md](./BATTLE_SYNTAX_ERROR.md)
+4. **Решите квест** → [QUEST_FIX_BUG.md](./QUEST_FIX_BUG.md)
+5. **Поднимитесь в рейтинге** → [LEADERBOARD.md](./LEADERBOARD.md)
+
+## 🏗️ Структура проекта
+
+\`\`\`
+code-duel-game/
+├── README.md              # Вы здесь
+├── CHARACTER_CREATION.md  # Создание персонажа
+├── SKILLS.md             # Навыки программирования
+├── BATTLE_*.md           # Файлы битв
+├── QUEST_*.md            # Кодинг-квесты
+├── SKILL_SHOP.md         # Магазин навыков
+├── LEADERBOARD.md        # Таблица лидеров
+└── PLAYERS/              # Персонажи игроков
+\`\`\`
+
+## 🎯 Цели игры
+
+- 🐛 **Победить 10 типов багов**
+- 💻 **Изучить 15+ языков/фреймворков**
+- 🏆 **Занять первое место в рейтинге**
+- 👥 **Провести 5 PvP дуэлей**
+
+## 👨‍🏫 Для преподавателей
+
+Эта игра создана для обучения:
+- **Markdown** — вся игра написана в Markdown
+- **Git/GitHub** — работа с репозиториями
+- **Работа в команде** — совместная разработка
+- **Базы данных** — проектирование через документацию
+
+## 🎮 Начать игру
+
+<button class="game-button" onclick="showFile('character')">👤 СОЗДАТЬ ПЕРСОНАЖА</button>
+<button class="game-button secondary" onclick="showQuickStart()">🚀 БЫСТРЫЙ СТАРТ</button>
+
+---
+
+> 💡 *Совет:* Сохраняйте прогресс через коммиты в GitHub! Каждый уровень = новый коммит.
+`,
+            
+            character: `# 👤 СОЗДАНИЕ ПЕРСОНАЖА
+
+## 🎭 ВЫБЕРИТЕ КЛАСС
+
+<div class="choice-list">
+    <label class="choice-item">
+        <input type="radio" name="class" value="frontend" onchange="selectClass('frontend')">
+        <strong>🎨 Фронтенд-Волшебник</strong><br>
+        <small>Мастер интерфейсов и анимаций</small>
+        <div class="stats-grid" style="margin-top: 10px;">
+            <div>⚡ Сила: 40</div>
+            <div>🛡️ Защита: 30</div>
+            <div>🏃 Скорость: 80</div>
+            <div>🧠 Интеллект: 60</div>
+        </div>
+    </label>
+    
+    <label class="choice-item">
+        <input type="radio" name="class" value="backend" onchange="selectClass('backend')">
+        <strong>⚙️ Бэкенд-Воин</strong><br>
+        <small>Защитник серверов и баз данных</small>
+        <div class="stats-grid" style="margin-top: 10px;">
+            <div>⚡ Сила: 70</div>
+            <div>🛡️ Защита: 80</div>
+            <div>🏃 Скорость: 40</div>
+            <div>🧠 Интеллект: 50</div>
+        </div>
+    </label>
+    
+    <label class="choice-item">
+        <input type="radio" name="class" value="fullstack" onchange="selectClass('fullstack')">
+        <strong>🚀 Фуллстек-Ниндзя</strong><br>
+        <small>Универсальный боец полного цикла</small>
+        <div class="stats-grid" style="margin-top: 10px;">
+            <div>⚡ Сила: 60</div>
+            <div>🛡️ Защита: 60</div>
+            <div>🏃 Скорость: 70</div>
+            <div>🧠 Интеллект: 70</div>
+        </div>
+    </label>
+</div>
+
+## 🎯 СТАРТОВЫЙ НАВЫК
+
+<div class="choice-list">
+    <label class="choice-item">
+        <input type="radio" name="skill" value="python" onchange="selectSkill('python')">
+        <strong>🐍 Python</strong><br>
+        <small>Атака: 15 | Защита: 5</small><br>
+        <em>Универсальный язык с богатыми библиотеками</em>
+    </label>
+    
+    <label class="choice-item">
+        <input type="radio" name="skill" value="javascript" onchange="selectSkill('javascript')">
+        <strong>🌐 JavaScript</strong><br>
+        <small>Атака: 12 | Защита: 8</small><br>
+        <em>Язык веба, работает везде</em>
+    </label>
+    
+    <label class="choice-item">
+        <input type="radio" name="skill" value="html" onchange="selectSkill('html')">
+        <strong>🎨 HTML/CSS</strong><br>
+        <small>Атака: 8 | Защита: 12</small><br>
+        <em>Основа интерфейсов, отличная защита</em>
+    </label>
+</div>
+
+## ✏️ ИМЯ ПЕРСОНАЖА
+
+<input type="text" id="charName" placeholder="Введите имя персонажа" style="
+    width: 100%;
+    padding: 12px;
+    background: rgba(88, 166, 255, 0.1);
+    border: 2px solid var(--github-blue);
+    border-radius: 6px;
+    color: white;
+    font-size: 1.1rem;
+    margin: 15px 0;
+">
+
+## 📊 ПРЕДПРОСМОТР
+
+<div class="character-sheet">
+    <h3>👤 Ваш персонаж:</h3>
+    <div id="charPreview">
+        <em>Выберите класс и навык для предпросмотра</em>
+    </div>
+</div>
+
+## 🚀 ДЕЙСТВИЯ
+
+<button class="game-button" onclick="createCharacter()" id="createBtn" disabled>✅ СОЗДАТЬ ПЕРСОНАЖА</button>
+<button class="game-button secondary" onclick="showFile('readme')">← НАЗАД</button>
+
+---
+
+<div class="ascii-art">
+    ╔══════════════════════════════════════╗
+    ║      Добро пожаловать в битву!      ║
+    ║     Ваш код против их багов!        ║
+    ╚══════════════════════════════════════╝
+</div>
+`,
+            
+            skills: `# 🧠 НАВЫКИ ПРОГРАММИРОВАНИЯ
+
+## 📚 ВАШИ НАВЫКИ
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="item-icon">🐍</div>
+        <div class="stat-value" id="pythonLevel">0</div>
+        <div class="stat-label">Python</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="pythonProgress" style="width: 0%"></div>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="item-icon">🌐</div>
+        <div class="stat-value" id="jsLevel">0</div>
+        <div class="stat-label">JavaScript</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="jsProgress" style="width: 0%"></div>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="item-icon">🗄️</div>
+        <div class="stat-value" id="sqlLevel">0</div>
+        <div class="stat-label">SQL</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="sqlProgress" style="width: 0%"></div>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="item-icon">📦</div>
+        <div class="stat-value" id="gitLevel">0</div>
+        <div class="stat-label">Git</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="gitProgress" style="width: 0%"></div>
+        </div>
+    </div>
+</div>
+
+## 🎯 КАК ПРОКАЧИВАТЬ НАВЫКИ
+
+1. **Решайте квесты** — каждое задание дает опыт
+2. **Сражайтесь с багами** — использование навыка в бою
+3. **Учитесь в магазине** — покупайте улучшения
+4. **Помогайте другим** — ревью кода даёт опыт
+
+## 📊 УРОВНИ ВЛАДЕНИЯ
+
+| Уровень | Название | Модификатор | Описание |
+|---------|----------|-------------|----------|
+| 0 | Не изучен | 0% | Навык недоступен |
+| 1-3 | Новичок | +0% | Базовое понимание |
+| 4-6 | Опытный | +25% | Можете решать задачи |
+| 7-9 | Эксперт | +50% | Гуру в этом навыке |
+| 10 | Мастер | +100% | Вы — эталон |
+
+## 🛒 ИЗУЧИТЬ НОВЫЕ НАВЫКИ
+
+<div class="inventory-grid">
+    <div class="inventory-item">
+        <div class="item-icon">⚛️</div>
+        <strong>React</strong><br>
+        <small>Цена: 300 монет</small><br>
+        <button class="game-button" style="padding: 5px 10px; font-size: 0.9rem;" onclick="buySkill('react')">Купить</button>
+    </div>
+    
+    <div class="inventory-item">
+        <div class="item-icon">🐳</div>
+        <strong>Docker</strong><br>
+        <small>Цена: 400 монет</small><br>
+        <button class="game-button" style="padding: 5px 10px; font-size: 0.9rem;" onclick="buySkill('docker')">Купить</button>
+    </div>
+    
+    <div class="inventory-item">
+        <div class="item-icon">🧪</div>
+        <strong>Testing</strong><br>
+        <small>Цена: 150 монет</small><br>
+        <button class="game-button" style="padding: 5px 10px; font-size: 0.9rem;" onclick="buySkill('testing')">Купить</button>
+    </div>
+    
+    <div class="inventory-item">
+        <div class="item-icon">⚡</div>
+        <strong>Node.js</strong><br>
+        <small>Цена: 250 монет</small><br>
+        <button class="game-button" style="padding: 5px 10px; font-size: 0.9rem;" onclick="buySkill('nodejs')">Купить</button>
+    </div>
+</div>
+
+## 🎮 ДЕЙСТВИЯ
+
+<button class="game-button" onclick="showFile('shop')">🛒 МАГАЗИН НАВЫКОВ</button>
+<button class="game-button secondary" onclick="showFile('battle')">⚔️ ТРЕНИРОВОЧНЫЙ БОЙ</button>
+<button class="game-button" onclick="showFile('readme')">🏠 ГЛАВНОЕ МЕНЮ</button>
+
+---
+
+> 💡 *Совет:* Сфокусируйтесь на 2-3 основных навыках. Универсалы редко побеждают специалистов!
+`,
+            
+            battle: `# ⚔️ БИТВА С SYNTAX ERROR
+
+<div class="battle-container">
+    <h2>🐛 Противник: SyntaxError</h2>
+    <div class="enemy-ascii">
+<pre>
+     __________________
+    /                  \\
+   |    SYNTAX ERROR    |
+   |     Level: 3       |
+   |     HP: <span id="enemyHp">30</span>/30      |
+   |                    |
+   |  "Expected ';'"    |
+    \\__________________/
+          |    |
+          |    |
+         /      \\
+        /        \\
+</pre>
+    </div>
+    
+    <div class="battle-stats">
+        <div>
+            <h3>👤 Вы</h3>
+            <div class="health-bar">
+                <div class="health-fill" id="playerHpBar" style="width: 100%"></div>
+            </div>
+            <div>HP: <span id="playerHp">100</span>/<span id="playerMaxHp">100</span></div>
+            <div>Энергия: <span id="playerEnergy">100</span>/100</div>
+        </div>
+        
+        <div>
+            <h3>🐛 Враг</h3>
+            <div class="health-bar">
+                <div class="health-fill" id="enemyHpBar" style="width: 100%; background: linear-gradient(90deg, #ff7b72, #ff6b6b);"></div>
+            </div>
+            <div>HP: <span id="enemyHpText">30</span>/30</div>
+            <div>Урон: 8-12</div>
+        </div>
+    </div>
+    
+    <h3>🎮 ВАШИ ДЕЙСТВИЯ</h3>
+    
+    <div class="action-buttons">
+        <button class="game-button" onclick="attack('python')">
+            🐍 Python Attack<br>
+            <small>Урон: 10-15 | Энергия: -5</small>
+        </button>
+        
+        <button class="game-button" onclick="attack('javascript')">
+            🌐 JavaScript Attack<br>
+            <small>Урон: 8-12 | Энергия: -4</small>
+        </button>
+        
+        <button class="game-button" onclick="defend()">
+            🛡️ Try-Catch Block<br>
+            <small>Защита: +5 | Восстановление: +5HP</small>
+        </button>
+        
+        <button class="game-button danger" onclick="runAway()">
+            🏃 Отступить<br>
+            <small>Завершить бой</small>
+        </button>
+    </div>
+    
+    <h3>📝 ХОД БИТВЫ</h3>
+    <div id="battleLog" style="
+        background: rgba(0,0,0,0.3);
+        padding: 15px;
+        border-radius: 8px;
+        min-height: 100px;
+        margin: 20px 0;
+        text-align: left;
+    ">
+        <em>Битва началась! Выберите действие.</em>
+    </div>
+    
+    <div>
+        <button class="game-button secondary" onclick="resetBattle()">🔄 Начать заново</button>
+        <button class="game-button" onclick="showFile('skills')">← К НАВЫКАМ</button>
+    </div>
+</div>
+
+---
+
+<div class="ascii-art">
+    ╔══════════════════════════════════════╗
+    ║   Помни: каждый баг — это урок!     ║
+    ╚══════════════════════════════════════╝
+</div>
+`,
+            
+            quest: `# 📚 КВЕСТ: Исправь баг
+
+## 🎯 ЗАДАНИЕ
+Исправьте ошибки в Python коде ниже. Код должен вычислять сумму чисел в списке.
+
+\`\`\`python
+# 🔧 ИСПРАВЬТЕ ОШИБКИ В ЭТОМ КОДЕ:
+
+def calculate_sum(numbers):
+    total = 0
+    for num in numbers
+        total += num
+    return total
+
+result = calculate_sum([1, 2, 3, 4, 5]
+print("Сумма:", result
+\`\`\`
+
+## 💡 ПОДСКАЗКИ
+
+<details>
+<summary><button class="game-button" style="padding: 5px 10px;">💎 Подсказка 1 (-10 монет)</button></summary>
+<div style="margin-top: 10px; padding: 10px; background: rgba(255, 167, 87, 0.1); border-radius: 6px;">
+Не хватает двоеточия после оператора <code>for</code>
+</div>
+</details>
+
+<details>
+<summary><button class="game-button" style="padding: 5px 10px; margin-top: 10px;">💎 Подсказка 2 (-20 монет)</button></summary>
+<div style="margin-top: 10px; padding: 10px; background: rgba(255, 167, 87, 0.1); border-radius: 6px;">
+Пропущены закрывающие скобки в вызове функции и <code>print</code>
+</div>
+</details>
+
+## ✍️ ВАШЕ РЕШЕНИЕ
+
+<textarea id="solutionCode" style="
+    width: 100%;
+    height: 150px;
+    background: rgba(88, 166, 255, 0.1);
+    border: 2px solid var(--github-blue);
+    border-radius: 6px;
+    color: white;
+    font-family: 'Consolas', monospace;
+    padding: 15px;
+    margin: 20px 0;
+    font-size: 1rem;
+" placeholder="Введите исправленный код здесь..."></textarea>
+
+## 🎮 ВАРИАНТЫ
+
+<button class="game-button" onclick="checkSolution()">✅ ПРОВЕРИТЬ РЕШЕНИЕ</button>
+<button class="game-button secondary" onclick="showHint()">💡 ПОКАЗАТЬ ОТВЕТ</button>
+<button class="game-button danger" onclick="giveUp()">🏳️ СДАТЬСЯ</button>
+
+## 🏆 НАГРАДЫ
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-value">+100</div>
+        <div class="stat-label">XP за исправление</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">+50</div>
+        <div class="stat-label">монет за рабочий код</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">до +50</div>
+        <div class="stat-label">XP за скорость</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Лучшее время:</div>
+        <div class="stat-value">1:24</div>
+        <div class="stat-label">@CodeMaster</div>
+    </div>
+</div>
+
+## 📝 ПРАВИЛЬНОЕ РЕШЕНИЕ
+
+<details>
+<summary><button class="game-button" style="padding: 5px 10px;">👁️ Показать ответ</button></summary>
+<div style="margin-top: 10px;">
+\`\`\`python
+def calculate_sum(numbers):
+    total = 0
+    for num in numbers:  # ← Добавлено двоеточие
+        total += num
+    return total
+
+result = calculate_sum([1, 2, 3, 4, 5])  # ← Добавлена скобка
+print("Сумма:", result)  # ← Добавлена скобка
+\`\`\`
+</div>
+</details>
+
+---
+
+<button class="game-button" onclick="showFile('battle')">⚔️ СЛЕДУЮЩИЙ КВЕСТ</button>
+`,
+            
+            shop: `# 🛒 МАГАЗИН НАВЫКОВ
+
+## 💰 ВАШ БАЛАНС
+<div class="stat-card" style="display: inline-block; min-width: 200px;">
+    <div class="stat-value" id="playerCoins">100</div>
+    <div class="stat-label">монет</div>
+</div>
+
+## 🛠️ ДОСТУПНЫЕ НАВЫКИ
+
+<table style="width: 100%;">
+    <thead>
+        <tr>
+            <th>Навык</th>
+            <th>Цена</th>
+            <th>Требуемый уровень</th>
+            <th>Описание</th>
+            <th>Действие</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>🐍 Python Pro</strong></td>
+            <td>200 монет</td>
+            <td>Уровень 5+</td>
+            <td>Декораторы, генераторы, асинхронность</td>
+            <td><button class="game-button" style="padding: 5px 10px;" onclick="buyItem('python_pro')">КУПИТЬ</button></td>
+        </tr>
+        <tr>
+            <td><strong>⚛️ React Master</strong></td>
+            <td>300 монет</td>
+            <td>Уровень 10+</td>
+            <td>Хуки, контекст, роутинг, оптимизация</td>
+            <td><button class="game-button" style="padding: 5px 10px;" onclick="buyItem('react')">КУПИТЬ</button></td>
+        </tr>
+        <tr>
+            <td><strong>🗄️ SQL Expert</strong></td>
+            <td>250 монет</td>
+            <td>Уровень 8+</td>
+            <td>JOIN, индексы, транзакции, оптимизация</td>
+            <td><button class="game-button" style="padding: 5px 10px;" onclick="buyItem('sql_expert')">КУПИТЬ</button></td>
+        </tr>
+        <tr>
+            <td><strong>🐳 Docker Guru</strong></td>
+            <td>400 монет</td>
+            <td>Уровень 15+</td>
+            <td>Контейнеры, образы, сети, оркестрация</td>
+            <td><button class="game-button" style="padding: 5px 10px;" onclick="buyItem('docker')">КУПИТЬ</button></td>
+        </tr>
+        <tr>
+            <td><strong>🧪 Testing Pro</strong></td>
+            <td>150 монет</td>
+            <td>Уровень 3+</td>
+            <td>Jest, PyTest, TDD, моки и стабы</td>
+            <td><button class="game-button" style="padding: 5px 10px;" onclick="buyItem('testing')">КУПИТЬ</button></td>
+        </tr>
+    </tbody>
+</table>
+
+## 📦 ПРЕДМЕТЫ
+
+<div class="inventory-grid">
+    <div class="inventory-item">
+        <div class="item-icon">☕</div>
+        <strong>Энергетик</strong><br>
+        <small>50 монет</small><br>
+        <em>+40 энергии</em><br>
+        <button class="game-button" style="padding: 5px 10px; font-size: 0.9rem;" onclick="buyItem('energy')">Купить x5</button>
+    </div>
+    
+    <div class="inventory-item">
+        <div class="item-icon">📚</div>
+        <strong>Книга опыта</strong><br>
+        <small>100 монет</small><br>
+        <em>+200 XP</em><br>
+        <button class="game-button" style="padding: 5px 10px; font-size: 0.9rem;" onclick="buyItem('xp_book')">Купить</button>
+    </div>
+    
+    <div class="inventory-item">
+        <div class="item-icon">🔧</div>
+        <strong>Ремкомплект</strong><br>
+        <small>80 монет</small><br>
+        <em>+30 здоровья</em><br>
+        <button class="game-button" style="padding: 5px 10px; font-size: 0.9rem;" onclick="buyItem('health')">Купить x3</button>
+    </div>
+    
+    <div class="inventory-item">
+        <div class="item-icon">🎁</div>
+        <strong>Случайный сундук</strong><br>
+        <small>250 монет</small><br>
+        <em>Случайный навык или предмет</em><br>
+        <button class="game-button" style="padding: 5px 10px; font-size: 0.9rem;" onclick="buyItem('chest')">Купить</button>
+    </div>
+</div>
+
+## 🎁 АКЦИИ И НАБОРЫ
+
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
+    <h3>⚡ СПЕЦИАЛЬНЫЕ ПРЕДЛОЖЕНИЯ</h3>
+    
+    <div class="inventory-grid">
+        <div class="inventory-item" style="background: rgba(255,255,255,0.1);">
+            <strong>🎒 Набор новичка</strong><br>
+            <del>450</del> <strong>350 монет</strong><br>
+            <small>Python + Книга опыта + 2 энергетика</small><br>
+            <button class="game-button" style="padding: 5px 10px; font-size: 0.9rem; background: #ff6b6b;" onclick="buyItem('starter_pack')">Купить набор</button>
+        </div>
+        
+        <div class="inventory-item" style="background: rgba(255,255,255,0.1);">
+            <strong>🌐 Неделя JavaScript</strong><br>
+            <em>Все JS навыки -20%</em><br>
+            <small>Действует до 27.01.2024</small><br>
+            <button class="game-button" style="padding: 5px 10px; font-size: 0.9rem;" onclick="showFile('skills')">Смотреть</button>
+        </div>
+    </div>
+</div>
+
+## 🎮 ДЕЙСТВИЯ
+
+<button class="game-button" onclick="showFile('skills')">← К НАВЫКАМ</button>
+<button class="game-button secondary" onclick="showFile('quest')">📚 К КВЕСТАМ</button>
+<button class="game-button" onclick="showFile('leaderboard')">🏆 К РЕЙТИНГУ</button>
+
+---
+
+> 💡 *Совет:* Покупайте наборы — они экономят до 30% денег!
+`,
+            
+            leaderboard: `# 🏆 ТАБЛИЦА ЛИДЕРОВ
+
+## 📊 ТОП-10 ИГРОКОВ
+
+<table style="width: 100%;">
+    <thead>
+        <tr>
+            <th>Ранг</th>
+            <th>Игрок</th>
+            <th>Уровень</th>
+            <th>Опыт</th>
+            <th>Класс</th>
+            <th>Последняя активность</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr style="background: rgba(255, 215, 0, 0.1);">
+            <td>🥇</td>
+            <td><strong>@CodeMaster</strong></td>
+            <td>42</td>
+            <td>125,400</td>
+            <td>Фуллстек</td>
+            <td>2 часа назад</td>
+        </tr>
+        <tr style="background: rgba(192, 192, 192, 0.1);">
+            <td>🥈</td>
+            <td><strong>@BugHunter</strong></td>
+            <td>38</td>
+            <td>98,750</td>
+            <td>Бэкенд</td>
+            <td>5 минут назад</td>
+        </tr>
+        <tr style="background: rgba(205, 127, 50, 0.1);">
+            <td>🥉</td>
+            <td><strong>@DevWizard</strong></td>
+            <td>35</td>
+            <td>87,300</td>
+            <td>Фронтенд</td>
+            <td>1 день назад</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>@PythonPro</td>
+            <td>32</td>
+            <td>76,800</td>
+            <td>Бэкенд</td>
+            <td><span style="color: var(--github-green);">Сейчас онлайн</span></td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>@JSNinja</td>
+            <td>30</td>
+            <td>65,100</td>
+            <td>Фронтенд</td>
+            <td>3 часа назад</td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td>@SQLMaster</td>
+            <td>28</td>
+            <td>54,900</td>
+            <td>Бэкенд</td>
+            <td>2 дня назад</td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td>@GitGuru</td>
+            <td>25</td>
+            <td>42,300</td>
+            <td>Фуллстек</td>
+            <td>Неделю назад</td>
+        </tr>
+        <tr>
+            <td>8</td>
+            <td>@DebugQueen</td>
+            <td>22</td>
+            <td>38,750</td>
+            <td>Фронтенд</td>
+            <td>Вчера</td>
+        </tr>
+        <tr>
+            <td>9</td>
+            <td>@AlgorithmKing</td>
+            <td>20</td>
+            <td>35,100</td>
+            <td>Бэкенд</td>
+            <td>5 дней назад</td>
+        </tr>
+        <tr>
+            <td>10</td>
+            <td>@ByteBard</td>
+            <td>18</td>
+            <td>28,400</td>
+            <td>Фуллстек</td>
+            <td><span style="color: var(--github-green);">Сейчас онлайн</span></td>
+        </tr>
+    </tbody>
+</table>
+
+## 📈 СТАТИСТИКА ИГРЫ
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-value">154</div>
+        <div class="stat-label">Всего игроков</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">2,847</div>
+        <div class="stat-label">Решено багов</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">1.2M</div>
+        <div class="stat-label">Строк кода</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">15.3</div>
+        <div class="stat-label">Средний уровень</div>
+    </div>
+</div>
+
+## 🎯 ДОСТИЖЕНИЯ СЕГОДНЯ
+
+<table style="width: 100%;">
+    <tr>
+        <td><strong>@BugHunter</strong></td>
+        <td>✅ Победил MemoryLeak (босс)</td>
+        <td>14:20</td>
+    </tr>
+    <tr>
+        <td><strong>@PythonPro</strong></td>
+        <td>🎯 Достиг 32 уровня</td>
+        <td>13:45</td>
+    </tr>
+    <tr>
+        <td><strong>@JSNinja</strong></td>
+        <td>📚 Решил 50 задач подряд</td>
+        <td>12:30</td>
+    </tr>
+    <tr>
+        <td><strong>@Newbie123</strong></td>
+        <td>👏 Первый баг побежден!</td>
+        <td>11:15</td>
+    </tr>
+</table>
+
+## 🏅 ВАШЕ МЕСТО
+
+<div class="character-sheet">
+    <h3>🎮 Ваша позиция</h3>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value" id="playerRank">#87</div>
+            <div class="stat-label">Общий рейтинг</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="playerLevel">1</div>
+            <div class="stat-label">Ваш уровень</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="playerXP">0</div>
+            <div class="stat-label">Ваш опыт</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="playerClass">-</div>
+            <div class="stat-label">Ваш класс</div>
+        </div>
+    </div>
+</div>
+
+## 🎮 ДЕЙСТВИЯ
+
+<button class="game-button" onclick="updateLeaderboard()">🔄 ОБНОВИТЬ ТАБЛИЦУ</button>
+<button class="game-button secondary" onclick="showFile('readme')">🏠 ГЛАВНОЕ МЕНЮ</button>
+
+---
+
+> 💡 *Совет:* Решайте больше квестов и сражайтесь с сильными багами, чтобы быстро подняться в рейтинге!
+`
+        };
+        
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            showFile('readme');
+            updateFileExplorer('readme');
+            loadGameState();
+            updateUI();
+        });
+        
+        // Функции для работы с файлами
+        function showFile(fileName) {
+            const contentDiv = document.getElementById('file-content');
+            contentDiv.innerHTML = gameFiles[fileName];
+            updateFileExplorer(fileName);
+            
+            // Обновляем данные в реальном времени
+            setTimeout(updateUI, 100);
+        }
+        
+        function updateFileExplorer(activeFile) {
+            const items = document.querySelectorAll('.file-item');
+            items.forEach(item => {
+                item.classList.remove('active');
+                if (item.textContent.includes(getFileName(activeFile))) {
+                    item.classList.add('active');
+                }
+            });
+        }
+        
+        function getFileName(key) {
+            const names = {
+                readme: 'README.md',
+                character: 'CHARACTER_CREATION.md',
+                skills: 'SKILLS.md',
+                battle: 'BATTLE_SYNTAX_ERROR.md',
+                quest: 'QUEST_FIX_BUG.md',
+                shop: 'SKILL_SHOP.md',
+                leaderboard: 'LEADERBOARD.md'
+            };
+            return names[key] || key;
+        }
+        
+        // Функции игры
+        function selectClass(className) {
+            gameState.player.class = className;
+            updateCharacterPreview();
+        }
+        
+        function selectSkill(skillName) {
+            gameState.player.startingSkill = skillName;
+            updateCharacterPreview();
+        }
+        
+        function updateCharacterPreview() {
+            const preview = document.getElementById('charPreview');
+            const createBtn = document.getElementById('createBtn');
+            
+            if (gameState.player.class && gameState.player.startingSkill) {
+                const classNames = {
+                    frontend: '🎨 Фронтенд-Волшебник',
+                    backend: '⚙️ Бэкенд-Воин',
+                    fullstack: '🚀 Фуллстек-Ниндзя'
+                };
+                
+                const skillNames = {
+                    python: '🐍 Python',
+                    javascript: '🌐 JavaScript',
+                    html: '🎨 HTML/CSS'
+                };
+                
+                preview.innerHTML = `
+                    <strong>Класс:</strong> ${classNames[gameState.player.class]}<br>
+                    <strong>Стартовый навык:</strong> ${skillNames[gameState.player.startingSkill]}<br>
+                    <strong>Уровень:</strong> 1<br>
+                    <strong>Здоровье:</strong> 100/100<br>
+                    <strong>Энергия:</strong> 100/100<br>
+                    <strong>Монеты:</strong> 100<br>
+                `;
+                createBtn.disabled = false;
+            } else {
+                preview.innerHTML = '<em>Выберите класс и навык для предпросмотра</em>';
+                createBtn.disabled = true;
+            }
+        }
+        
+        function createCharacter() {
+            const nameInput = document.getElementById('charName');
+            const playerName = nameInput.value.trim() || 'Безымянный';
+            
+            gameState.player.name = playerName;
+            gameState.player.skills = [gameState.player.startingSkill];
+            
+            // Сохраняем в localStorage
+            saveGameState();
+            
+            showNotification(`🎉 Персонаж "${playerName}" создан!`);
+            showFile('skills');
+        }
+        
+        function attack(skill) {
+            const log = document.getElementById('battleLog');
+            const playerHp = document.getElementById('playerHp');
+            const enemyHp = document.getElementById('enemyHpText');
+            const playerHpBar = document.getElementById('playerHpBar');
+            const enemyHpBar = document.getElementById('enemyHpBar');
+            
+            // Игрок атакует
+            const playerDamage = Math.floor(Math.random() * 6) + 10; // 10-15
+            gameState.battle.enemyHp -= playerDamage;
+            
+            let logText = `<strong>Ход ${gameState.battle.turn}:</strong><br>`;
+            logText += `🎯 Вы атаковали ${skill === 'python' ? '🐍 Python' : '🌐 JavaScript'} и нанесли <span style="color: var(--github-green);">${playerDamage} урона</span><br>`;
+            
+            // Враг атакует
+            if (gameState.battle.enemyHp > 0) {
+                const enemyDamage = Math.floor(Math.random() * 5) + 8; // 8-12
+                gameState.player.hp -= enemyDamage;
+                logText += `🐛 ${gameState.battle.enemy} атаковал: "Uncaught TypeError" нанес <span style="color: var(--github-red);">${enemyDamage} урона</span><br>`;
+            }
+            
+            // Обновляем UI
+            playerHp.textContent = gameState.player.hp;
+            enemyHp.textContent = Math.max(0, gameState.battle.enemyHp);
+            
+            const playerPercent = (gameState.player.hp / gameState.player.maxHp) * 100;
+            const enemyPercent = (Math.max(0, gameState.battle.enemyHp) / gameState.battle.enemyMaxHp) * 100;
+            
+            playerHpBar.style.width = `${playerPercent}%`;
+            enemyHpBar.style.width = `${enemyPercent}%`;
+            
+            // Проверяем конец битвы
+            if (gameState.battle.enemyHp <= 0) {
+                logText += `<br><strong style="color: var(--github-green);">🎉 ПОБЕДА! Вы победили ${gameState.battle.enemy}!</strong><br>`;
+                logText += `Награда: +50 XP, +30 монет`;
+                
+                // Награда
+                gameState.player.xp += 50;
+                gameState.player.coins += 30;
+                gameState.player.level = Math.floor(gameState.player.xp / 100) + 1;
+                
+                saveGameState();
+                updateUI();
+            } else if (gameState.player.hp <= 0) {
+                logText += `<br><strong style="color: var(--github-red);">💀 ПОРАЖЕНИЕ! Вы проиграли...</strong>`;
+            }
+            
+            log.innerHTML = logText + '<br>' + (log.innerHTML || '');
+            gameState.battle.turn++;
+        }
+        
+        function defend() {
+            const log = document.getElementById('battleLog');
+            
+            gameState.player.hp = Math.min(gameState.player.maxHp, gameState.player.hp + 5);
+            
+            let logText = `<strong>Ход ${gameState.battle.turn}:</strong><br>`;
+            logText += `🛡️ Вы использовали Try-Catch Block и восстановили <span style="color: var(--github-green);">5 HP</span><br>`;
+            logText += `❤️ Теперь у вас: ${gameState.player.hp}/${gameState.player.maxHp} HP`;
+            
+            document.getElementById('playerHp').textContent = gameState.player.hp;
+            document.getElementById('playerHpBar').style.width = `${(gameState.player.hp / gameState.player.maxHp) * 100}%`;
+            
+            log.innerHTML = logText + '<br>' + (log.innerHTML || '');
+            gameState.battle.turn++;
+        }
+        
+        function runAway() {
+            showNotification("🏃 Вы сбежали из битвы!");
+            showFile('skills');
+        }
+        
+        function resetBattle() {
+            gameState.battle.enemyHp = gameState.battle.enemyMaxHp;
+            gameState.battle.turn = 1;
+            gameState.player.hp = gameState.player.maxHp;
+            
+            document.getElementById('battleLog').innerHTML = '<em>Битва началась заново! Выберите действие.</em>';
+            document.getElementById('playerHp').textContent = gameState.player.hp;
+            document.getElementById('enemyHpText').textContent = gameState.battle.enemyHp;
+            document.getElementById('playerHpBar').style.width = '100%';
+            document.getElementById('enemyHpBar').style.width = '100%';
+        }
+        
+        function checkSolution() {
+            const solution = document.getElementById('solutionCode').value.toLowerCase();
+            const correctCode = `def calculate_sum(numbers):\n    total = 0\n    for num in numbers:\n        total += num\n    return total\n\nresult = calculate_sum([1, 2, 3, 4, 5])\nprint("Сумма:", result)`;
+            
+            // Простая проверка
+            if (solution.includes(':') && solution.includes('):') && solution.includes('):')) {
+                showNotification("✅ Правильно! Код исправлен. +100 XP, +50 монет");
+                gameState.player.xp += 100;
+                gameState.player.coins += 50;
+                gameState.player.level = Math.floor(gameState.player.xp / 100) + 1;
+                saveGameState();
+                updateUI();
+            } else {
+                showNotification("❌ Есть ошибки. Проверьте двоеточия и скобки");
+            }
+        }
+        
+        function buyItem(item) {
+            const prices = {
+                python_pro: 200,
+                react: 300,
+                sql_expert: 250,
+                docker: 400,
+                testing: 150,
+                energy: 50,
+                xp_book: 100,
+                health: 80,
+                chest: 250,
+                starter_pack: 350
+            };
+            
+            if (gameState.player.coins >= prices[item]) {
+                gameState.player.coins -= prices[item];
+                
+                // Эффекты покупки
+                switch(item) {
+                    case 'xp_book':
+                        gameState.player.xp += 200;
+                        gameState.player.level = Math.floor(gameState.player.xp / 100) + 1;
+                        showNotification("📚 +200 XP! Уровень повышен");
+                        break;
+                    case 'energy':
+                        gameState.player.energy = Math.min(gameState.player.maxEnergy, gameState.player.energy + 40);
+                        showNotification("☕ +40 энергии!");
+                        break;
+                    case 'health':
+                        gameState.player.hp = Math.min(gameState.player.maxHp, gameState.player.hp + 30);
+                        showNotification("🔧 +30 здоровья!");
+                        break;
+                    default:
+                        showNotification(`✅ ${item.replace('_', ' ')} куплен!`);
+                }
+                
+                saveGameState();
+                updateUI();
+            } else {
+                showNotification("❌ Недостаточно монет!");
+            }
+        }
+        
+        function updateUI() {
+            // Обновляем монеты
+            document.getElementById('playerCoins').textContent = gameState.player.coins;
+            
+            // Обновляем уровни навыков
+            const pythonLevel = gameState.player.skills?.includes('python') ? 1 : 0;
+            const jsLevel = gameState.player.skills?.includes('javascript') ? 1 : 0;
+            
+            document.getElementById('pythonLevel').textContent = pythonLevel;
+            document.getElementById('jsLevel').textContent = jsLevel;
+            document.getElementById('sqlLevel').textContent = 0;
+            document.getElementById('gitLevel').textContent = 0;
+            
+            document.getElementById('pythonProgress').style.width = `${pythonLevel * 10}%`;
+            document.getElementById('jsProgress').style.width = `${jsLevel * 10}%`;
+            
+            // Обновляем лидерборд
+            document.getElementById('playerRank').textContent = `#${Math.floor(Math.random() * 50) + 75}`;
+            document.getElementById('playerLevel').textContent = gameState.player.level;
+            document.getElementById('playerXP').textContent = gameState.player.xp;
+            document.getElementById('playerClass').textContent = gameState.player.class ? 
+                gameState.player.class.charAt(0).toUpperCase() + gameState.player.class.slice(1) : '-';
+            
+            // Обновляем битву
+            document.getElementById('playerHp').textContent = gameState.player.hp;
+            document.getElementById('playerMaxHp').textContent = gameState.player.maxHp;
+            document.getElementById('playerEnergy').textContent = gameState.player.energy;
+        }
+        
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+        
+        function showInstructions() {
+            document.getElementById('instructionModal').classList.add('active');
+        }
+        
+        function closeModal() {
+            document.getElementById('instructionModal').classList.remove('active');
+        }
+        
+        function downloadProject() {
+            // Создаем структуру файлов для скачивания
+            const files = {
+                'README.md': gameFiles.readme,
+                'CHARACTER_CREATION.md': gameFiles.character,
+                'SKILLS.md': gameFiles.skills,
+                'BATTLE_SYNTAX_ERROR.md': gameFiles.battle,
+                'QUEST_FIX_BUG.md': gameFiles.quest,
+                'SKILL_SHOP.md': gameFiles.shop,
+                'LEADERBOARD.md': gameFiles.leaderboard,
+                'INSTRUCTIONS_FOR_TEACHER.md': `# 📚 Инструкция для преподавателя
+
+## 🎯 О проекте
+"Код-Дуэль" — учебный проект для обучения студентов:
+- Работе с Markdown
+- Основам Git и GitHub
+- Командной разработке
+- Проектированию через документацию
+
+## 🚀 Быстрый старт
+
+1. **Создайте репозиторий** на GitHub
+2. **Загрузите файлы** из этого архива
+3. **Добавьте студентов** как Collaborators
+4. **Проведите вводное занятие**
+
+## 📝 Структура файлов
+
+\`\`\`
+code-duel-game/
+├── README.md              # Главное меню
+├── CHARACTER_CREATION.md  # Создание персонажа
+├── SKILLS.md             # Система навыков
+├── BATTLE_SYNTAX_ERROR.md # Первая битва
+├── QUEST_FIX_BUG.md      # Кодинг-квест
+├── SKILL_SHOP.md         # Магазин
+├── LEADERBOARD.md        # Рейтинг
+└── PLAYERS/              # Папка для персонажей
+    └── TEMPLATE.md       # Шаблон персонажа
+\`\`\`
+
+## 🎮 План занятия (90 мин)
+
+| Время | Активность | Цель |
+|-------|------------|------|
+| 0-15 | Знакомство, создание аккаунтов | Регистрация на GitHub |
+| 15-30 | Создание персонажей | Изучение Markdown |
+| 30-45 | Первая битва | Работа с Issues |
+| 45-60 | Решение квеста | Работа с Pull Requests |
+| 60-75 | Создание своего контента | Форк и клонирование |
+| 75-90 | Турнир, подведение итогов | Code Review |
+
+## 💡 Советы для преподавателя
+
+1. **Используйте Issues** для заданий
+2. **Требуйте Pull Requests** для изменений
+3. **Проводите Code Review** вместе
+4. **Награждайте активных** (значки в профиле)
+5. **Ведите историю** в Wiki проекта
+
+## 🎯 Чему научатся студенты
+
+✅ **Технические навыки:**
+- Работа с Markdown
+- Основы Git (commit, push, pull, merge)
+- Работа с GitHub (Issues, PR, Projects)
+- Проектирование структуры данных
+
+✅ **Мягкие навыки:**
+- Работа в команде
+- Решение конфликтов
+- Критическое мышление
+- Презентация результатов
+
+## 📞 Поддержка
+
+Для вопросов и предложений:
+- GitHub Issues в репозитории
+- Email: ваш@email.com
+- Telegram чат группы
+
+---
+*Проект создан для образовательных целей*
+*Версия 1.0 · Январь 2024*
+`
+            };
+            
+            // Создаем ZIP архив
+            const zip = new JSZip();
+            
+            // Добавляем файлы
+            for (const [filename, content] of Object.entries(files)) {
+                zip.file(filename, content);
+            }
+            
+            // Добавляем папки
+            zip.folder("CHAPTERS");
+            zip.folder("BUGS");
+            zip.folder("SKILLS");
+            zip.folder("PLAYERS");
+            
+            // Генерируем и скачиваем
+            zip.generateAsync({type:"blob"})
+            .then(function(content) {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(content);
+                link.download = "code-duel-game.zip";
+                link.click();
+                
+                showNotification("✅ Проект скачан! Распакуйте и используйте на GitHub");
+            });
+        }
+        
+        // Сохранение и загрузка состояния
+        function saveGameState() {
+            localStorage.setItem('codeDuelGame', JSON.stringify(gameState));
+        }
+        
+        function loadGameState() {
+            const saved = localStorage.getItem('codeDuelGame');
+            if (saved) {
+                Object.assign(gameState, JSON.parse(saved));
+            }
+        }
+        
+        // Полифилл для JSZip (упрощенный)
+        if (typeof JSZip === 'undefined') {
+            // Если JSZip не загружен, показываем альтернативу
+            window.downloadProject = function() {
+                alert("Для скачивания архива подключите JSZip библиотеку.\n\nИли создайте репозиторий вручную, скопировав содержимое файлов.");
+                // Создаем текстовый файл с инструкциями
+                const content = "СКАЧАТЬ ПОЛНЫЙ ПРОЕКТ:\n\n1. Создайте новый репозиторий на GitHub\n2. Создайте файлы из этой демо-версии\n3. Добавьте студентов как collaborators\n\nФайлы проекта:\n- README.md\n- CHARACTER_CREATION.md\n- SKILLS.md\n- BATTLE_SYNTAX_ERROR.md\n- QUEST_FIX_BUG.md\n- SKILL_SHOP.md\n- LEADERBOARD.md";
+                const blob = new Blob([content], {type: 'text/plain'});
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = "code-duel-instructions.txt";
+                link.click();
+            };
+        }
+        
+        // Вспомогательные функции
+        function showQuickStart() {
+            showNotification("🚀 Используйте CHARACTER_CREATION.md для начала!");
+            showFile('character');
+        }
+        
+        function showHint() {
+            showNotification("💡 Проверьте двоеточия после 'for' и закрывающие скобки!");
+        }
+        
+        function giveUp() {
+            if (confirm("Сдаться и потерять 50 XP?")) {
+                gameState.player.xp = Math.max(0, gameState.player.xp - 50);
+                saveGameState();
+                updateUI();
+                showNotification("🏳️ Вы сдались. -50 XP");
+            }
+        }
+        
+        function updateLeaderboard() {
+            showNotification("🏆 Таблица лидеров обновлена!");
+            showFile('leaderboard');
+        }
+        
+        function buySkill(skill) {
+            showNotification(`🎯 Навык "${skill}" добавлен в список желаний!`);
+        }
+        
+        // Обработчики клавиш
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                saveGameState();
+                showNotification("💾 Игра сохранена!");
+            }
+        });
+        
+        // Закрытие модального окна по клику вне его
+        window.onclick = function(event) {
+            const modal = document.getElementById('instructionModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        };
+    </script>
+    
+    <!-- Подключаем JSZip для создания архива -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    
+</body>
+</html>
