@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создаем Wiki-страницу класса с GitHub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+            color: #c9d1d9;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .container {
+            display: none;
+            width: 100%;
+            height: 100vh;
+            padding: 40px;
+            position: relative;
+            overflow-y: auto;
+        }
+        
+        .container.active {
+            display: block;
+        }
+        
+        .slide-number {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 1.2rem;
+            color: #58a6ff;
+            font-weight: bold;
+        }
+        
+        .slide-title {
+            font-size: 3.2rem;
+            margin-bottom: 20px;
+            color: #58a6ff;
+            text-shadow: 0 0 15px rgba(88, 166, 255, 0.3);
+            border-bottom: 3px solid #30363d;
+            padding-bottom: 15px;
+        }
+        
+        .slide-subtitle {
+            font-size: 1.8rem;
+            color: #8b949e;
+            margin-bottom: 40px;
+        }
+        
+        .content {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            max-width: 1000px;
+        }
+        
+        .visual-demo {
+            background: #161b22;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 30px 0;
+            border: 1px solid #30363d;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        .demo-title {
+            color: #7ee787;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .demo-title i {
+            margin-right: 10px;
+        }
+        
+        .demo-image {
+            max-width: 100%;
+            border-radius: 8px;
+            border: 1px solid #30363d;
+            margin: 15px 0;
+        }
+        
+        .code-block {
+            background: #0d1117;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #58a6ff;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+        }
+        
+        .comment {
+            color: #8b949e;
+        }
+        
+        .tag {
+            color: #7ee787;
+        }
+        
+        .attribute {
+            color: #79c0ff;
+        }
+        
+        .value {
+            color: #ff7b72;
+        }
+        
+        .text {
+            color: #c9d1d9;
+        }
+        
+        .markdown-example {
+            background: #f6f8fa;
+            color: #24292e;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2ea44f;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+        }
+        
+        .markdown-example h1 {
+            color: #24292e;
+            margin-bottom: 15px;
+        }
+        
+        .markdown-example h2 {
+            color: #24292e;
+            margin: 15px 0 10px 0;
+        }
+        
+        .markdown-example ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .markdown-example strong {
+            color: #24292e;
+        }
+        
+        .task {
+            background: rgba(46, 164, 79, 0.1);
+            border: 1px solid rgba(46, 164, 79, 0.4);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+        
+        .task-title {
+            color: #7ee787;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .task-title i {
+            margin-right: 10px;
+        }
+        
+        .step {
+            display: flex;
+            margin-bottom: 15px;
+            align-items: flex-start;
+        }
+        
+        .step-number {
+            background: #58a6ff;
+            color: #0d1117;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+        
+        .nav-btn {
+            background: #21262d;
+            color: #c9d1d9;
+            border: 1px solid #30363d;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-btn:hover {
+            background: #30363d;
+            border-color: #58a6ff;
+            color: #58a6ff;
+            transform: scale(1.1);
+        }
+        
+        .nav-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 5px;
+            background: #58a6ff;
+            transition: width 0.3s ease;
+            z-index: 101;
+        }
+        
+        .slide-indicators {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+        
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #30363d;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .indicator.active {
+            background: #58a6ff;
+            transform: scale(1.2);
+        }
+        
+        .logo {
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            color: #f0f6fc;
+        }
+        
+        .logo-icon {
+            color: #58a6ff;
+            margin-right: 10px;
+            font-size: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .slide-title {
+                font-size: 2.2rem;
+            }
+            
+            .slide-subtitle {
+                font-size: 1.4rem;
+            }
+            
+            .content {
+                font-size: 1.1rem;
+            }
+            
+            .navigation {
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            .slide-indicators {
+                bottom: 20px;
+                left: 20px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    
+    <div class="logo">
+        <i class="fab fa-github logo-icon"></i>
+        <span>GitHub Workshop</span>
+    </div>
+    
+    <!-- Слайд 1: Титульный слайд -->
+    <div class="container active" id="slide1">
+        <div class="slide-number">1/18</div>
+        <h1 class="slide-title">Создаем Wiki-страницу класса вместе</h1>
+        <h2 class="slide-subtitle">Знакомство с GitHub, Markdown и командной работой за 2 часа</h2>
+        
+        <div class="content">
+            <p>Сегодня мы освоим инструменты, которые используют профессиональные разработчики по всему миру для совместной работы.</p>
+            
+            <div class="visual-demo">
+                <div class="demo-title">
+                    <i class="fas fa-rocket"></i>
+                    Что мы сделаем за это время:
+                </div>
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div>Зарегистрируемся на GitHub и создадим общий проект</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div>Научимся оформлять тексты с помощью Markdown</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div>Каждый создаст свою личную страницу в общем репозитории</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div>Свяжем все страницы в один работающий сайт</div>
+                </div>
+            </div>
+            
+            <div class="task">
+                <div class="task-title">
+                    <i class="fas fa-laptop-code"></i>
+                    Подготовка к работе
+                </div>
+                <p>Для работы вам понадобится:</p>
+                <ul>
+                    <li>Компьютер с доступом в интернет</li>
+                    <li>Браузер (Chrome, Firefox, Edge)</li>
+                    <li>Электронная почта для регистрации</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Слайд 2: Цели занятия -->
+    <div class="container" id="slide2">
+        <div class="slide-number">2/18</div>
+        <h1 class="slide-title">Сегодня мы сделаем это</h1>
+        
+        <div class="content">
+            <div class="visual-demo">
+                <div class="demo-title">
+                    <i class="fas fa-project-diagram"></i>
+                    Процесс работы
+                </div>
+                <div style="text-align: center; margin: 20px 0;">
+                    <div style="display: inline-block; text-align: left; padding: 20px; background: #0d1117; border-radius: 10px; border: 1px solid #30363d;">
+                        <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                            <div style="background: #58a6ff; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div>
+                                <strong>Ваш браузер</strong><br>
+                                <small>Вы работаете с файлами</small>
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center; margin: 10px 0;">
+                            <i class="fas fa-arrow-down" style="color: #58a6ff; font-size: 1.5rem;"></i>
+                        </div>
+                        
+                        <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                            <div style="background: #7ee787; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                                <i class="fab fa-github"></i>
+                            </div>
+                            <div>
+                                <strong>GitHub.com</strong><br>
+                                <small>Хранятся файлы и история изменений</small>
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center; margin: 10px 0;">
+                            <i class="fas fa-arrow-down" style="color: #7ee787; font-size: 1.5rem;"></i>
+                        </div>
+                        
+                        <div style="display: flex; align-items: center;">
+                            <div style="background: #ff7b72; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <div>
+                                <strong>Наш общий сайт в интернете!</strong><br>
+                                <small>Результат виден всем по ссылке</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <p>К концу занятия у нас будет настоящий работающий сайт, созданный совместными усилиями всего класса!</p>
+        </div>
+    </div>
+    
+    <!-- Слайд 3: Примеры реальных проектов -->
+    <div class="container" id="slide3">
+        <div class="slide-number">3/18</div>
+        <h1 class="slide-title">Зачем это нужно?</h1>
+        <h2 class="slide-subtitle">Показываем реальные примеры</h2>
+        
+        <div class="content">
+            <div class="visual-demo">
+                <div class="demo-title">
+                    <i class="fas fa-eye"></i>
+                    Пример 1: README.md популярного проекта
+                </div>
+                <p>Так выглядит главная страница проекта freeCodeCamp на GitHub:</p>
+                <div style="background: #0d1117; border-radius: 8px; padding: 15px; margin: 15px 0; border: 1px solid #30363d;">
+                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                        <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" style="width: 30px; height: 30px; margin-right: 10px;">
+                        <div>
+                            <strong>freeCodeCamp/freeCodeCamp</strong><br>
+                            <small style="color: #8b949e;">https://github.com/freeCodeCamp/freeCodeCamp</small>
+                        </div>
+                    </div>
+                    <div style="background: #161b22; padding: 15px; border-radius: 5px;">
+                        <h3 style="color: #f0f6fc; margin-bottom: 10px;">freeCodeCamp.org's open-source codebase and curriculum</h3>
+                        <p style="color: #8b949e; margin-bottom: 10px;">Learn to code for free. Build projects. Earn certifications.</p>
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px;">
+                            <span style="background: #0d1117; padding: 5px 10px; border-radius: 15px; font-size: 0.9rem; border: 1px solid #30363d;">JavaScript</span>
+                            <span style="background: #0d1117; padding: 5px 10px; border-radius: 15px; font-size: 0.9rem; border: 1px solid #30363d;">HTML</span>
+                            <span style="background: #0d1117; padding: 5px 10px; border-radius: 15px; font-size: 0.9rem; border: 1px solid #30363d;">CSS</span>
+                        </div>
+                    </div>
+                </div>
+                <p><strong>Ключевой момент:</strong> Вся эта информация оформлена с помощью Markdown!</p>
+            </div>
+            
+            <div class="task">
+                <div class="task-title">
+                    <i class="fas fa-lightbulb"></i>
+                    Главная идея
+                </div>
+                <p>GitHub — это "социальная сеть для программистов", где можно:</p>
+                <ul>
+                    <li>Хранить код и другие файлы</li>
+                    <li>Совместно работать над проектами</li>
+                    <li>Отслеживать изменения и историю</li>
+                    <li>Создавать сайты и документацию</li>
+                </ul>
+                <p>И сегодня вы попробуете это на практике!</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Слайд 4: Регистрация на GitHub -->
+    <div class="container" id="slide4">
+        <div class="slide-number">4/18</div>
+        <h1 class="slide-title">Шаг 1 — Регистрация на GitHub</h1>
+        
+        <div class="content">
+            <div class="visual-demo">
+                <div class="demo-title">
+                    <i class="fas fa-user-plus"></i>
+                    Пошаговая демонстрация (повторяйте за мной)
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div>Перейдите на <a href="https://github.com" target="_blank" style="color: #58a6ff;">github.com</a></div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div>Нажмите кнопку <strong>"Sign up"</strong> в правом верхнем углу</div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div>Введите email, который у вас всегда под рукой</div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div>Придумайте <strong>логин</strong> (это будет частью ссылки на ваш профиль)</div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <div>Создайте надежный пароль и запомните его</div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">6</div>
+                    <div>Пройдите проверку (решите капчу, если появится)</div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">7</div>
+                    <div>Введите код подтверждения из email</div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">8</div>
+                    <div>На вопрос "What do you want to do?" выберите <strong>"Skip personalization"</strong></div>
+                </div>
+            </div>
+            
+            <div class="task">
+                <div class="task-title">
+                    <i class="fas fa-clock"></i>
+                    Время на регистрацию: 10 минут
+                </div>
+                <p>Не торопитесь, внимательно заполняйте все поля. Ваш логин должен быть запоминающимся!</p>
+                <p>Когда зарегистрируетесь, сообщите мне свой логин для добавления в общий проект.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Слайд 5: Создание организации -->
+    <div class="container" id="slide5">
+        <div class="slide-number">5/18</div>
+        <h1 class="slide-title">Шаг 2 — Создаем "Команду"</h1>
+        <h2 class="slide-subtitle">(Организацию на GitHub)</h2>
+        
+        <div class="content">
+            <div class="visual-demo">
+                <div class="demo-title">
+                    <i class="fas fa-users"></i>
+                    Демонстрация (делает преподаватель)
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div>В правом верхнем углу нажимаем на аватарку → <strong>"Your organizations"</strong></div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div>Нажимаем <strong>"New organization"</strong></div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div>Выбираем бесплатный тариф <strong>"Free"</strong></div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div><strong>Придумываем название:</strong> <code style="background: #0d1117; padding: 5px 10px; border-radius: 5px;">web-group-45</code> или <code style="background: #0d1117; padding: 5px 10px; border-radius: 5px;">school-team-2024</code></div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <div>Нажимаем <strong>"Create organization"</strong></div>
+                </div>
+            </div>
+            
+            <div class="task">
+                <div class="task-title">
+                    <i class="fas fa-info-circle"></i>
+                    Важная информация
+                </div>
+                <p>Название организации будет частью адреса нашего сайта!</p>
+                <p>Пример: если организация называется <code>web-group-45</code>, то сайт будет доступен по адресу:</p>
+                <div class="code-block">
+                    <span class="text">https://web-group-45.github.io/...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Слайд 6: Создание репозитория -->
+    <div class="container" id="slide6">
+        <div class="slide-number">6/18</div>
+        <h1 class="slide-title">Шаг 3 — Создаем общий проект</h1>
+        <h2 class="slide-subtitle">(Репозиторий на GitHub)</h2>
+        
+        <div class="content">
+            <div class="visual-demo">
+                <div class="demo-title">
+                    <i class="fas fa-folder-plus"></i>
+                    Демонстрация (продолжает преподаватель)
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div>Внутри организации нажимаем <strong>"New repository"</strong></div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div><strong>Repository name:</strong> <code style="background: #0d1117; padding: 5px 10px; border-radius: 5px;">class-wiki</code> (имя проекта)</div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div><strong>Description:</strong> "Коллективный сайт нашего класса"</div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div>Выбираем <strong>Public</strong> (публичный, чтобы все видели)</div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <div>Ставим галочку <strong>"Add a README file"</strong> (создаст первый файл)</div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">6</div>
+                    <div>Жмем <strong>"Create repository"</strong></div>
+                </div>
+            </div>
+            
+            <div style="background: rgba(46, 164, 79, 0.2); border: 1px solid rgba(46, 164, 79, 0.6); border-radius: 8px; padding: 20px; margin: 25px 0; text-align: center;">
+                <i class="fas fa-check-circle" style="color: #7ee787; font-size: 2.5rem; margin-bottom: 15px;"></i>
+                <h3 style="color: #7ee787; margin-bottom: 10px;">"Общая папка" создана!</h3>
+                <p>Теперь у нас есть место, где мы будем хранить все файлы нашего проекта.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Слайд 7: Интерфейс репозитория -->
+    <div class="container" id="slide7">
+        <div class="slide-number">7/18</div>
+        <h1 class="slide-title">Что мы видим? Интерфейс репозитория</h1>
+        
+        <div class="content">
+            <div class="visual-demo">
+                <div class="demo-title">
+                    <i class="fas fa-desktop"></i>
+                    Знакомство с элементами интерфейса
+                </div>
+                
+                <div style="background: #0d1117; border-radius: 8px; padding: 20px; border: 1px solid #30363d;">
+                    <!-- Имитация интерфейса GitHub -->
+                    <div style="display: flex; border-bottom: 1px solid #30363d; padding-bottom: 10px; margin-bottom: 15px;">
+                        <div style="padding: 5px 15px; background: #f6f8fa; color: #24292e; border-radius: 6px 6px 0 0; font-weight: bold; border-bottom: 2px solid #f9826c;">Code</div>
+                        <div style="padding: 5px 15px; color: #8b949e;">Issues</div>
+                        <div style="padding: 5px 15px; color: #8b949e;">Pull requests</div>
+                        <div style="padding: 5px 15px; color: #8b949e;">Actions</div>
+                        <div style="padding: 5px 15px; color: #8b949e;">Projects</div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <button style="background: #2ea44f; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; display: flex; align-items: center;">
+                            <i class="fas fa-code" style="margin-right: 8px;"></i>
+                            Code
+                        </button>
+                        <div style="font-size: 0.9rem; color: #8b949e; margin-top: 5px;">Кнопка для клонирования репозитория</div>
+                    </div>
+                    
+                    <div style="background: #161b22; padding: 15px; border-radius: 6px; margin-bottom: 15px;">
+                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                            <i class="far fa-file" style="color: #8b949e; margin-right: 10px;"></i>
+                            <div>
+                                <strong style="color: #f0f6fc;">README.md</strong>
+                                <div style="font-size: 0.9rem; color: #8b949e;">Главный файл с описанием проекта</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <button style="background: #21262d; color: #c9d1d9; border: 1px solid #30363d; padding: 8px 16px; border-radius: 6px; font-weight: bold; display: flex; align-items: center;">
+                            <i class="fas fa-plus" style="margin-right: 8px;"></i>
+                            Add file
+                        </button>
+                        <div style="font-size: 0.9rem; color: #8b949e; margin-top: 5px;">Главная кнопка для создания новых файлов</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="task">
+                <div class="task-title">
+                    <i class="fas fa-book"></i>
+                    Краткий словарь
+                </div>
+                <ul>
+                    <li><strong>Code</strong> — здесь находятся все файлы проекта</li>
+                    <li><strong>Issues</strong> — система задач для проекта</li>
+                    <li><strong>Pull requests</strong> — предложения изменений в проект</li>
+                    <li><strong>README.md</strong> — главный файл с описанием проекта (в формате Markdown)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Слайд 8: Приглашение команды -->
+    <div class="container" id="slide8">
+        <div class="slide-number">8/18</div>
+        <h1 class="slide-title">Приглашаем команду!</h1>
+        
+        <div class="content">
+            <div class="visual-demo">
+                <div class="demo-title">
+                    <i class="fas fa-user-friends"></i>
+                    Демонстрация (делает преподаватель)
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div>Переходим во вкладку <strong>"Settings"</strong> (справа вверху)</div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div>В боковом меню выбираем <strong>"Collaborators and teams"</strong></div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div>Нажимаем <strong>"Add people"</strong></div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div>Вводим логины студентов, которые успели зарегистрироваться</div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <div>Каждый студент получает email-приглашение и должен его <strong>принять</strong></div>
+                </div>
+            </div>
+            
+            <div class="task">
+                <div class="task-title">
+                    <i class="fas fa-envelope"></i>
+                    Что делать студентам
+                </div>
+                <p>После того как преподаватель добавит вас в проект:</p>
+                <ol>
+                    <li>Проверьте свою электронную почту</li>
+                    <li>Найдите письмо от GitHub с приглашением</li>
+                    <li>Нажмите кнопку <strong>"Accept invitation"</strong> в письме</li>
+                    <li>Теперь вы можете редактировать файлы в репозитории!</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Слайд 9: Markdown за 5 минут -->
+    <div class="container" id="slide9">
+        <div class="slide-number">9/18</div>
+        <h1 class="slide-title">Язык Markdown за 5 минут</h1>
+        
+        <div class="content">
+            <div class="visual-demo">
+                <div class="demo-title">
+                    <i class="fas fa-language"></i>
+                    Простой синтаксис для оформления текстов
+                </div>
+                
+                <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                    <thead>
+                        <tr style="background: #161b22;">
+                            <th style="padding: 12px; text-align: left; border: 1px solid #30363d;">Что хотим сделать</th>
+                            <th style="padding: 12px; text-align: left; border: 1px solid #30363d;">Пишем так в Markdown</th>
+                            <th style="padding: 12px; text-align: left; border: 1px solid #30363d;">Как это будет выглядеть</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 12px; border: 1px solid #30363d;">Заголовок 1 уровня</td>
+                            <td style="padding: 12px; border: 1px solid #30363d;"><code># Самый главный</code></td>
+                            <td style="padding: 12px; border: 1px solid #30363d;"><h1 style="margin: 0; font-size: 1.5rem;">Самый главный</h1></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; border: 1px solid #30363d;">Заголовок 2 уровня</td>
+                            <td style="padding: 12px; border: 1px solid #30363d;"><code>## Меньше</code></td>
+                            <td style="padding: 12px; border: 1px solid #30363d;"><h2 style="margin: 0; font-size: 1.3rem;">Меньше</h2></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; border: 1px solid #30363d;">Список</td>
+                            <td style="padding: 12px; border: 1px solid #30363d;"><code>- Пункт 1<br>- Пункт 2</code></td>
+                            <td style="padding: 12px; border: 1px solid #30363d;">
+                                <ul style="margin: 0; padding-left: 20px;">
+                                    <li>Пункт 1</li>
+                                    <li>Пункт 2</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; border: 1px solid #30363d;">Жирный текст</td>
+                            <td style="padding: 12px; border: 1px solid #30363d;"><code>**жирный текст**</code></td>
+                            <td style="padding: 12px; border: 1px solid #30363d;"><strong>жирный текст</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; border: 1px solid #30363d;">Курсив</td>
+                            <td style="padding: 12px; border: 1px solid #30363d;"><code>*курсивный текст*</code></td>
+                            <td style="padding: 12px; border: 1px solid #30363d;"><em>курсивный текст</em></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; border: 1px solid #30363d;">Ссылка</td>
+                            <td style="padding: 12px; border: 1px solid #30363d;"><code>[Google](https://google.com)</code></td>
+                            <td style="padding: 12px; border: 1px solid #30363d;"><a href="#" style="color: #58a6ff;">Google</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="task">
+                <div class="task-title">
+                    <i class="fas fa-edit"></i>
+                    Демонстрация редактирования
+                </div>
+                <p>Давайте посмотрим, как редактировать файл прямо на GitHub:</p>
+                <ol>
+                    <li>Откройте файл <code>README.md</code></li>
+                    <li>Нажмите на значок карандаша (иконка редактирования)</li>
+                    <li>Внесите изменения в тексте</li>
+                    <li>Переключитесь на вкладку <strong>"Preview"</strong> чтобы увидеть результат</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Слайд 10: Первое задание -->
+    <div class="container" id="slide10">
+        <div class="slide-number">10/18</div>
+        <h1 class="slide-title">Задание для каждого</h1>
+        <h2 class="slide-subtitle">Создайте свою личную страницу</h2>
+        
+        <div class="content">
+            <div class="visual-demo">
+                <div class="demo-title">
+                    <i class="fas fa-tasks"></i>
+                    Цель: Создать файл <code>ВашеИмя.md</code> с информацией о себе
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div><strong>Перейдите в репозиторий</strong> <code>class-wiki</code> (ссылку даст преподаватель)</div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div>Нажмите кнопку <strong>"Add file"</strong> → <strong>"Create new file"</strong></div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div><strong>В поле имени файла введите:</strong> <code>ivanov_ivan.md</code> (латиницей, маленькими буквами)</div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div><strong>Скопируйте шаблон</strong> со следующего слайда в окно редактирования</div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <div><strong>Измените данные</strong> на свои</div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">6</div>
+                    <div><strong>Прокрутите вниз.</strong> В поле "Commit changes" напишите: <code>Добавил страницу Ивана</code></div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">7</div>
+                    <div>Оставьте галочку <strong>"Commit directly to the <code>main</code> branch"</strong></div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">8</div>
+                    <div>Нажмите <strong>"Commit new file"</strong></div>
+                </div>
+            </div>
+            
+            <div class="task">
+                <div class="task-title">
+                    <i class="fas fa-user-check"></i>
+                    Роль преподавателя
+                </div>
+                <p>Пока студенты выполняют задание:</p>
+                <ul>
+                    <li>Ходите по классу и помогайте тем, у кого возникают трудности</li>
+                    <li>Отвечайте на вопросы</li>
+                    <li>Через 10-15 минут в репозитории уже будет 10-15 новых файлов!</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Слайд 11: Шаблон для личной страницы -->
+    <div class="container" id="slide11">
+        <div class="slide-number">11/18</div>
+        <h1 class="slide-title">Шаблон для личной страницы</h1>
+        
+        <div class="content">
+            <div class="visual-demo">
+                <div class="demo-title">
+                    <i class="fas fa-code"></i>
+                    Код для копирования
+                </div>
+                
+                <div class="code-block">
+                    <span class="comment"># Ваше Имя Фамилия</span><br><br>
+                    
+                    <span class="comment">## Обо мне</span><br>
+                    <span class="text">- **Любимый предмет:** Информатика</span><br>
+                    <span class="text">- **Хобби:** Играю на гитаре, программирую</span><br>
+                    <span class="text">- **Цель на год:** Выучить Python</span><br><br>
+                    
+                    <span class="comment">## Мой топ-3</span><br>
+                    <span class="text">1. Игра: Minecraft</span><br>
+                    <span class="text">2. Сериал: Секретные материалы</span><br>
+                    <span class="text">3. Книга: "Мастер и Маргарита"</span><br><br>
+                    
+                    <span class="comment">## Ссылка на крутой ресурс</span><br>
+                    <span class="text">[Здесь я учусь программировать](https://htmlacademy.ru)</span><br><br>
+                    
+                    <span class="text">---</span><br>
+                    <span class="text"><em>Страница создана в рамках занятия по GitHub</em></span>
+                </div>
+            </div>
+            
+            <div class="markdown-example">
+                <h1>Иван Иванов</h1>
+                
+                <h2>Обо мне</h2>
+                <ul>
+                    <li><strong>Любимый предмет:</strong> Информатика</li>
+                    <li><strong>Хобби:</strong> Играю на гитаре, программирую</li>
+                    <li><strong>Цель на год:</strong> Выучить Python</li>
+                </ul>
+                
+                <h2>Мой топ-3</h2>
+                <ol>
+                    <li>Игра: Minecraft</li>
+                    <li>Сериал: Секретные материалы</li>
+                    <li>Книга: "Мастер и Маргарита"</li>
+                </ol>
+                
+                <h2>Ссылка на крутой ресурс</h2>
+                <p><a href="https://htmlacademy.ru">Здесь я учусь программировать</a></p>
+                
+                <hr>
+                <p><em>Страница создана в рамках занятия по GitHub</em></p>
+            </div>
+            
+            <p style="text-align: center; margin-top: 20px;">
+                <strong>Скопируйте этот код, замените данные на свои и создайте файл!</strong>
+            </p>
+        </div>
+    </div>
+    
+    <!-- Слайд 12: Работа в команде -->
+    <div class="container" id="slide12">
+        <div class="slide-number">12/18</div>
+        <h1 class="slide-title">Проблема! Как сделать общую страницу?</h1>
+        
+        <div class="content">
+            <div class="visual-demo">
+                <div class="demo-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Постановка задачи
+                </div>
+                <p>"Теперь давайте создадим главную страницу <code>index.md</code>, где будут ссылки на всех участников."</p>
+                
+                <div style="background: rgba(255, 123, 114, 0.1); border: 1px solid rgba(255, 123, 114, 0.4); border-radius: 8px; padding: 20px; margin: 20px 0;">
+                    <h3 style="color: #ff7b72; margin-bottom: 10px;">Демонстрация (делает преподаватель):</h3>
+                    
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div>Создаем файл <code>index.md</code></div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div>Пишем в нем:</div>
+                    </div>
+                    
+                    <div class="code-block" style="margin: 10px 0 10px 30px;">
+                        <span class="comment"># Вики-страница нашего класса!</span><br><br>
+                        
+                        <span class="text">Здесь собраны страницы всех участников проекта:</span><br><br>
+                        
+                        <span class="comment">## Участники:</span><br>
+                        <span class="text">- [Иван Иванов](ivanov_ivan.md)</span>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div>Коммитим файл</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="task">
+                <div class="task-title">
+                    <i class="fas fa-users"></i>
+                    Задача для студентов
+                </div>
+                <p><strong>"Теперь каждый должен добавить в этот список СВОЮ ссылку!"</strong></p>
+                <p>Пример того, что нужно добавить:</p>
+                <div class="code-block">
+                    <span class="text">- [Анна Петрова](petrova_anna.md)</span><br>
+                    <span class="text">- [Сергей Сидоров](sidorov_sergey.md)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Слайд 13: Конфликт изменений -->
+    <div class="container" id="slide13">
+        <div class="slide-number">13/18</div>
+        <h1 class="slide-title">Что случится? Конфликт изменений</h1>
+        
+        <div class="content">
+            <div class="visual-demo">
+                <div class="demo-title">
+                    <i class="fas fa-bug"></i>
+                    Демонстрация конфликта
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div>Два человека одновременно откроют <code>index.md</code> для редактирования</div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div>Первый успеет сохранить (скоммитить) свои изменения</div>
+                </div>
+                
+                <div style="background: rgba(255, 123, 114, 0.2); border: 1px solid #ff7b72; border-radius: 8px; padding: 20px; margin: 20px 0 30px 30px;">
+                    <h3 style="color: #ff7b72; margin-bottom: 10px;">
+                        <i class="fas fa-exclamation-circle"></i>
+                        Второй получит ошибку!
+                    </h3>
+                    <p><strong>"This file has been changed by someone else. You cannot merge your changes until you pull their changes."</strong></p>
+                    <p style="color: #8b949e; margin-top: 10px;">(Этот файл был изменен кем-то другим. Вы не можете объединить свои изменения, пока не получите их изменения.)</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div><strong>Объяснение:</strong> "GitHub защищает нас от потери чужих изменений. Это и есть основа командной работы — нужно учитывать работу других!"</div>
+                </div>
+            </div>
+            
+            <div class="task">
+                <div class="task-title">
+                    <i class="fas fa-handshake"></i>
+                    Командная работа в действии
+                </div>
+                <p>Конфликты — это нормальная часть совместной работы. Они возникают, когда несколько человек пытаются изменить одно и то же.</p>
+                <p>Главное — научиться их решать цивилизованно!</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Слайд 14: Решение конфликта -->
+    <div class="container" id="slide14">
+        <div class="slide-number">14/18</div>
+        <h1 class="slide-title">Решение: Работаем по очереди или...</h1>
+        <h2 class="slide-subtitle">(Рассказываем про Git)</h2>
+        
+        <div class="content">
+            <div class="visual-demo">
+                <div class="demo-title">
+                    <i class="fas fa-wrench"></i>
+                    Два подхода к решению
+                </div>
+                
+                <div style="display: flex; flex-wrap: wrap; gap: 20px; margin: 20px 0;">
+                    <div style="flex: 1; min-width: 300px; background: rgba(121, 192, 255, 0.1); border: 1px solid rgba(121, 192, 255, 0.4); border-radius: 8px; padding: 20px;">
+                        <h3 style="color: #79c0ff; margin-bottom: 15px;">
+                            <i class="fas fa-user-clock"></i>
+                            Простой выход
+                        </h3>
+                        <p>Можно работать по очереди или договориться, кто какую строчку добавляет.</p>
+                        <p><strong>Алгоритм:</strong></p>
+                        <ol>
+                            <li>Обновите страницу с файлом</li>
+                            <li>Если файл изменился — скопируйте свежую версию</li>
+                            <li>Добавьте свою строку</li>
+                            <li>Сохраните изменения</li>
+                        </ol>
+                    </div>
+                    
+                    <div style="flex: 1; min-width: 300px; background: rgba(126, 231, 135, 0.1); border: 1px solid rgba(126, 231, 135, 0.4); border-radius: 8px; padding: 20px;">
+                        <h3 style="color: #7ee787; margin-bottom: 15px;">
+                            <i class="fas fa-desktop"></i>
+                            "Взрослое" решение
+                        </h3>
+                        <p>Использовать Git на компьютере. Объясняем цикл работы:</p>
+                        <div class="code-block">
+                            <span class="text">git pull</span> <span class="comment"># скачать свежую версию</span><br>
+                            <span class="text">    <span class="comment"># изменить свой файл</span></span><br>
+                            <span class="text">git add .</span> <span class="comment"># отметить изменения</span><br>
+                            <span class="text">git commit -m "добавил ссылку"</span> <span class="comment"># сохранить с комментарием</span><br>
+                            <span class="text">git push</span> <span class="comment"># отправить изменения на GitHub</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="task">
+                <div class="task-title">
+                    <i class="fas fa-graduation-cap"></i>
+                    Что выбрать для первого занятия?
+                </div>
+                <p><strong>На первом занятии можно остановиться на простом решении</strong> — работе по очереди через веб-интерфейс.</p>
+                <p>Но обязательно покажите, что есть и более продвинутый способ работы с Git через командную строку или программы с графическим интерфейсом.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Слайд 15: Запускаем сайт -->
+    <div class="container" id="slide15">
+        <div class="slide-number">15/18</div>
+        <h1 class="slide-title">Волшебная кнопка — GitHub Pages</h1>
+        
+        <div class="content">
+            <div class="visual-demo">
+                <div class="demo-title">
+                    <i class="fas fa-magic"></i>
+                    Демонстрация (делает преподаватель)
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div>Идем в <strong>"Settings"</strong> → <strong>"Pages"</strong></div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div>В разделе <strong>"Branch"</strong> выбираем <code>main</code> и папку <code>/ (root)</code></div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div>Жмем <strong>"Save"</strong></div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div><strong>Появляется ссылка вида:</strong><br>
+                    <code style="background: #0d1117; padding: 10px 15px; border-radius: 5px; display: inline-block; margin-top: 10px;">https://web-group-45.github.io/class-wiki/</code></div>
+                </div>
+                
+                <div style="background: rgba(46, 164, 79, 0.2); border: 1px solid rgba(46, 164, 79, 0.6); border-radius: 8px; padding: 20px; margin: 25px 0; text-align: center;">
+                    <i class="fas fa-hourglass-half" style="color: #7ee787; font-size: 2.5rem; margin-bottom: 15px;"></i>
+                    <h3 style="color: #7ee787; margin-bottom: 10px;">Ждем 1-2 минуты...</h3>
+                    <p>GitHub нужно немного времени, чтобы собрать и опубликовать наш сайт.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <div><strong>ОТКРЫВАЕМ ССЫЛКУ!</strong></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Слайд 16: Наш результат -->
+    <div class="container" id="slide16">
+        <div class="slide-number">16/18</div>
+        <h1 class="slide-title">Наш результат!</h1>
+        
+        <div class="content">
+            <div class="visual-demo">
+                <div class="demo-title">
+                    <i class="fas fa-trophy"></i>
+                    На большом экране открывается сайт
+                </div>
+                
+                <div style="background: white; color: #24292e; border-radius: 10px; padding: 30px; margin: 20px 0; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);">
+                    <h1 style="color: #24292e; border-bottom: 2px solid #e1e4e8; padding-bottom: 15px; margin-bottom: 20px;">Вики-страница нашего класса!</h1>
+                    
+                    <p>Здесь собраны страницы всех участников проекта:</p>
+                    
+                    <h2 style="color: #24292e; margin: 25px 0 15px 0;">Участники:</h2>
+                    
+                    <ul style="padding-left: 20px; font-size: 1.2rem;">
+                        <li style="margin-bottom: 10px;">
+                            <a href="#" style="color: #0366d6; text-decoration: none;">Иван Иванов</a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="#" style="color: #0366d6; text-decoration: none;">Анна Петрова</a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="#" style="color: #0366d6; text-decoration: none;">Сергей Сидоров</a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="#" style="color: #0366d6; text-decoration: none;">Мария Кузнецова</a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="#" style="color: #0366d6; text-decoration: none;">Алексей Попов</a>
+                        </li>
+                    </ul>
+                    
+                    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e1e4e8; color: #6a737d; font-size: 0.9rem;">
+                        <p>Сайт создан с помощью GitHub Pages. Последнее обновление: сегодня.</p>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <p><strong>Это реальный сайт в интернете, созданный вами за 1,5 часа!</strong></p>
+                    <p>По ссылкам можно переходить на страницы каждого студента.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Слайд 17: Итоги -->
+    <div class="container" id="slide17">
+        <div class="slide-number">17/18</div>
+        <h1 class="slide-title">Что мы сегодня узнали?</h1>
+        
+        <div class="content">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px; margin: 30px 0;">
+                <div style="flex: 1; min-width: 250px; background: rgba(88, 166, 255, 0.1); border: 1px solid rgba(88, 166, 255, 0.4); border-radius: 8px; padding: 25px; text-align: center;">
+                    <div style="background: #58a6ff; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto;">
+                        <i class="fab fa-github" style="font-size: 1.8rem;"></i>
+                    </div>
+                    <h3 style="color: #58a6ff; margin-bottom: 10px;">GitHub</h3>
+                    <p>Платформа для хранения кода и совместной работы. Наша "социальная сеть для программистов".</p>
+                </div>
+                
+                <div style="flex: 1; min-width: 250px; background: rgba(126, 231, 135, 0.1); border: 1px solid rgba(126, 231, 135, 0.4); border-radius: 8px; padding: 25px; text-align: center;">
+                    <div style="background: #7ee787; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto;">
+                        <i class="fas fa-code" style="font-size: 1.8rem;"></i>
+                    </div>
+                    <h3 style="color: #7ee787; margin-bottom: 10px;">Markdown</h3>
+                    <p>Простой язык разметки для оформления текстов. Основа документации на GitHub.</p>
+                </div>
+                
+                <div style="flex: 1; min-width: 250px; background: rgba(255, 123, 114, 0.1); border: 1px solid rgba(255, 123, 114, 0.4); border-radius: 8px; padding: 25px; text-align: center;">
+                    <div style="background: #ff7b72; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto;">
+                        <i class="fas fa-users" style="font-size: 1.8rem;"></i>
+                    </div>
+                    <h3 style="color: #ff7b72; margin-bottom: 10px;">Командная работа</h3>
+                    <p>Как согласовывать изменения, избегать конфликтов и работать вместе над одним проектом.</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin: 40px 0;">
+                <h2 style="color: #f0f6fc; margin-bottom: 20px;">И самое главное...</h2>
+                <p style="font-size: 1.5rem;">Мы создали <strong>реальный проект</strong>, который можно показать друзьям и родителям!</p>
+                <p style="font-size: 1.2rem; color: #8b949e; margin-top: 10px;">Сайт живет в интернете и будет доступен даже после окончания занятия.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Слайд 18: Домашнее задание -->
+    <div class="container" id="slide18">
+        <div class="slide-number">18/18</div>
+        <h1 class="slide-title">Домашнее задание</h1>
+        <h2 class="slide-subtitle">(по желанию)</h2>
+        
+        <div class="content">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px; margin: 30px 0;">
+                <div style="flex: 1; min-width: 300px; background: rgba(88, 166, 255, 0.1); border: 1px solid rgba(88, 166, 255, 0.4); border-radius: 8px; padding: 25px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <div style="background: #58a6ff; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                            <span style="font-weight: bold;">1</span>
+                        </div>
+                        <h3 style="color: #58a6ff;">Улучшите свою страницу</h3>
+                    </div>
+                    <p>Добавьте на свою страницу:</p>
+                    <ul>
+                        <li><strong>Картинку</strong> (ваше фото или аватар)</li>
+                        <li><strong>Таблицу</strong> с расписанием занятий</li>
+                        <li><strong>Блок с кодом</strong> (например, пример программы на Python)</li>
+                        <li>Используйте <strong>цитаты</strong> и другие элементы Markdown</li>
+                    </ul>
+                </div>
+                
+                <div style="flex: 1; min-width: 300px; background: rgba(126, 231, 135, 0.1); border: 1px solid rgba(126, 231, 135, 0.4); border-radius: 8px; padding: 25px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <div style="background: #7ee787; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                            <span style="font-weight: bold;">2</span>
+                        </div>
+                        <h3 style="color: #7ee787;">Помогите соседу</h3>
+                    </div>
+                    <p>Исправьте ошибку на странице соседа:</p>
+                    <ol>
+                        <li>Найдите страницу с опечаткой или ошибкой</li>
+                        <li>Нажмите "Edit this file"</li>
+                        <li>Исправьте ошибку</li>
+                        <li>При сохранении выберите опцию <strong>"Create a new branch and start a pull request"</strong></li>
+                        <li>Напишите комментарий, что вы исправили</li>
+                    </ol>
+                    <p>Так вы познакомитесь с системой Pull Requests!</p>
+                </div>
+                
+                <div style="flex: 1; min-width: 300px; background: rgba(255, 123, 114, 0.1); border: 1px solid rgba(255, 123, 114, 0.4); border-radius: 8px; padding: 25px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <div style="background: #ff7b72; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                            <span style="font-weight: bold;">3</span>
+                        </div>
+                        <h3 style="color: #ff7b72;">Создайте новую тему</h3>
+                    </div>
+                    <p>Создайте <strong>новую папку</strong> в репозитории и сделайте там страницу на любую тему:</p>
+                    <ul>
+                        <li>Игры, которые мы любим</li>
+                        <li>Лучшие фильмы 2024 года</li>
+                        <li>Спортивные достижения класса</li>
+                        <li>Полезные ресурсы для учебы</li>
+                        <li>Шутки и мемы про школу</li>
+                    </ul>
+                    <p>Пригласите друзей добавить контент в вашу тему!</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 40px; padding-top: 30px; border-top: 1px solid #30363d;">
+                <h2 style="color: #f0f6fc; margin-bottom: 20px;">Спасибо за работу!</h2>
+                <p style="font-size: 1.3rem;">Вопросы?</p>
+                <p style="color: #8b949e; margin-top: 10px;">Не стесняйтесь спрашивать — мы только начинаем наш путь в мире GitHub!</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Навигация -->
+    <div class="slide-indicators" id="indicators">
+        <!-- Индикаторы будут добавлены JavaScript -->
+    </div>
+    
+    <div class="navigation">
+        <div class="nav-btn" id="prevBtn">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+        <div class="nav-btn" id="nextBtn">
+            <i class="fas fa-chevron-right"></i>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.querySelectorAll('.container');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const progressBar = document.getElementById('progressBar');
+            const indicatorsContainer = document.getElementById('indicators');
+            let currentSlide = 0;
+            
+            // Создаем индикаторы слайдов
+            slides.forEach((slide, index) => {
+                const indicator = document.createElement('div');
+                indicator.className = 'indicator';
+                if (index === 0) indicator.classList.add('active');
+                indicator.addEventListener('click', () => {
+                    goToSlide(index);
+                });
+                indicatorsContainer.appendChild(indicator);
+            });
+            
+            // Функция для перехода к определенному слайду
+            function goToSlide(n) {
+                // Скрываем текущий слайд
+                slides[currentSlide].classList.remove('active');
+                
+                // Обновляем текущий слайд
+                currentSlide = n;
+                
+                // Показываем новый слайд
+                slides[currentSlide].classList.add('active');
+                
+                // Обновляем индикаторы
+                updateIndicators();
+                
+                // Обновляем прогресс-бар
+                updateProgressBar();
+                
+                // Прокручиваем страницу вверх
+                window.scrollTo(0, 0);
+            }
+            
+            // Обновление индикаторов
+            function updateIndicators() {
+                const indicators = document.querySelectorAll('.indicator');
+                indicators.forEach((indicator, index) => {
+                    if (index === currentSlide) {
+                        indicator.classList.add('active');
+                    } else {
+                        indicator.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Обновление прогресс-бара
+            function updateProgressBar() {
+                const progress = ((currentSlide + 1) / slides.length) * 100;
+                progressBar.style.width = `${progress}%`;
+            }
+            
+            // Переход к следующему слайду
+            function nextSlide() {
+                if (currentSlide < slides.length - 1) {
+                    goToSlide(currentSlide + 1);
+                }
+            }
+            
+            // Переход к предыдущему слайду
+            function prevSlide() {
+                if (currentSlide > 0) {
+                    goToSlide(currentSlide - 1);
+                }
+            }
+            
+            // Обработчики событий для кнопок
+            nextBtn.addEventListener('click', nextSlide);
+            prevBtn.addEventListener('click', prevSlide);
+            
+            // Обработчики событий для клавиатуры
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowRight' || e.key === ' ') {
+                    nextSlide();
+                } else if (e.key === 'ArrowLeft') {
+                    prevSlide();
+                }
+            });
+            
+            // Инициализация прогресс-бара
+            updateProgressBar();
+            
+            // Добавляем возможность перетаскивания для мобильных устройств
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            document.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+            }, false);
+            
+            document.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, false);
+            
+            function handleSwipe() {
+                const swipeThreshold = 50; // минимальная дистанция свайпа
+                
+                if (touchEndX < touchStartX - swipeThreshold) {
+                    // Свайп влево = следующий слайд
+                    nextSlide();
+                }
+                
+                if (touchEndX > touchStartX + swipeThreshold) {
+                    // Свайп вправо = предыдущий слайд
+                    prevSlide();
+                }
+            }
+            
+            // Добавляем плавную прокрутку для навигации
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 20,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
