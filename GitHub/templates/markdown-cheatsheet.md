@@ -1,5 +1,10 @@
 # 🎨 Полная шпаргалка по Markdown
 
+<p align="center">
+  <img src="https://skillicons.dev/icons?i=python,django,fastapi,flask,postgresql,mysql,mongodb,redis,
+            docker,markdown,git,github,vscode,pycharm,linux,bash&theme=dark&perline=8" />
+</p>
+
 ## 📋 Содержание
 1. [Базовый синтаксис](#-базовый-синтаксис)
 2. [Расширенное форматирование](#-расширенное-форматирование)
