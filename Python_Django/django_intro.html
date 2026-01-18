@@ -1,0 +1,2224 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Django Framework: Полный экскурс</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Source+Code+Pro:wght@400;500&display=swap">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #0a192f;
+            --secondary: #112240;
+            --accent: #64ffda;
+            --accent-light: #88ffdb;
+            --text: #e6f1ff;
+            --text-secondary: #8892b0;
+            --code-bg: #1e1e2e;
+            --success: #64ffda;
+            --warning: #ffd166;
+            --danger: #ff6b6b;
+            --card-bg: rgba(30, 30, 46, 0.6);
+            --step-completed: #64ffda;
+            --step-current: #ffd166;
+            --step-future: #495670;
+            --path-color: rgba(100, 255, 218, 0.1);
+            --path-active: rgba(100, 255, 218, 0.8);
+        }
+        
+        body {
+            background-color: var(--primary);
+            color: var(--text);
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Анимированный фон */
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
+        
+        .grid-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(to right, rgba(100, 255, 218, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(100, 255, 218, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+        
+        .floating-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(100, 255, 218, 0.1) 0%, transparent 70%);
+            animation: float 20s infinite linear;
+            opacity: 0.3;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+            100% { transform: translateY(0) rotate(360deg); }
+        }
+        
+        .slides-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 30px 50px;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transform: translateX(100%) scale(0.95);
+            transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.6s ease;
+            z-index: 1;
+            overflow: hidden;
+        }
+        
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+            z-index: 3;
+        }
+        
+        .slide.prev {
+            transform: translateX(-100%) scale(0.95);
+            opacity: 0;
+        }
+        
+        .slide-header {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+            font-weight: 700;
+            line-height: 1.1;
+            color: var(--text);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            padding-right: 20px;
+        }
+        
+        .slide-header::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 120px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            border-radius: 2px;
+        }
+        
+        .slide-content {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: visible;
+        }
+        
+        .slide-content-scrollable {
+            overflow-y: auto;
+            padding-right: 10px;
+            flex: 1;
+        }
+        
+        .slide-content-scrollable::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .slide-content-scrollable::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .slide-content-scrollable::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+        
+        .highlight {
+            color: var(--accent);
+            font-weight: 600;
+        }
+        
+        .django-logo {
+            color: var(--accent);
+            font-weight: 700;
+            position: relative;
+        }
+        
+        .code-block {
+            background: var(--code-bg);
+            border-radius: 10px;
+            padding: 18px;
+            margin: 15px 0;
+            font-family: 'Source Code Pro', monospace;
+            font-size: 1rem;
+            line-height: 1.5;
+            overflow-x: auto;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            border-left: 4px solid var(--accent);
+            position: relative;
+            max-width: 100%;
+        }
+        
+        .code-block::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+        }
+        
+        .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        
+        .code-keyword {
+            color: #569cd6;
+        }
+        
+        .code-string {
+            color: #ce9178;
+        }
+        
+        .code-function {
+            color: #dcdcaa;
+        }
+        
+        .code-class {
+            color: #4ec9b0;
+        }
+        
+        .nav-buttons {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 100;
+            display: flex;
+            gap: 12px;
+        }
+        
+        .nav-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(30, 30, 46, 0.8);
+            border: 2px solid var(--accent);
+            color: var(--accent);
+            font-size: 1.3rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            z-index: 10;
+        }
+        
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(100, 255, 218, 0.1), transparent);
+            border-radius: 50%;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(100, 255, 218, 0.4);
+            background: rgba(100, 255, 218, 0.1);
+        }
+        
+        .nav-btn:active {
+            transform: translateY(0);
+        }
+        
+        .nav-btn.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            border-color: var(--text-secondary);
+            color: var(--text-secondary);
+        }
+        
+        .nav-btn.disabled:hover {
+            transform: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            background: rgba(30, 30, 46, 0.8);
+        }
+        
+        .slide-counter {
+            position: fixed;
+            bottom: 25px;
+            left: 25px;
+            font-size: 1.1rem;
+            background: rgba(30, 30, 46, 0.8);
+            padding: 10px 18px;
+            border-radius: 25px;
+            z-index: 100;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(100, 255, 218, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .slide-indicators {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+        }
+        
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 1px solid transparent;
+        }
+        
+        .indicator::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border-radius: 50%;
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .indicator.active {
+            background: var(--accent);
+            transform: scale(1.3);
+            box-shadow: 0 0 10px var(--accent);
+        }
+        
+        .indicator.active::before {
+            background: rgba(100, 255, 218, 0.2);
+        }
+        
+        .indicator:hover:not(.active) {
+            background: rgba(100, 255, 218, 0.5);
+            transform: scale(1.1);
+        }
+        
+        /* Обновленные карточки */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+            justify-items: center;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            max-width: 350px;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+        }
+        
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border-color: rgba(100, 255, 218, 0.3);
+        }
+        
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+        }
+        
+        .card-title {
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            color: var(--text);
+        }
+        
+        .card-desc {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        /* Roadmap - улучшенная версия */
+        .roadmap-container {
+            width: 100%;
+            height: 60vh;
+            margin-top: 20px;
+            position: relative;
+            overflow: visible;
+        }
+        
+        .roadmap-board {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: rgba(17, 34, 64, 0.3);
+            border-radius: 15px;
+            border: 2px solid rgba(100, 255, 218, 0.2);
+            padding: 20px;
+            overflow: visible;
+        }
+        
+        .roadmap-path-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .roadmap-path {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .path-line {
+            position: absolute;
+            background: var(--path-color);
+            border-radius: 3px;
+            transition: all 0.5s ease;
+            transform-origin: left center;
+            z-index: 1;
+            height: 4px;
+        }
+        
+        .path-line.active {
+            background: var(--path-active);
+            box-shadow: 0 0 10px var(--accent);
+            z-index: 2;
+        }
+        
+        .roadmap-steps {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            z-index: 3;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-content: center;
+            gap: 30px;
+        }
+        
+        .roadmap-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 20px;
+            border-radius: 12px;
+            background: rgba(30, 30, 46, 0.7);
+            border: 2px solid transparent;
+            width: 140px;
+            height: 140px;
+            z-index: 4;
+        }
+        
+        .roadmap-step:hover {
+            background: rgba(100, 255, 218, 0.1);
+            transform: translateY(-5px) scale(1.05);
+        }
+        
+        .roadmap-step.completed {
+            border-color: var(--step-completed);
+            background: rgba(100, 255, 218, 0.05);
+        }
+        
+        .roadmap-step.current {
+            border-color: var(--step-current);
+            background: rgba(255, 209, 102, 0.05);
+            animation: pulse 2s infinite;
+        }
+        
+        .roadmap-step.future {
+            border-color: var(--step-future);
+            background: rgba(73, 86, 112, 0.1);
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 209, 102, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 209, 102, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 209, 102, 0); }
+        }
+        
+        .step-number {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .roadmap-step.completed .step-number {
+            background: var(--step-completed);
+            color: var(--primary);
+        }
+        
+        .roadmap-step.current .step-number {
+            background: var(--step-current);
+            color: var(--primary);
+        }
+        
+        .roadmap-step.future .step-number {
+            background: var(--step-future);
+            color: var(--text-secondary);
+        }
+        
+        .step-title {
+            font-size: 1.1rem;
+            text-align: center;
+            color: var(--text);
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .step-desc {
+            font-size: 0.85rem;
+            text-align: center;
+            color: var(--text-secondary);
+            line-height: 1.3;
+        }
+        
+        .step-detail {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            max-width: 90%;
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid var(--accent);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .step-detail.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .step-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .step-detail-title {
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+        
+        .step-detail-close {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .step-detail-close:hover {
+            color: var(--accent);
+            transform: rotate(90deg);
+        }
+        
+        .step-detail-content {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        
+        .step-detail-code {
+            background: var(--code-bg);
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Source Code Pro', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            font-size: 0.95rem;
+        }
+        
+        .comparison-table th {
+            background: linear-gradient(to right, var(--secondary), var(--primary));
+            padding: 15px;
+            text-align: left;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-bottom: 2px solid var(--accent);
+        }
+        
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(30, 30, 46, 0.5);
+        }
+        
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .comparison-table tr:hover td {
+            background: rgba(100, 255, 218, 0.05);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0 3px;
+        }
+        
+        .badge-success {
+            background: rgba(100, 255, 218, 0.2);
+            color: var(--success);
+            border: 1px solid rgba(100, 255, 218, 0.3);
+        }
+        
+        .badge-warning {
+            background: rgba(255, 209, 102, 0.2);
+            color: var(--warning);
+            border: 1px solid rgba(255, 209, 102, 0.3);
+        }
+        
+        .badge-danger {
+            background: rgba(255, 107, 107, 0.2);
+            color: var(--danger);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+        
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 25px;
+        }
+        
+        .pros, .cons {
+            border-radius: 12px;
+            padding: 25px;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            height: fit-content;
+        }
+        
+        .pros {
+            border-top: 4px solid var(--success);
+        }
+        
+        .cons {
+            border-top: 4px solid var(--danger);
+        }
+        
+        .pros h3, .cons h3 {
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .pros ul, .cons ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .pros li, .cons li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+            line-height: 1.5;
+        }
+        
+        .pros li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .cons li::before {
+            content: '✗';
+            position: absolute;
+            left: 0;
+            color: var(--danger);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .feature-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid var(--accent);
+            transition: all 0.3s ease;
+            height: fit-content;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .feature-item:hover {
+            background: rgba(100, 255, 218, 0.1);
+            transform: translateY(-5px);
+        }
+        
+        .feature-name {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+        
+        .feature-desc {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        .final-slide {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding-top: 40px;
+        }
+        
+        .final-icon {
+            font-size: 8rem;
+            color: var(--accent);
+            margin-bottom: 30px;
+            text-shadow: 0 0 30px rgba(100, 255, 218, 0.7);
+            animation: rocketFloat 3s infinite ease-in-out;
+        }
+        
+        @keyframes rocketFloat {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(2deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+        
+        .final-text {
+            font-size: 2.2rem;
+            max-width: 800px;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+        
+        .final-subtext {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin-bottom: 30px;
+        }
+        
+        .code-tab {
+            background: var(--code-bg);
+            border-radius: 8px 8px 0 0;
+            padding: 8px 15px;
+            display: inline-block;
+            font-family: 'Source Code Pro', monospace;
+            font-weight: 500;
+            color: var(--text);
+            position: relative;
+            top: 1px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: none;
+            font-size: 0.9rem;
+        }
+        
+        .slide-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            flex-shrink: 0;
+        }
+        
+        .btn {
+            padding: 10px 25px;
+            background: rgba(100, 255, 218, 0.1);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            background: rgba(100, 255, 218, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .code-slide {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .code-slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .code-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+        }
+        
+        .code-explanation {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        /* Адаптивность для мобильных устройств */
+        @media (max-width: 1200px) {
+            .slide {
+                padding: 25px 40px;
+            }
+            
+            .slide-header {
+                font-size: 2.5rem;
+            }
+            
+            .card-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+            
+            .roadmap-steps {
+                gap: 20px;
+            }
+            
+            .roadmap-step {
+                width: 130px;
+                height: 130px;
+                padding: 15px;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .card-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+            }
+            
+            .card {
+                max-width: 100%;
+            }
+            
+            .roadmap-steps {
+                gap: 15px;
+            }
+            
+            .roadmap-step {
+                width: 120px;
+                height: 120px;
+                padding: 12px;
+            }
+            
+            .step-number {
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+            }
+            
+            .step-title {
+                font-size: 1rem;
+            }
+            
+            .step-desc {
+                font-size: 0.8rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .slide {
+                padding: 20px 25px;
+                overflow-y: auto;
+            }
+            
+            .slide-header {
+                font-size: 2rem;
+                margin-top: 10px;
+            }
+            
+            .slide-content {
+                font-size: 1.1rem;
+            }
+            
+            .nav-buttons {
+                bottom: 15px;
+                right: 15px;
+            }
+            
+            .slide-counter {
+                bottom: 15px;
+                left: 15px;
+                font-size: 0.9rem;
+                padding: 8px 15px;
+            }
+            
+            .slide-indicators {
+                top: 15px;
+                right: 15px;
+            }
+            
+            .pros-cons {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .card-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .card {
+                max-width: 100%;
+                min-height: auto;
+                padding: 25px;
+            }
+            
+            .feature-list {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .roadmap-steps {
+                gap: 10px;
+            }
+            
+            .roadmap-step {
+                width: 100px;
+                height: 100px;
+                padding: 10px;
+            }
+            
+            .step-number {
+                width: 35px;
+                height: 35px;
+                font-size: 1.1rem;
+                margin-bottom: 8px;
+            }
+            
+            .step-title {
+                font-size: 0.9rem;
+            }
+            
+            .step-desc {
+                font-size: 0.75rem;
+            }
+            
+            .step-detail {
+                width: 95%;
+                padding: 20px;
+            }
+            
+            .comparison-table {
+                font-size: 0.85rem;
+            }
+            
+            .comparison-table th,
+            .comparison-table td {
+                padding: 8px 10px;
+            }
+            
+            .final-slide {
+                padding-top: 30px;
+            }
+            
+            .final-icon {
+                font-size: 5rem;
+                margin-bottom: 20px;
+            }
+            
+            .final-text {
+                font-size: 1.8rem;
+            }
+            
+            .final-subtext {
+                font-size: 1.1rem;
+                margin-bottom: 20px;
+            }
+        }
+        
+        @media (max-height: 700px) {
+            .slide-header {
+                font-size: 2rem;
+                margin-bottom: 15px;
+            }
+            
+            .roadmap-container {
+                height: 55vh;
+            }
+            
+            .final-slide {
+                padding-top: 20px;
+            }
+            
+            .final-icon {
+                font-size: 6rem;
+                margin-bottom: 20px;
+            }
+            
+            .final-text {
+                font-size: 1.8rem;
+            }
+            
+            .final-subtext {
+                font-size: 1.1rem;
+            }
+        }
+        
+        @media (max-height: 600px) {
+            .slide {
+                padding: 15px 25px;
+            }
+            
+            .slide-header {
+                font-size: 1.8rem;
+            }
+            
+            .roadmap-container {
+                height: 50vh;
+            }
+            
+            .final-slide {
+                padding-top: 15px;
+            }
+            
+            .final-icon {
+                font-size: 4rem;
+                margin-bottom: 15px;
+            }
+            
+            .final-text {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Анимированный фон -->
+    <div class="background-animation">
+        <div class="grid-lines"></div>
+        <div class="floating-shapes" id="floatingShapes"></div>
+    </div>
+    
+    <!-- Модальное окно с деталями шага -->
+    <div class="step-detail" id="stepDetail">
+        <div class="step-detail-header">
+            <h3 class="step-detail-title" id="stepDetailTitle">Шаг 1: Установка</h3>
+            <button class="step-detail-close" id="stepDetailClose">&times;</button>
+        </div>
+        <div class="step-detail-content" id="stepDetailContent">
+            Создание виртуального окружения и установка Django с зависимостями.
+        </div>
+        <div class="step-detail-code" id="stepDetailCode">
+            <span class="comment"># Создание виртуального окружения</span><br>
+            <span class="code-string">$</span> python -m venv venv<br>
+            <span class="code-string">$</span> source venv/bin/activate  <span class="comment"># На Windows: venv\Scripts\activate</span><br>
+            <span class="code-string">$</span> pip install django
+        </div>
+    </div>
+    
+    <div class="slides-container">
+        <!-- Слайд 1: Заголовок -->
+        <div class="slide active" id="slide1">
+            <h1 class="slide-header">Знакомство с <span class="django-logo">Django</span></h1>
+            <div class="slide-content">
+                <div class="slide-content-scrollable">
+                    <p><span class="highlight">Django</span> — высокоуровневый Python веб-фреймворк, созданный для быстрой разработки и чистого, прагматичного дизайна. Разработанный в 2003 году, он следует принципу <span class="highlight">"Batteries Included"</span> - "все необходимое в комплекте".</p>
+                    
+                    <div class="card-grid">
+                        <div class="card">
+                            <div class="card-icon"><i class="fas fa-bolt"></i></div>
+                            <h3 class="card-title">Быстрая разработка</h3>
+                            <p class="card-desc">Создавайте приложения в разы быстрее благодаря готовым компонентам: ORM, админ-панель, аутентификация и многое другое.</p>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-icon"><i class="fas fa-shield-alt"></i></div>
+                            <h3 class="card-title">Безопасность</h3>
+                            <p class="card-desc">Защита от OWASP топ-10 уязвимостей из коробки. CSRF, XSS, SQL Injection и другие угрозы предотвращаются автоматически.</p>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-icon"><i class="fas fa-expand-arrows-alt"></i></div>
+                            <h3 class="card-title">Масштабируемость</h3>
+                            <p class="card-desc">Используется такими гигантами как Instagram, Pinterest, Spotify. Отлично справляется с высокими нагрузками.</p>
+                        </div>
+                    </div>
+                    
+                    <p style="margin-top: 25px;">Django позволяет разработчикам сосредоточиться на бизнес-логике приложения, а не на написании базового функционала, который уже реализован в фреймворке.</p>
+                </div>
+                
+                <div class="slide-controls">
+                    <div></div>
+                    <button class="btn" onclick="goToSlide(1)">Далее: Философия Django <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 2: Философия Django -->
+        <div class="slide" id="slide2">
+            <h1 class="slide-header">Философия <span class="django-logo">Django</span></h1>
+            <div class="slide-content">
+                <div class="slide-content-scrollable">
+                    <p>Django построен на трех ключевых принципах, которые делают его уникальным и эффективным инструментом для веб-разработки:</p>
+                    
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <h3 class="feature-name">DRY <span class="badge badge-success">Don't Repeat Yourself</span></h3>
+                            <p class="feature-desc">Избегайте повторения кода. Каждый фрагмент знаний должен иметь единственное представление в системе. Это уменьшает количество ошибок и упрощает поддержку.</p>
+                        </div>
+                        
+                        <div class="feature-item">
+                            <h3 class="feature-name">Batteries Included</h3>
+                            <p class="feature-desc">Все необходимые инструменты уже в комплекте: ORM, админка, аутентификация, кэширование, RSS, sitemaps и многое другое. Не нужно искать и интегрировать сторонние решения для базовых задач.</p>
+                        </div>
+                        
+                        <div class="feature-item">
+                            <h3 class="feature-name">Explicit is better than implicit</h3>
+                            <p class="feature-desc">Явное лучше неявного. Код должен быть понятным и предсказуемым. Это упрощает чтение, отладку и поддержку кода другими разработчиками.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="pros-cons" style="margin-top: 25px;">
+                        <div class="pros">
+                            <h3><i class="fas fa-check-circle"></i> Что получаем из коробки:</h3>
+                            <ul>
+                                <li>Мощный ORM для работы с базами данных</li>
+                                <li>Автоматическая админ-панель</li>
+                                <li>Система аутентификации и авторизации</li>
+                                <li>Встроенная защита от CSRF, XSS, SQL Injection</li>
+                                <li>Система шаблонов с наследованием</li>
+                                <li>Поддержка интернационализации</li>
+                                <li>Кэширование, RSS, sitemaps</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="cons">
+                            <h3><i class="fas fa-exclamation-triangle"></i> Когда Django может быть избыточным:</h3>
+                            <ul>
+                                <li>Микросервисы с минимальной логикой</li>
+                                <li>Прототипы, где важна максимальная скорость</li>
+                                <li>Приложения с нестандартными требованиями к архитектуре</li>
+                                <li>Когда нужен полный контроль над каждым компонентом</li>
+                                <li>Очень простые одностраничные приложения</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="slide-controls">
+                    <button class="btn" onclick="goToSlide(0)"><i class="fas fa-arrow-left"></i> Назад</button>
+                    <button class="btn" onclick="goToSlide(2)">Далее: Экосистема <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 3: Экосистема -->
+        <div class="slide" id="slide3">
+            <h1 class="slide-header">Экосистема <span class="django-logo">Django</span></h1>
+            <div class="slide-content">
+                <div class="slide-content-scrollable">
+                    <p>Django имеет богатую экосистему библиотек и инструментов, которые расширяют его возможности и делают разработку еще более эффективной:</p>
+                    
+                    <div class="card-grid">
+                        <div class="card">
+                            <div class="card-icon"><i class="fas fa-plug"></i></div>
+                            <h3 class="card-title">Django REST Framework</h3>
+                            <p class="card-desc">Мощный и гибкий инструмент для создания Web API. Предоставляет browsable API, аутентификацию, throttling, сериализацию и пагинацию.</p>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-icon"><i class="fas fa-bolt"></i></div>
+                            <h3 class="card-title">Django Channels</h3>
+                            <p class="card-desc">Расширение для работы с WebSockets, HTTP/2, чат-ботами и другими асинхронными протоколами поверх Django.</p>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-icon"><i class="fas fa-search"></i></div>
+                            <h3 class="card-title">Django Debug Toolbar</h3>
+                            <p class="card-desc">Панель отладки, показывающая SQL-запросы, кэш, headers, сигналы, шаблоны и многое другое. Незаменимый инструмент для разработки.</p>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-icon"><i class="fas fa-leaf"></i></div>
+                            <h3 class="card-title">Django Celery</h3>
+                            <p class="card-desc">Асинхронная очередь задач для фоновой обработки данных, периодических задач, длительных операций и workflow.</p>
+                        </div>
+                    </div>
+                    
+                    <p style="margin-top: 25px;">Экосистема Django включает более 4000 пакетов на PyPI, что позволяет решить практически любую задачу, связанную с веб-разработкой.</p>
+                </div>
+                
+                <div class="slide-controls">
+                    <button class="btn" onclick="goToSlide(1)"><i class="fas fa-arrow-left"></i> Назад</button>
+                    <button class="btn" onclick="goToSlide(3)">Далее: Сравнение фреймворков <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 4: Сравнение с другими фреймворками -->
+        <div class="slide" id="slide4">
+            <h1 class="slide-header">Django vs Flask vs FastAPI</h1>
+            <div class="slide-content">
+                <div class="slide-content-scrollable">
+                    <p>Выбор фреймворка зависит от задач проекта, требований к производительности и предпочтений команды разработчиков. Сравним три популярных решения для Python:</p>
+                    
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Критерий</th>
+                                <th>Django</th>
+                                <th>Flask</th>
+                                <th>FastAPI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Тип фреймворка</strong></td>
+                                <td><span class="badge badge-success">Full-stack</span></td>
+                                <td><span class="badge badge-warning">Microframework</span></td>
+                                <td><span class="badge badge-success">API Framework</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Скорость разработки</strong></td>
+                                <td><span class="highlight">Очень высокая</span></td>
+                                <td>Средняя</td>
+                                <td>Высокая</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Производительность</strong></td>
+                                <td>Хорошая</td>
+                                <td>Хорошая</td>
+                                <td><span class="highlight">Очень высокая</span> (асинхронность)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Встроенная админка</strong></td>
+                                <td><span class="badge badge-success">✅ Да</span></td>
+                                <td><span class="badge badge-danger">❌ Нет</span></td>
+                                <td><span class="badge badge-danger">❌ Нет</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Встроенный ORM</strong></td>
+                                <td><span class="badge badge-success">✅ Да</span></td>
+                                <td><span class="badge badge-danger">❌ Нет</span></td>
+                                <td><span class="badge badge-danger">❌ Нет</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Документация</strong></td>
+                                <td><span class="highlight">Отличная</span></td>
+                                <td>Хорошая</td>
+                                <td>Очень хорошая</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Лучший для</strong></td>
+                                <td>Сложных приложений, CMS, CRM, социальных сетей</td>
+                                <td>Микросервисов, прототипов, простых API</td>
+                                <td>Высоконагруженных API, микросервисов</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div style="margin-top: 25px; padding: 20px; background: rgba(100, 255, 218, 0.05); border-radius: 10px; border-left: 4px solid var(--accent);">
+                        <h3 style="color: var(--accent); margin-bottom: 10px;"><i class="fas fa-lightbulb"></i> Ключевой вывод</h3>
+                        <p>Django идеально подходит для комплексных веб-приложений, где важна скорость разработки и наличие готовых решений. Flask лучше для микро-приложений и прототипов, а FastAPI — для высокопроизводительных API.</p>
+                    </div>
+                </div>
+                
+                <div class="slide-controls">
+                    <button class="btn" onclick="goToSlide(2)"><i class="fas fa-arrow-left"></i> Назад</button>
+                    <button class="btn" onclick="goToSlide(4)">Далее: Roadmap проекта <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 5: Roadmap проекта -->
+        <div class="slide" id="slide5">
+            <h1 class="slide-header">Roadmap Django проекта</h1>
+            <div class="slide-content">
+                <div class="slide-content-scrollable">
+                    <p>Путь создания Django приложения от нуля до продакшена. Нажмите на любой чекпоинт для подробностей. Пути между шагами будут рисоваться по мере прохождения:</p>
+                    
+                    <div class="roadmap-container">
+                        <div class="roadmap-board">
+                            <div class="roadmap-path-container">
+                                <div class="roadmap-path" id="roadmapPath"></div>
+                            </div>
+                            <div class="roadmap-steps" id="roadmapSteps"></div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; display: flex; justify-content: center; gap: 15px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 15px; height: 15px; border-radius: 50%; background: var(--step-completed);"></div>
+                            <span style="font-size: 0.9rem;">Пройдено</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 15px; height: 15px; border-radius: 50%; background: var(--step-current); animation: pulse 2s infinite;"></div>
+                            <span style="font-size: 0.9rem;">Текущий шаг</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 15px; height: 15px; border-radius: 50%; background: var(--step-future);"></div>
+                            <span style="font-size: 0.9rem;">Предстоит</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="slide-controls">
+                    <button class="btn" onclick="goToSlide(3)"><i class="fas fa-arrow-left"></i> Назад</button>
+                    <button class="btn" onclick="goToSlide(5)">Далее: Установка Django <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 6: Пример кода - Установка Django -->
+        <div class="slide code-slide" id="slide6">
+            <h1 class="slide-header">Пример кода: <span class="django-logo">Установка Django</span></h1>
+            <div class="slide-content">
+                <div class="slide-content-scrollable">
+                    <h3 class="code-title">Начало работы: Установка и создание проекта</h3>
+                    
+                    <div class="code-explanation">
+                        <p>Первым шагом в работе с Django является его установка. Рекомендуется использовать виртуальное окружение для изоляции зависимостей проекта.</p>
+                    </div>
+                    
+                    <div class="code-tab">Терминал</div>
+                    <div class="code-block" style="border-radius: 0 10px 10px 10px; margin-top: 0;">
+                        <span class="comment"># 1. Создание виртуального окружения</span><br>
+                        <span class="code-string">$</span> python -m venv venv<br><br>
+                        
+                        <span class="comment"># 2. Активация виртуального окружения</span><br>
+                        <span class="code-string">$</span> source venv/bin/activate  <span class="comment"># Linux/Mac</span><br>
+                        <span class="code-string">$</span> venv\Scripts\activate     <span class="comment"># Windows</span><br><br>
+                        
+                        <span class="comment"># 3. Установка Django</span><br>
+                        <span class="code-string">$</span> pip install django<br><br>
+                        
+                        <span class="comment"># 4. Проверка установки</span><br>
+                        <span class="code-string">$</span> python -m django --version<br>
+                        <span class="comment"># Вывод: 4.2.1 (или другая версия)</span>
+                    </div>
+                    
+                    <div class="code-explanation" style="margin-top: 20px;">
+                        <p>После успешной установки можно создать новый проект Django с помощью команды <span class="highlight">django-admin startproject</span>. Эта команда создаст базовую структуру проекта со всеми необходимыми файлами.</p>
+                    </div>
+                </div>
+                
+                <div class="slide-controls">
+                    <button class="btn" onclick="goToSlide(4)"><i class="fas fa-arrow-left"></i> Назад</button>
+                    <button class="btn" onclick="goToSlide(6)">Далее: Модели Django <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 7: Пример кода - Модели Django -->
+        <div class="slide code-slide" id="slide7">
+            <h1 class="slide-header">Пример кода: <span class="django-logo">Модели Django</span></h1>
+            <div class="slide-content">
+                <div class="slide-content-scrollable">
+                    <h3 class="code-title">Модели данных: Сердце Django приложения</h3>
+                    
+                    <div class="code-explanation">
+                        <p>Модели в Django определяют структуру вашей базы данных с помощью Python классов. Django ORM автоматически создает SQL-таблицы на основе этих моделей.</p>
+                    </div>
+                    
+                    <div class="code-tab">blog/models.py</div>
+                    <div class="code-block" style="border-radius: 0 10px 10px 10px; margin-top: 0;">
+                        <span class="code-keyword">from</span> django.db <span class="code-keyword">import</span> models<br>
+                        <span class="code-keyword">from</span> django.contrib.auth.models <span class="code-keyword">import</span> User<br><br>
+                        
+                        <span class="comment"># Модель категории для статей блога</span><br>
+                        <span class="code-keyword">class</span> <span class="code-class">Category</span>(models.Model):<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;name = models.CharField(max_length=100)<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;slug = models.SlugField(unique=True)<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;created_at = models.DateTimeField(auto_now_add=True)<br><br>
+                        
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">__str__</span>(self):<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> self.name<br><br>
+                        
+                        <span class="comment"># Модель статьи блога</span><br>
+                        <span class="code-keyword">class</span> <span class="code-class">Post</span>(models.Model):<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;title = models.CharField(max_length=200)<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;content = models.TextField()<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;author = models.ForeignKey(User, on_delete=models.CASCADE)<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;is_published = models.BooleanField(default=False)<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;created_at = models.DateTimeField(auto_now_add=True)<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;updated_at = models.DateTimeField(auto_now=True)<br><br>
+                        
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">class</span> <span class="code-class">Meta</span>:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Сортировка по умолчанию</span><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ordering = [<span class="code-string">'-created_at'</span>]<br><br>
+                        
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">__str__</span>(self):<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> self.title
+                    </div>
+                    
+                    <div class="code-explanation" style="margin-top: 20px;">
+                        <p>После создания моделей нужно создать миграции (<span class="highlight">python manage.py makemigrations</span>) и применить их к базе данных (<span class="highlight">python manage.py migrate</span>). Django автоматически создаст соответствующие таблицы в БД.</p>
+                    </div>
+                </div>
+                
+                <div class="slide-controls">
+                    <button class="btn" onclick="goToSlide(5)"><i class="fas fa-arrow-left"></i> Назад</button>
+                    <button class="btn" onclick="goToSlide(7)">Далее: Представления и шаблоны <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 8: Пример кода - Представления и шаблоны -->
+        <div class="slide code-slide" id="slide8">
+            <h1 class="slide-header">Пример кода: <span class="django-logo">Представления и шаблоны</span></h1>
+            <div class="slide-content">
+                <div class="slide-content-scrollable">
+                    <h3 class="code-title">Представления (Views) и шаблоны (Templates)</h3>
+                    
+                    <div class="code-explanation">
+                        <p>Представления обрабатывают запросы и возвращают ответы. Шаблоны определяют, как данные отображаются пользователю. Вместе они образуют слой представления в архитектуре MVC.</p>
+                    </div>
+                    
+                    <div class="code-tab">blog/views.py</div>
+                    <div class="code-block" style="border-radius: 0 10px 10px 10px; margin-top: 0;">
+                        <span class="code-keyword">from</span> django.shortcuts <span class="code-keyword">import</span> render, get_object_or_404<br>
+                        <span class="code-keyword">from</span> django.views.generic <span class="code-keyword">import</span> ListView<br>
+                        <span class="code-keyword">from</span> .models <span class="code-keyword">import</span> Post<br><br>
+                        
+                        <span class="comment"># Class-Based View для списка статей</span><br>
+                        <span class="code-keyword">class</span> <span class="code-class">PostListView</span>(ListView):<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;model = Post<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;template_name = <span class="code-string">'blog/post_list.html'</span><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;context_object_name = <span class="code-string">'posts'</span><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;paginate_by = 10<br><br>
+                        
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">get_queryset</span>(self):<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Фильтрация только опубликованных статей</span><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> Post.objects.filter(is_published=True)
+                    </div>
+                    
+                    <div class="code-tab" style="margin-top: 20px;">blog/templates/blog/post_list.html</div>
+                    <div class="code-block" style="border-radius: 0 10px 10px 10px; margin-top: 0;">
+                        <span class="comment">{# Наследование базового шаблона #}</span><br>
+                        {% extends <span class="code-string">'base.html'</span> %}<br><br>
+                        
+                        {% block content %}<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;Блог&lt;/h1&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;{% for post in posts %}<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;article class="post"&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h2&gt;&lt;a href="{% url 'post_detail' post.pk %}"&gt;{{ post.title }}&lt;/a&gt;&lt;/h2&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p class="meta"&gt;{{ post.author }}, {{ post.created_at|date:"d.m.Y" }}&lt;/p&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;{{ post.content|truncatewords:50 }}&lt;/p&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/article&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;{% endfor %}<br>
+                        {% endblock %}
+                    </div>
+                </div>
+                
+                <div class="slide-controls">
+                    <button class="btn" onclick="goToSlide(6)"><i class="fas fa-arrow-left"></i> Назад</button>
+                    <button class="btn" onclick="goToSlide(8)">Далее: Структура проекта <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 9: Структура проекта -->
+        <div class="slide" id="slide9">
+            <h1 class="slide-header">Структура Django проекта</h1>
+            <div class="slide-content">
+                <div class="slide-content-scrollable">
+                    <p>Каждый файл в Django проекте имеет свою четкую ответственность. Понимание структуры проекта — ключ к эффективной разработке.</p>
+                    
+                    <div class="card-grid">
+                        <div class="card">
+                            <div class="card-icon"><i class="fas fa-cogs"></i></div>
+                            <h3 class="card-title">settings.py</h3>
+                            <p class="card-desc">Конфигурация проекта: БД, приложения, middleware, шаблоны, статика, безопасность, локализация, логирование.</p>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-icon"><i class="fas fa-route"></i></div>
+                            <h3 class="card-title">urls.py</h3>
+                            <p class="card-desc">Маршрутизация запросов. Определяет какие URL ведут к каким представлениям. Поддерживает регулярные выражения.</p>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-icon"><i class="fas fa-database"></i></div>
+                            <h3 class="card-title">models.py</h3>
+                            <p class="card-desc">Модели данных. Определение структуры БД через Python классы (Django ORM). Включая связи, валидацию и бизнес-логику.</p>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-icon"><i class="fas fa-code"></i></div>
+                            <h3 class="card-title">views.py</h3>
+                            <p class="card-desc">Логика приложения. Обработка запросов, работа с данными, подготовка контекста для шаблонов, API endpoints.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="code-block" style="margin-top: 20px;">
+                        <span class="comment"># Основные команды manage.py</span><br>
+                        <span class="code-string">$</span> python manage.py runserver     <span class="comment"># Запуск сервера разработки</span><br>
+                        <span class="code-string">$</span> python manage.py shell         <span class="comment"># Django shell (Python + модели)</span><br>
+                        <span class="code-string">$</span> python manage.py createsuperuser <span class="comment"># Создание администратора</span><br>
+                        <span class="code-string">$</span> python manage.py collectstatic  <span class="comment"># Сбор статических файлов</span><br>
+                        <span class="code-string">$</span> python manage.py test           <span class="comment"># Запуск тестов</span><br>
+                        <span class="code-string">$</span> python manage.py makemigrations <span class="comment"># Создание миграций</span><br>
+                        <span class="code-string">$</span> python manage.py migrate        <span class="comment"># Применение миграций</span>
+                    </div>
+                </div>
+                
+                <div class="slide-controls">
+                    <button class="btn" onclick="goToSlide(7)"><i class="fas fa-arrow-left"></i> Назад</button>
+                    <button class="btn" onclick="goToSlide(9)">Далее: Заключение <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 10: Заключение -->
+        <div class="slide final-slide" id="slide10">
+            <div class="final-icon">
+                <i class="fas fa-rocket"></i>
+            </div>
+            <h1 class="slide-header">Ваш путь в Django начинается здесь!</h1>
+            <div class="slide-content">
+                <div class="slide-content-scrollable">
+                    <p class="final-text">Django — это мощный инструмент для создания современных веб-приложений любого масштаба.</p>
+                    <p class="final-subtext">От простых блогов до сложных коммерческих систем — Django справится с любой задачей! Начните свой первый проект прямо сейчас.</p>
+                    
+                    <div class="code-block" style="margin-top: 20px; text-align: left; max-width: 800px;">
+                        <span class="comment"># Начните свой первый проект прямо сейчас:</span><br>
+                        <span class="code-string">$</span> pip install django<br>
+                        <span class="code-string">$</span> django-admin startproject myproject<br>
+                        <span class="code-string">$</span> cd myproject<br>
+                        <span class="code-string">$</span> python manage.py migrate<br>
+                        <span class="code-string">$</span> python manage.py runserver<br>
+                        <span class="comment"># Откройте http://localhost:8000 в браузере!</span>
+                    </div>
+                    
+                    <div style="margin-top: 30px; display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
+                        <a href="https://docs.djangoproject.com" target="_blank" style="color: var(--accent); text-decoration: none; font-size: 1.1rem; padding: 10px 20px; border: 1px solid var(--accent); border-radius: 5px; transition: all 0.3s ease;">
+                            <i class="fas fa-book"></i> Официальная документация
+                        </a>
+                        <a href="https://github.com/django/django" target="_blank" style="color: var(--accent); text-decoration: none; font-size: 1.1rem; padding: 10px 20px; border: 1px solid var(--accent); border-radius: 5px; transition: all 0.3s ease;">
+                            <i class="fab fa-github"></i> Исходный код
+                        </a>
+                        <a href="https://www.djangoproject.com/community/" target="_blank" style="color: var(--accent); text-decoration: none; font-size: 1.1rem; padding: 10px 20px; border: 1px solid var(--accent); border-radius: 5px; transition: all 0.3s ease;">
+                            <i class="fas fa-users"></i> Сообщество
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="slide-controls">
+                    <button class="btn" onclick="goToSlide(8)"><i class="fas fa-arrow-left"></i> Назад</button>
+                    <button class="btn" onclick="goToSlide(0)">К началу <i class="fas fa-home"></i></button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Навигационные индикаторы -->
+        <div class="slide-indicators" id="indicators"></div>
+    </div>
+    
+    <!-- Навигационные кнопки -->
+    <div class="nav-buttons">
+        <button class="nav-btn" id="prev-btn">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <button class="nav-btn" id="next-btn">
+            <i class="fas fa-arrow-right"></i>
+        </button>
+    </div>
+    
+    <!-- Счетчик слайдов -->
+    <div class="slide-counter">
+        <span id="current-slide">1</span> / <span id="total-slides">10</span>
+    </div>
+    
+    <script>
+        // Глобальные переменные для управления состоянием
+        let isAnimating = false;
+        let currentSlide = 0;
+        const totalSlides = 10;
+        let activeStep = 6; // Текущий активный шаг
+        let activatedPaths = new Set(); // Активированные пути
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.querySelectorAll('.slide');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const currentSlideEl = document.getElementById('current-slide');
+            const totalSlidesEl = document.getElementById('total-slides');
+            const indicatorsContainer = document.getElementById('indicators');
+            const floatingShapesContainer = document.getElementById('floatingShapes');
+            const roadmapStepsContainer = document.getElementById('roadmapSteps');
+            const roadmapPathContainer = document.getElementById('roadmapPath');
+            const stepDetail = document.getElementById('stepDetail');
+            const stepDetailTitle = document.getElementById('stepDetailTitle');
+            const stepDetailContent = document.getElementById('stepDetailContent');
+            const stepDetailCode = document.getElementById('stepDetailCode');
+            const stepDetailClose = document.getElementById('stepDetailClose');
+            
+            // Создаем плавающие фигуры для фона
+            function createFloatingShapes() {
+                const shapeCount = 15;
+                for (let i = 0; i < shapeCount; i++) {
+                    const shape = document.createElement('div');
+                    shape.className = 'shape';
+                    const size = Math.random() * 100 + 30;
+                    shape.style.width = `${size}px`;
+                    shape.style.height = `${size}px`;
+                    shape.style.left = `${Math.random() * 100}%`;
+                    shape.style.top = `${Math.random() * 100}%`;
+                    shape.style.animationDelay = `${Math.random() * 10}s`;
+                    shape.style.animationDuration = `${Math.random() * 15 + 15}s`;
+                    floatingShapesContainer.appendChild(shape);
+                }
+            }
+            
+            createFloatingShapes();
+            
+            // Данные для roadmap
+            const roadmapSteps = [
+                {
+                    number: 1,
+                    title: "Установка",
+                    desc: "Создание виртуального окружения и установка Django с зависимостями",
+                    code: `# Создание виртуального окружения
+$ python -m venv venv
+$ source venv/bin/activate  # На Windows: venv\\Scripts\\activate
+$ pip install django`
+                },
+                {
+                    number: 2,
+                    title: "Проект",
+                    desc: "Инициализация структуры проекта с помощью django-admin",
+                    code: `# Создание нового Django проекта
+$ django-admin startproject myproject
+$ cd myproject`
+                },
+                {
+                    number: 3,
+                    title: "Приложения",
+                    desc: "Разделение функционала на отдельные приложения",
+                    code: `# Создание приложений внутри проекта
+$ python manage.py startapp blog
+$ python manage.py startapp users
+$ python manage.py startapp api`
+                },
+                {
+                    number: 4,
+                    title: "Модели",
+                    desc: "Создание моделей базы данных в models.py с использованием Django ORM",
+                    code: `# blog/models.py
+from django.db import models
+from django.contrib.auth.models import User
+
+class Post(models.Model):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)`
+                },
+                {
+                    number: 5,
+                    title: "Миграции",
+                    desc: "Создание и применение миграций для синхронизации моделей с БД",
+                    code: `# Создание и применение миграций
+$ python manage.py makemigrations
+$ python manage.py migrate`
+                },
+                {
+                    number: 6,
+                    title: "Представления",
+                    desc: "Написание логики обработки запросов (views) и контроллеров",
+                    code: `# blog/views.py
+from django.shortcuts import render
+from django.views.generic import ListView
+from .models import Post
+
+class PostListView(ListView):
+    model = Post
+    template_name = 'blog/post_list.html'
+    context_object_name = 'posts'`
+                },
+                {
+                    number: 7,
+                    title: "URL-маршруты",
+                    desc: "Определение путей (URL patterns) для доступа к представлениям",
+                    code: `# blog/urls.py
+from django.urls import path
+from .views import PostListView
+
+urlpatterns = [
+    path('', PostListView.as_view(), name='post_list'),
+]`
+                },
+                {
+                    number: 8,
+                    title: "Шаблоны",
+                    desc: "Разработка HTML-шаблонов с использованием Django Template Language",
+                    code: `{# blog/templates/blog/post_list.html #}
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Блог</h1>
+{% for post in posts %}
+<article>
+    <h2>{{ post.title }}</h2>
+    <p>{{ post.content|truncatewords:50 }}</p>
+</article>
+{% endfor %}
+{% endblock %}`
+                },
+                {
+                    number: 9,
+                    title: "Тестирование",
+                    desc: "Написание unit и integration тестов для проверки функционала",
+                    code: `# blog/tests.py
+from django.test import TestCase
+from .models import Post
+
+class PostModelTest(TestCase):
+    def test_post_creation(self):
+        post = Post.objects.create(title='Test', content='Test content')
+        self.assertEqual(post.title, 'Test')`
+                },
+                {
+                    number: 10,
+                    title: "Деплой",
+                    desc: "Настройка для продакшена (Gunicorn, Nginx, PostgreSQL, Redis)",
+                    code: `# Установка необходимых компонентов
+$ pip install gunicorn psycopg2-binary
+$ sudo apt install nginx postgresql
+
+# Сбор статических файлов
+$ python manage.py collectstatic`
+                }
+            ];
+            
+            // Создаем Roadmap
+            function createRoadmap() {
+                // Очищаем контейнеры
+                roadmapStepsContainer.innerHTML = '';
+                roadmapPathContainer.innerHTML = '';
+                
+                // Создаем шаги
+                roadmapSteps.forEach((step, index) => {
+                    const stepElement = document.createElement('div');
+                    stepElement.className = 'roadmap-step';
+                    stepElement.dataset.step = step.number;
+                    stepElement.dataset.index = index;
+                    
+                    // Определяем состояние шага
+                    if (step.number < activeStep) {
+                        stepElement.classList.add('completed');
+                    } else if (step.number === activeStep) {
+                        stepElement.classList.add('current');
+                    } else {
+                        stepElement.classList.add('future');
+                    }
+                    
+                    stepElement.innerHTML = `
+                        <div class="step-number">${step.number}</div>
+                        <div class="step-title">${step.title}</div>
+                        <div class="step-desc">${step.desc.substring(0, 40)}...</div>
+                    `;
+                    
+                    // Добавляем обработчик клика
+                    stepElement.addEventListener('click', () => {
+                        showStepDetail(step);
+                        activatePathToStep(step.number);
+                    });
+                    
+                    roadmapStepsContainer.appendChild(stepElement);
+                });
+                
+                // Располагаем шаги равномерно
+                positionRoadmapSteps();
+            }
+            
+            // Располагаем шаги равномерно в контейнере
+            function positionRoadmapSteps() {
+                const steps = document.querySelectorAll('.roadmap-step');
+                const containerWidth = roadmapStepsContainer.clientWidth;
+                const containerHeight = roadmapStepsContainer.clientHeight;
+                
+                // Размещаем шаги в два ряда по 5 в каждом
+                const rows = 2;
+                const cols = 5;
+                const horizontalPadding = 40;
+                const verticalPadding = 40;
+                
+                const stepWidth = (containerWidth - horizontalPadding * 2) / cols;
+                const stepHeight = (containerHeight - verticalPadding * 2) / rows;
+                
+                steps.forEach((step, index) => {
+                    const row = Math.floor(index / cols);
+                    const col = index % cols;
+                    
+                    const left = horizontalPadding + col * stepWidth + stepWidth/2 - 70; // 70 = половина ширины шага
+                    const top = verticalPadding + row * stepHeight + stepHeight/2 - 70;
+                    
+                    step.style.left = `${left}px`;
+                    step.style.top = `${top}px`;
+                    step.style.position = 'absolute';
+                });
+                
+                // Создаем пути после позиционирования шагов
+                setTimeout(createRoadmapPaths, 100);
+            }
+            
+            // Создаем пути между шагами
+            function createRoadmapPaths() {
+                // Очищаем существующие пути
+                roadmapPathContainer.innerHTML = '';
+                
+                // Создаем пути между шагами
+                for (let i = 0; i < roadmapSteps.length - 1; i++) {
+                    const currentStep = document.querySelector(`.roadmap-step[data-step="${i + 1}"]`);
+                    const nextStep = document.querySelector(`.roadmap-step[data-step="${i + 2}"]`);
+                    
+                    if (currentStep && nextStep) {
+                        const pathLine = document.createElement('div');
+                        pathLine.className = 'path-line';
+                        pathLine.dataset.from = i + 1;
+                        pathLine.dataset.to = i + 2;
+                        
+                        // Получаем координаты шагов
+                        const currentRect = currentStep.getBoundingClientRect();
+                        const nextRect = nextStep.getBoundingClientRect();
+                        const containerRect = roadmapPathContainer.getBoundingClientRect();
+                        
+                        // Рассчитываем координаты относительно контейнера
+                        const x1 = currentRect.left + currentRect.width/2 - containerRect.left;
+                        const y1 = currentRect.top + currentRect.height/2 - containerRect.top;
+                        const x2 = nextRect.left + nextRect.width/2 - containerRect.left;
+                        const y2 = nextRect.top + nextRect.height/2 - containerRect.top;
+                        
+                        // Рассчитываем расстояние и угол
+                        const dx = x2 - x1;
+                        const dy = y2 - y1;
+                        const distance = Math.sqrt(dx*dx + dy*dy);
+                        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                        
+                        // Устанавливаем свойства линии
+                        pathLine.style.width = `${distance}px`;
+                        pathLine.style.left = `${x1}px`;
+                        pathLine.style.top = `${y1 - 2}px`; // 2 = половина высоты линии
+                        pathLine.style.transform = `rotate(${angle}deg)`;
+                        
+                        // Активируем линию только если шаг пройден И пользователь кликнул на него
+                        const pathId = `${i+1}-${i+2}`;
+                        if (activatedPaths.has(pathId)) {
+                            pathLine.classList.add('active');
+                        }
+                        
+                        roadmapPathContainer.appendChild(pathLine);
+                    }
+                }
+            }
+            
+            // Активируем путь к шагу
+            function activatePathToStep(stepNumber) {
+                // Активируем все пути до этого шага
+                for (let i = 1; i < stepNumber; i++) {
+                    const pathId = `${i}-${i+1}`;
+                    if (!activatedPaths.has(pathId)) {
+                        activatedPaths.add(pathId);
+                        
+                        // Находим и активируем соответствующую линию
+                        const pathLine = document.querySelector(`.path-line[data-from="${i}"][data-to="${i+1}"]`);
+                        if (pathLine) {
+                            pathLine.classList.add('active');
+                        }
+                    }
+                }
+            }
+            
+            // Показываем детали шага
+            function showStepDetail(step) {
+                stepDetailTitle.textContent = `Шаг ${step.number}: ${step.title}`;
+                stepDetailContent.textContent = step.desc;
+                stepDetailCode.innerHTML = step.code.replace(/\n/g, '<br>').replace(/# /g, '<span class="comment"># </span>').replace(/\$/g, '<span class="code-string">$</span>');
+                stepDetail.classList.add('active');
+            }
+            
+            // Закрываем детали шага
+            stepDetailClose.addEventListener('click', () => {
+                stepDetail.classList.remove('active');
+            });
+            
+            // Закрываем по клику вне модального окна
+            stepDetail.addEventListener('click', (e) => {
+                if (e.target === stepDetail) {
+                    stepDetail.classList.remove('active');
+                }
+            });
+            
+            // Устанавливаем общее количество слайдов
+            totalSlidesEl.textContent = totalSlides;
+            
+            // Создаем индикаторы
+            for (let i = 0; i < totalSlides; i++) {
+                const indicator = document.createElement('div');
+                indicator.className = 'indicator';
+                if (i === 0) indicator.classList.add('active');
+                indicator.dataset.slide = i;
+                indicator.addEventListener('click', () => goToSlide(i));
+                indicatorsContainer.appendChild(indicator);
+            }
+            
+            // Функция для перехода к конкретному слайду
+            function goToSlide(n) {
+                // Защита от множественных кликов
+                if (isAnimating || n === currentSlide) return;
+                isAnimating = true;
+                
+                // Эффект перехода для текущего слайда
+                slides[currentSlide].classList.remove('active');
+                slides[currentSlide].classList.add('prev');
+                
+                // Обновляем индикаторы
+                document.querySelectorAll('.indicator').forEach((ind, index) => {
+                    ind.classList.remove('active');
+                    if (index === n) {
+                        ind.classList.add('active');
+                    }
+                });
+                
+                // Устанавливаем новый слайд
+                currentSlide = n;
+                
+                // Добавляем активный класс новому слайду
+                setTimeout(() => {
+                    slides[currentSlide].classList.remove('prev');
+                    slides[currentSlide].classList.add('active');
+                    
+                    // Обновляем счетчик
+                    currentSlideEl.textContent = currentSlide + 1;
+                    
+                    // Анимация появления контента
+                    animateSlideContent();
+                    
+                    // Разрешаем следующую анимацию
+                    setTimeout(() => {
+                        isAnimating = false;
+                    }, 400);
+                }, 100);
+                
+                // Обновляем состояние кнопок
+                updateNavButtons();
+            }
+            
+            // Анимация контента слайда
+            function animateSlideContent() {
+                const slide = slides[currentSlide];
+                const headers = slide.querySelectorAll('.slide-header');
+                const cards = slide.querySelectorAll('.card');
+                const codeBlocks = slide.querySelectorAll('.code-block');
+                const featureItems = slide.querySelectorAll('.feature-item');
+                const roadmapSteps = slide.querySelectorAll('.roadmap-step');
+                
+                // Сбрасываем анимации
+                const elements = [...headers, ...cards, ...codeBlocks, ...featureItems, ...roadmapSteps];
+                elements.forEach(el => {
+                    el.style.opacity = '0';
+                    el.style.transform = 'translateY(20px)';
+                    el.style.transition = 'none';
+                });
+                
+                // Запускаем анимации с задержкой
+                setTimeout(() => {
+                    elements.forEach((el, i) => {
+                        setTimeout(() => {
+                            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                            el.style.opacity = '1';
+                            el.style.transform = 'translateY(0)';
+                        }, i * 30);
+                    });
+                    
+                    // Перерисовываем roadmap при переходе на соответствующий слайд
+                    if (currentSlide === 4) {
+                        setTimeout(() => {
+                            positionRoadmapSteps();
+                            createRoadmapPaths();
+                        }, 300);
+                    }
+                }, 300);
+            }
+            
+            // Обновление состояния кнопок навигации
+            function updateNavButtons() {
+                if (currentSlide === 0) {
+                    prevBtn.classList.add('disabled');
+                } else {
+                    prevBtn.classList.remove('disabled');
+                }
+                
+                if (currentSlide === totalSlides - 1) {
+                    nextBtn.classList.add('disabled');
+                } else {
+                    nextBtn.classList.remove('disabled');
+                }
+            }
+            
+            // Функция для перехода к следующему слайду
+            function nextSlide() {
+                if (isAnimating || currentSlide === totalSlides - 1) return;
+                goToSlide(currentSlide + 1);
+                
+                // Анимация кнопки
+                nextBtn.style.transform = 'scale(0.9)';
+                setTimeout(() => {
+                    nextBtn.style.transform = 'scale(1)';
+                }, 150);
+            }
+            
+            // Функция для перехода к предыдущему слайду
+            function prevSlide() {
+                if (isAnimating || currentSlide === 0) return;
+                goToSlide(currentSlide - 1);
+                
+                // Анимация кнопки
+                prevBtn.style.transform = 'scale(0.9)';
+                setTimeout(() => {
+                    prevBtn.style.transform = 'scale(1)';
+                }, 150);
+            }
+            
+            // Обработчики событий для кнопок
+            prevBtn.addEventListener('click', prevSlide);
+            nextBtn.addEventListener('click', nextSlide);
+            
+            // Обработчики событий для клавиатуры
+            document.addEventListener('keydown', (e) => {
+                if (isAnimating) return;
+                
+                if (e.key === 'ArrowRight' || e.key === ' ') {
+                    nextSlide();
+                } else if (e.key === 'ArrowLeft') {
+                    prevSlide();
+                } else if (e.key >= '1' && e.key <= '9') {
+                    const slideNum = parseInt(e.key) - 1;
+                    if (slideNum < totalSlides) {
+                        goToSlide(slideNum);
+                    }
+                } else if (e.key === '0') {
+                    goToSlide(9);
+                } else if (e.key === 'Escape') {
+                    stepDetail.classList.remove('active');
+                }
+            });
+            
+            // Свайпы для мобильных устройств
+            let touchStartX = 0;
+            let touchStartY = 0;
+            let touchEndX = 0;
+            let touchEndY = 0;
+            
+            document.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+                touchStartY = e.changedTouches[0].screenY;
+            }, {passive: true});
+            
+            document.addEventListener('touchend', (e) => {
+                if (isAnimating) return;
+                
+                touchEndX = e.changedTouches[0].screenX;
+                touchEndY = e.changedTouches[0].screenY;
+                
+                const diffX = touchStartX - touchEndX;
+                const diffY = touchStartY - touchEndY;
+                
+                // Проверяем, что это горизонтальный свайп, а не вертикальный скролл
+                if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+                    if (diffX > 0) {
+                        // Свайп влево - следующий слайд
+                        nextSlide();
+                    } else {
+                        // Свайп вправо - предыдущий слайд
+                        prevSlide();
+                    }
+                }
+            }, {passive: true});
+            
+            // Инициализация
+            createRoadmap();
+            
+            setTimeout(() => {
+                animateSlideContent();
+                updateNavButtons();
+            }, 500);
+            
+            // Делаем функцию goToSlide глобальной для использования в кнопках
+            window.goToSlide = goToSlide;
+            
+            // Адаптация при изменении размера окна
+            function handleResize() {
+                if (currentSlide === 4) {
+                    positionRoadmapSteps();
+                    createRoadmapPaths();
+                }
+            }
+            
+            window.addEventListener('resize', handleResize);
+            
+            // Параллакс эффект для фона при движении мыши
+            document.addEventListener('mousemove', (e) => {
+                const x = (e.clientX / window.innerWidth) * 10 - 5;
+                const y = (e.clientY / window.innerHeight) * 10 - 5;
+                document.querySelector('.grid-lines').style.transform = `translate(${x}px, ${y}px)`;
+            });
+            
+            // Анимация для индикаторов при наведении
+            document.querySelectorAll('.indicator').forEach(indicator => {
+                indicator.addEventListener('mouseenter', () => {
+                    if (!indicator.classList.contains('active')) {
+                        indicator.style.transform = 'scale(1.2)';
+                    }
+                });
+                
+                indicator.addEventListener('mouseleave', () => {
+                    if (!indicator.classList.contains('active')) {
+                        indicator.style.transform = 'scale(1)';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
