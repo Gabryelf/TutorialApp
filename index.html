@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Запускатор презентаций</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #6C63FF;
+            --secondary: #FF6584;
+            --dark: #2A2D43;
+            --light: #F5F5F7;
+            --accent: #36D1DC;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--dark) 0%, #1a1c2e 100%);
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-top: 20px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .logo {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .logo i {
+            color: var(--primary);
+            filter: drop-shadow(0 0 8px rgba(108, 99, 255, 0.5));
+        }
+
+        .logo-text {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+
+        .music-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        .music-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.3rem;
+        }
+
+        .music-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .presentations-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .presentation-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 25px;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .presentation-card:nth-child(2) { animation-delay: 0.1s; }
+        .presentation-card:nth-child(3) { animation-delay: 0.2s; }
+        .presentation-card:nth-child(4) { animation-delay: 0.3s; }
+        .presentation-card:nth-child(5) { animation-delay: 0.4s; }
+        .presentation-card:nth-child(6) { animation-delay: 0.5s; }
+
+        .presentation-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border-color: rgba(108, 99, 255, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .card-description {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.5;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+        }
+
+        .launch-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(90deg, var(--primary), #8A84FF);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .launch-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary), #FF8A9E);
+            transition: var(--transition);
+            z-index: -1;
+        }
+
+        .launch-btn:hover::before {
+            width: 100%;
+        }
+
+        .launch-btn:hover {
+            box-shadow: 0 5px 15px rgba(108, 99, 255, 0.4);
+            transform: translateY(-3px);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        .github-link {
+            color: var(--accent);
+            text-decoration: none;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .github-link:hover {
+            color: var(--primary);
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .presentations-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .logo {
+                font-size: 2.2rem;
+            }
+            
+            .music-control {
+                top: 10px;
+                right: 10px;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .logo {
+                font-size: 1.8rem;
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .presentation-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="music-control">
+        <button class="music-btn" id="musicToggle">
+            <i class="fas fa-music"></i>
+        </button>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-rocket"></i>
+                <span class="logo-text">ПУСК ПРЕЗЕНТАЦИЙ</span>
+                <i class="fas fa-desktop"></i>
+            </div>
+            <p class="subtitle">
+                Запускайте ваши презентации одним кликом. Все материалы хранятся в репозитории 
+                <a href="https://github.com/Gabryelf/TutorialApp" style="color: var(--accent); text-decoration: none;">TutorialApp</a>. 
+                Вы можете добавлять новые презентации через GitHub.
+            </p>
+        </header>
+
+        <main>
+            <div class="presentations-container">
+                <!-- Презентация 1 -->
+                <div class="presentation-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="card-title">Введение в аналитику</h3>
+                    </div>
+                    <p class="card-description">
+                        Основные понятия и методы аналитики данных. Визуализация, метрики и ключевые показатели эффективности.
+                    </p>
+                    <a href="#" class="launch-btn">
+                        <i class="fas fa-play-circle"></i>
+                        Запустить презентацию
+                    </a>
+                </div>
+
+                <!-- Презентация 2 -->
+                <div class="presentation-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <h3 class="card-title">Основы программирования</h3>
+                    </div>
+                    <p class="card-description">
+                        Изучите базовые концепции программирования: переменные, циклы, условия и функции на примере Python.
+                    </p>
+                    <a href="#" class="launch-btn">
+                        <i class="fas fa-play-circle"></i>
+                        Запустить презентацию
+                    </a>
+                </div>
+
+                <!-- Презентация 3 -->
+                <div class="presentation-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <h3 class="card-title">Базы данных SQL</h3>
+                    </div>
+                    <p class="card-description">
+                        Основы работы с реляционными базами данных. Изучение языка SQL: SELECT, JOIN, агрегатные функции.
+                    </p>
+                    <a href="#" class="launch-btn">
+                        <i class="fas fa-play-circle"></i>
+                        Запустить презентацию
+                    </a>
+                </div>
+
+                <!-- Презентация 4 -->
+                <div class="presentation-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-paint-brush"></i>
+                        </div>
+                        <h3 class="card-title">Дизайн интерфейсов</h3>
+                    </div>
+                    <p class="card-description">
+                        Принципы UX/UI дизайна. Создание удобных и привлекательных интерфейсов для веб и мобильных приложений.
+                    </p>
+                    <a href="#" class="launch-btn">
+                        <i class="fas fa-play-circle"></i>
+                        Запустить презентацию
+                    </a>
+                </div>
+
+                <!-- Презентация 5 -->
+                <div class="presentation-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3 class="card-title">Мобильная разработка</h3>
+                    </div>
+                    <p class="card-description">
+                        Введение в разработку мобильных приложений. Обзор платформ, инструментов и лучших практик.
+                    </p>
+                    <a href="#" class="launch-btn">
+                        <i class="fas fa-play-circle"></i>
+                        Запустить презентацию
+                    </a>
+                </div>
+
+                <!-- Презентация 6 -->
+                <div class="presentation-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-cloud"></i>
+                        </div>
+                        <h3 class="card-title">Облачные технологии</h3>
+                    </div>
+                    <p class="card-description">
+                        Основы работы с облачными платформами. AWS, Azure и Google Cloud: сравнение и примеры использования.
+                    </p>
+                    <a href="#" class="launch-btn">
+                        <i class="fas fa-play-circle"></i>
+                        Запустить презентацию
+                    </a>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>Все презентации хранятся в репозитории <strong>TutorialApp</strong></p>
+            <a href="https://github.com/Gabryelf/TutorialApp" class="github-link" target="_blank">
+                <i class="fab fa-github"></i>
+                Посмотреть на GitHub
+            </a>
+            <p style="margin-top: 15px;">© 2023 Запускатор презентаций. Для добавления новых материалов обновите репозиторий.</p>
+        </footer>
+    </div>
+
+    <!-- Аудио элемент для фоновой музыки -->
+    <audio id="backgroundMusic" loop>
+        <source src="https://assets.mixkit.co/music/preview/mixkit-tech-house-vibes-130.mp3" type="audio/mpeg">
+        Ваш браузер не поддерживает аудио элемент.
+    </audio>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const musicToggle = document.getElementById('musicToggle');
+            const backgroundMusic = document.getElementById('backgroundMusic');
+            const launchButtons = document.querySelectorAll('.launch-btn');
+            
+            // Инициализация состояния музыки
+            let isMusicPlaying = false;
+            
+            // Настройка громкости музыки
+            backgroundMusic.volume = 0.3;
+            
+            // Управление музыкой
+            musicToggle.addEventListener('click', function() {
+                if (isMusicPlaying) {
+                    backgroundMusic.pause();
+                    musicToggle.innerHTML = '<i class="fas fa-music"></i>';
+                } else {
+                    backgroundMusic.play().catch(e => {
+                        console.log("Автовоспроизведение заблокировано. Нажмите на кнопку музыки для включения.");
+                    });
+                    musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
+                }
+                isMusicPlaying = !isMusicPlaying;
+                
+                // Анимация кнопки
+                musicToggle.classList.add('pulse');
+                setTimeout(() => {
+                    musicToggle.classList.remove('pulse');
+                }, 500);
+            });
+            
+            // Обработка кликов по кнопкам запуска
+            launchButtons.forEach((button, index) => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Анимация нажатия
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 200);
+                    
+                    // Сообщение пользователю
+                    const presentationNames = [
+                        "Введение в аналитику",
+                        "Основы программирования", 
+                        "Базы данных SQL",
+                        "Дизайн интерфейсов",
+                        "Мобильная разработка",
+                        "Облачные технологии"
+                    ];
+                    
+                    alert(`Запуск презентации: "${presentationNames[index]}".\n\nСсылка на презентацию будет добавлена в атрибут href этой кнопки.`);
+                    
+                    // Здесь вы можете добавить реальные ссылки на презентации
+                    this.href = "AppTDPrezentation/index.html";
+                });
+            });
+            
+            // Добавление эффектов при наведении на карточки
+            const cards = document.querySelectorAll('.presentation-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    const icon = this.querySelector('.card-icon');
+                    icon.style.transform = 'rotate(10deg) scale(1.1)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    const icon = this.querySelector('.card-icon');
+                    icon.style.transform = 'rotate(0) scale(1)';
+                });
+            });
+            
+            // Автозапуск музыки (может не работать в некоторых браузерах из-за политики автовоспроизведения)
+            setTimeout(() => {
+                if (!isMusicPlaying) {
+                    musicToggle.click();
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
