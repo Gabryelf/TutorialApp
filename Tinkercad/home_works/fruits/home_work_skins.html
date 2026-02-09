@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Задание по 3D-моделированию скинов персонажей</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f9f0ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+            overflow: hidden;
+        }
+        
+        .banner {
+            width: 100%;
+            max-width: 800px;
+            height: 95vh;
+            max-height: 600px;
+            background: linear-gradient(135deg, #6a1b9a 0%, #4a148c 100%);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(106, 27, 154, 0.3);
+            overflow: hidden;
+            border: 5px solid #ffffff;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background-color: #4a148c;
+            padding: 12px 20px;
+            text-align: center;
+            flex-shrink: 0;
+            height: 80px;
+        }
+        
+        .header h1 {
+            color: white;
+            font-size: 1.7rem;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .header h2 {
+            color: #ffeb3b;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .content {
+            padding: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            flex: 1;
+            min-height: 0;
+        }
+        
+        .assignment {
+            flex: 1;
+            min-width: 300px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .assignment h3 {
+            color: #6a1b9a;
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #ab47bc;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        
+        .assignment h3 i {
+            color: #4a148c;
+        }
+        
+        .requirements {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        
+        /* Стили для скроллбара */
+        .requirements::-webkit-scrollbar {
+            width: 5px;
+        }
+        
+        .requirements::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 8px;
+        }
+        
+        .requirements::-webkit-scrollbar-thumb {
+            background: #ab47bc;
+            border-radius: 8px;
+        }
+        
+        .requirement-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 6px;
+            background-color: #f8f9fa;
+            transition: transform 0.2s;
+        }
+        
+        .requirement-item:hover {
+            transform: translateX(3px);
+            background-color: #f3e5f5;
+        }
+        
+        .requirement-item i {
+            color: #ab47bc;
+            margin-right: 8px;
+            margin-top: 2px;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .requirement-text {
+            flex: 1;
+        }
+        
+        .requirement-text h4 {
+            color: #4a148c;
+            margin-bottom: 3px;
+            font-size: 0.95rem;
+        }
+        
+        .requirement-text p {
+            color: #333;
+            line-height: 1.3;
+            font-size: 0.85rem;
+        }
+        
+        .tips-container {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .tips {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .tips h3 {
+            color: #6a1b9a;
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #ab47bc;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        
+        .tips-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        
+        .tips-content p {
+            color: #333;
+            line-height: 1.4;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+        }
+        
+        .tips-content ul {
+            padding-left: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .tips-content li {
+            color: #333;
+            line-height: 1.4;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+        }
+        
+        .tips-content .highlight {
+            background-color: #f3e5f5;
+            padding: 8px;
+            border-radius: 6px;
+            border-left: 3px solid #ab47bc;
+            margin-top: 8px;
+            font-size: 0.85rem;
+        }
+        
+        .deadline {
+            background-color: rgba(255, 255, 255, 0.95);
+            margin-top: 10px;
+            padding: 10px 15px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-shrink: 0;
+            height: 60px;
+        }
+        
+        .deadline i {
+            font-size: 1.5rem;
+            color: #8e24aa;
+        }
+        
+        .deadline-text h4 {
+            color: #4a148c;
+            font-size: 1rem;
+            margin-bottom: 2px;
+        }
+        
+        .deadline-text p {
+            color: #8e24aa;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+        
+        .footer {
+            background-color: #4a148c;
+            padding: 8px 15px;
+            text-align: center;
+            color: white;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+            height: 50px;
+        }
+        
+        .tinkercad-logo {
+            width: 150px;
+            margin: 0 auto 3px;
+            display: block;
+        }
+        
+        .logo-text {
+            fill: white;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 5px;
+            }
+            
+            .banner {
+                height: 95vh;
+                max-height: 95vh;
+            }
+            
+            .content {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .assignment, .tips-container {
+                min-width: 100%;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .header h2 {
+                font-size: 1rem;
+            }
+            
+            .header {
+                height: 70px;
+                padding: 10px 15px;
+            }
+            
+            .footer {
+                height: 45px;
+                padding: 6px 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.3rem;
+            }
+            
+            .header h2 {
+                font-size: 0.9rem;
+            }
+            
+            .assignment h3, .tips h3 {
+                font-size: 1.2rem;
+            }
+            
+            .deadline {
+                height: 55px;
+                padding: 8px 12px;
+            }
+            
+            .deadline-text h4 {
+                font-size: 0.9rem;
+            }
+            
+            .deadline-text p {
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-height: 650px) {
+            .banner {
+                max-height: 95vh;
+            }
+            
+            .header {
+                padding: 8px 15px;
+                height: 65px;
+            }
+            
+            .content {
+                padding: 10px;
+            }
+            
+            .requirement-item {
+                margin-bottom: 6px;
+                padding: 6px;
+            }
+            
+            .requirement-text h4 {
+                font-size: 0.9rem;
+            }
+            
+            .requirement-text p {
+                font-size: 0.8rem;
+            }
+            
+            .footer {
+                height: 40px;
+                padding: 5px 10px;
+                font-size: 0.75rem;
+            }
+            
+            .tinkercad-logo {
+                width: 120px;
+            }
+        }
+        
+        /* Стили для списка персонажей */
+        .characters-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .character-item {
+            background-color: #f3e5f5;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: #4a148c;
+            font-weight: 500;
+            border: 1px solid #e1bee7;
+        }
+        
+        .example-scene {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f3e5f5;
+            border-radius: 8px;
+            font-size: 0.8rem;
+        }
+        
+        .character-type {
+            display: flex;
+            align-items: center;
+            margin-top: 5px;
+        }
+        
+        .type-icon {
+            margin-right: 5px;
+            color: #ab47bc;
+        }
+    </style>
+</head>
+<body>
+    <div class="banner">
+        <div class="header">
+            <h1><i class="fas fa-gamepad"></i> 3D-Моделирование скинов персонажей</h1>
+            <h2>Создание трёх скинов персонажей из игр или мультфильмов</h2>
+        </div>
+        
+        <div class="content">
+            <div class="assignment">
+                <h3><i class="fas fa-tasks"></i> Задание</h3>
+                
+                <div class="requirements">
+                    <div class="requirement-item">
+                        <i class="fas fa-user-astronaut"></i>
+                        <div class="requirement-text">
+                            <h4>Основное задание</h4>
+                            <p>Создать в Tinkercad 3D-модели скинов трёх разных персонажей из игр или мультфильмов, объединенных единой стилистикой.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="requirement-item">
+                        <i class="fas fa-palette"></i>
+                        <div class="requirement-text">
+                            <h4>Единая стилистика</h4>
+                            <p>Все скины должны быть выполнены в одном стиле: низкополигональном, мультяшном, пиксельном или другом на ваш выбор.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="requirement-item">
+                        <i class="fas fa-layer-group"></i>
+                        <div class="requirement-text">
+                            <h4>Композиция</h4>
+                            <p>Расположите все скины на одной сцене так, чтобы они составляли гармоничную композицию (например, в бою, взаимодействуют друг с другом или просто вместе).</p>
+                        </div>
+                    </div>
+                    
+                    <div class="requirement-item">
+                        <i class="fas fa-clipboard-list"></i>
+                        <div class="requirement-text">
+                            <h4>Выбор персонажей</h4>
+                            <p>Выберите 3 разных персонажа из игр, мультфильмов или фильмов. Примеры:</p>
+                            <div class="characters-list">
+                                <span class="character-item"><i class="fas fa-gamepad type-icon"></i> Марио</span>
+                                <span class="character-item"><i class="fas fa-gamepad type-icon"></i> Соник</span>
+                                <span class="character-item"><i class="fas fa-film type-icon"></i> Микки Маус</span>
+                                <span class="character-item"><i class="fas fa-gamepad type-icon"></i> Minecraft</span>
+                                <span class="character-item"><i class="fas fa-film type-icon"></i> Пикачу</span>
+                                <span class="character-item"><i class="fas fa-gamepad type-icon"></i> Лара Крофт</span>
+                                <span class="character-item"><i class="fas fa-film type-icon"></i> Человек-паук</span>
+                                <span class="character-item"><i class="fas fa-gamepad type-icon"></i> Сова-воин</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="requirement-item">
+                        <i class="fas fa-dice-d20"></i>
+                        <div class="requirement-text">
+                            <h4>Детализация</h4>
+                            <p>Каждый скин должен быть узнаваемым и содержать ключевые особенности персонажа (характерные элементы одежды, атрибуты, цвета).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tips-container">
+                <div class="tips">
+                    <h3><i class="fas fa-lightbulb"></i> Подсказки</h3>
+                    
+                    <div class="tips-content">
+                        <p><strong>Шаг 1:</strong> Выберите трёх персонажей из одной вселенной или разных, но определите единый стиль для всех скинов.</p>
+                        
+                        <p><strong>Шаг 2:</strong> Начните с самого простого персонажа, чтобы понять, как будете работать в выбранном стиле.</p>
+                        
+                        <p><strong>Шаг 3:</strong> Используйте похожие приёмы и элементы для всех моделей, чтобы сохранить единство стиля.</p>
+                        
+                        <ul>
+                            <li>Используйте группировку объектов для сложных форм</li>
+                            <li>Подберите гармоничную цветовую палитру для всех персонажей</li>
+                            <li>Сделайте скриншоты с разных ракурсов</li>
+                            <li>Обратите внимание на пропорции персонажей</li>
+                            <li>Добавьте характерные атрибуты (оружие, предметы)</li>
+                        </ul>
+                        
+                        <div class="example-scene">
+                            <strong>Идеи для композиции:</strong> битва персонажей, командное взаимодействие, представление героев, сцена из игры/мультфильма.
+                        </div>
+                        
+                        <div class="highlight">
+                            <p><strong>Важно:</strong> Все 3 скина должны быть узнаваемы и выполнены в единой стилистике. Можно создать персонажей из одной вселенной или подобрать разных, но оформить в одном стиле.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="deadline">
+                    <i class="far fa-calendar-check"></i>
+                    <div class="deadline-text">
+                        <h4>Срок выполнения:</h4>
+                        <p>14 дней</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <svg class="tinkercad-logo" viewBox="0 0 150 25">
+                <text x="0" y="20" class="logo-text" font-family="Arial, sans-serif" font-size="22" font-weight="bold">Tinkercad</text>
+            </svg>
+            <p>Задание по 3D-моделированию скинов персонажей</p>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Проверяем, что все элементы видны
+            setTimeout(function() {
+                const banner = document.querySelector('.banner');
+                const contentHeight = banner.scrollHeight;
+                const viewportHeight = window.innerHeight;
+                
+                if (contentHeight > viewportHeight * 0.9) {
+                    const allTexts = document.querySelectorAll('.requirement-text p, .requirement-text h4, .tips-content p, .tips-content li');
+                    allTexts.forEach(text => {
+                        const currentSize = parseFloat(window.getComputedStyle(text).fontSize);
+                        text.style.fontSize = (currentSize * 0.95) + 'px';
+                    });
+                }
+            }, 100);
+            
+            // Анимация для элементов требований
+            const requirementItems = document.querySelectorAll('.requirement-item');
+            
+            requirementItems.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-15px)';
+                
+                setTimeout(() => {
+                    item.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateX(0)';
+                }, 100 + index * 100);
+            });
+            
+            // Анимация для подсказок
+            const tipsContent = document.querySelector('.tips-content');
+            tipsContent.style.opacity = '0';
+            
+            setTimeout(() => {
+                tipsContent.style.transition = 'opacity 0.6s ease';
+                tipsContent.style.opacity = '1';
+            }, 500);
+            
+            // Анимация для срока выполнения
+            const deadline = document.querySelector('.deadline');
+            deadline.style.opacity = '0';
+            
+            setTimeout(() => {
+                deadline.style.transition = 'opacity 0.4s ease';
+                deadline.style.opacity = '1';
+            }, 700);
+            
+            // Подсветка элементов при наведении на заголовки
+            const assignmentTitle = document.querySelector('.assignment h3');
+            assignmentTitle.addEventListener('mouseover', function() {
+                requirementItems.forEach(item => {
+                    item.style.boxShadow = '0 0 0 1px #ffeb3b';
+                });
+            });
+            
+            assignmentTitle.addEventListener('mouseout', function() {
+                requirementItems.forEach(item => {
+                    item.style.boxShadow = 'none';
+                });
+            });
+            
+            // Анимация для персонажей в списке
+            const characterItems = document.querySelectorAll('.character-item');
+            characterItems.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'scale(0.8)';
+                
+                setTimeout(() => {
+                    item.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                    item.style.opacity = '1';
+                    item.style.transform = 'scale(1)';
+                }, 800 + index * 100);
+            });
+            
+            // Добавляем случайные иконки для персонажей
+            const typeIcons = ['fa-gamepad', 'fa-film', 'fa-tv', 'fa-mask', 'fa-robot'];
+            const characterIcons = document.querySelectorAll('.type-icon');
+            
+            characterIcons.forEach(icon => {
+                const randomIcon = typeIcons[Math.floor(Math.random() * typeIcons.length)];
+                icon.className = `fas ${randomIcon} type-icon`;
+            });
+        });
+    </script>
+</body>
+</html>
