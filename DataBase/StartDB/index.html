@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎓 Введение в базы данных</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-database"></i>
+                <span>DB Basics</span>
+            </div>
+            <div class="nav-menu">
+                <a href="#slide-1" class="nav-link active">Введение</a>
+                <a href="#slide-2" class="nav-link">Типы БД</a>
+                <a href="#slide-3" class="nav-link">SQL Основы</a>
+                <a href="#slide-4" class="nav-link">Связи</a>
+                <a href="#slide-5" class="nav-link">Практика</a>
+            </div>
+            <div class="nav-controls">
+                <button id="prevSlide" class="nav-control"><i class="fas fa-chevron-left"></i></button>
+                <span class="slide-indicator">Слайд <span id="currentSlide">1</span>/5</span>
+                <button id="nextSlide" class="nav-control"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Слайды презентации -->
+    <div class="slides-container">
+        <!-- Слайд 1: Что такое база данных -->
+        <section id="slide-1" class="slide active">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <div class="slide-number">01</div>
+                    <h1 class="slide-title">Что такое база данных?</h1>
+                    <div class="slide-subtitle">Основные понятия и определения</div>
+                </div>
+                
+                <div class="slide-body">
+                    <div class="columns">
+                        <div class="column">
+                            <div class="concept-card">
+                                <div class="concept-icon">
+                                    <i class="fas fa-server"></i>
+                                </div>
+                                <div class="concept-content">
+                                    <h3>База данных (БД)</h3>
+                                    <p>Организованная структура для хранения, управления и обработки данных.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="concept-card">
+                                <div class="concept-icon">
+                                    <i class="fas fa-cogs"></i>
+                                </div>
+                                <div class="concept-content">
+                                    <h3>СУБД</h3>
+                                    <p>Система управления базами данных - программное обеспечение для работы с БД.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="column">
+                            <div class="analogy">
+                                <h3><i class="fas fa-lightbulb"></i> Аналогия</h3>
+                                <p>Представьте базу данных как <strong>умную библиотеку</strong>:</p>
+                                <ul class="analogy-list">
+                                    <li><i class="fas fa-book"></i> <strong>Книги</strong> = Таблицы</li>
+                                    <li><i class="fas fa-sticky-note"></i> <strong>Страницы</strong> = Записи</li>
+                                    <li><i class="fas fa-columns"></i> <strong>Колонки</strong> = Поля</li>
+                                    <li><i class="fas fa-sort-alpha-down"></i> <strong>Каталог</strong> = Индексы</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="features-grid">
+                        <div class="feature">
+                            <div class="feature-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <h4>Безопасность</h4>
+                            <p>Контроль доступа к данным</p>
+                        </div>
+                        
+                        <div class="feature">
+                            <div class="feature-icon">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <h4>Производительность</h4>
+                            <p>Быстрый поиск и обработка</p>
+                        </div>
+                        
+                        <div class="feature">
+                            <div class="feature-icon">
+                                <i class="fas fa-link"></i>
+                            </div>
+                            <h4>Целостность</h4>
+                            <p>Сохранение связей данных</p>
+                        </div>
+                        
+                        <div class="feature">
+                            <div class="feature-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <h4>Многопользовательский</h4>
+                            <p>Одновременная работа</p>
+                        </div>
+                    </div>
+                    
+                    <div class="example-section">
+                        <h3><i class="fas fa-table"></i> Пример таблицы "Студенты"</h3>
+                        <div class="table-container">
+                            <table class="example-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Имя</th>
+                                        <th>Факультет</th>
+                                        <th>Группа</th>
+                                        <th>Средний балл</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Иванов Иван</td>
+                                        <td>Информатика</td>
+                                        <td>ИВТ-101</td>
+                                        <td>4.5</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Петрова Анна</td>
+                                        <td>Математика</td>
+                                        <td>М-202</td>
+                                        <td>4.8</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>Сидоров Алексей</td>
+                                        <td>Физика</td>
+                                        <td>Ф-303</td>
+                                        <td>4.2</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="slide-footer">
+                    <div class="quiz">
+                        <h4><i class="fas fa-question-circle"></i> Проверь себя</h4>
+                        <p>Как называется программа для управления базой данных?</p>
+                        <div class="quiz-options">
+                            <button class="quiz-option" data-answer="correct">СУБД</button>
+                            <button class="quiz-option" data-answer="wrong">Браузер</button>
+                            <button class="quiz-option" data-answer="wrong">Компилятор</button>
+                            <button class="quiz-option" data-answer="wrong">Текстовый редактор</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Слайд 2: Типы баз данных -->
+        <section id="slide-2" class="slide">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <div class="slide-number">02</div>
+                    <h1 class="slide-title">Типы баз данных</h1>
+                    <div class="slide-subtitle">Реляционные vs NoSQL</div>
+                </div>
+                
+                <div class="slide-body">
+                    <div class="db-types">
+                        <div class="db-type relacional">
+                            <div class="db-type-header">
+                                <h3><i class="fas fa-table"></i> Реляционные БД</h3>
+                                <span class="db-badge">SQL</span>
+                            </div>
+                            <div class="db-type-content">
+                                <ul class="db-features">
+                                    <li><i class="fas fa-check"></i> Данные в таблицах</li>
+                                    <li><i class="fas fa-check"></i> Строгие схемы</li>
+                                    <li><i class="fas fa-check"></i> SQL язык запросов</li>
+                                    <li><i class="fas fa-check"></i> ACID транзакции</li>
+                                </ul>
+                                <div class="db-examples">
+                                    <h4>Примеры:</h4>
+                                    <div class="example-tags">
+                                        <span class="example-tag">MySQL</span>
+                                        <span class="example-tag">PostgreSQL</span>
+                                        <span class="example-tag">SQLite</span>
+                                        <span class="example-tag">Oracle</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="db-type nosql">
+                            <div class="db-type-header">
+                                <h3><i class="fas fa-code-branch"></i> NoSQL БД</h3>
+                                <span class="db-badge">NoSQL</span>
+                            </div>
+                            <div class="db-type-content">
+                                <ul class="db-features">
+                                    <li><i class="fas fa-check"></i> Гибкие схемы</li>
+                                    <li><i class="fas fa-check"></i> Масштабируемость</li>
+                                    <li><i class="fas fa-check"></i> Разные модели данных</li>
+                                    <li><i class="fas fa-check"></i> Высокая скорость</li>
+                                </ul>
+                                <div class="db-examples">
+                                    <h4>Примеры:</h4>
+                                    <div class="example-tags">
+                                        <span class="example-tag">MongoDB</span>
+                                        <span class="example-tag">Redis</span>
+                                        <span class="example-tag">Cassandra</span>
+                                        <span class="example-tag">Neo4j</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-section">
+                        <h3><i class="fas fa-balance-scale"></i> Сравнение</h3>
+                        <div class="comparison-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Критерий</th>
+                                        <th>Реляционные</th>
+                                        <th>NoSQL</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Структура данных</td>
+                                        <td>Таблицы и связи</td>
+                                        <td>Документы, ключ-значение, графы</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Масштабируемость</td>
+                                        <td>Вертикальная</td>
+                                        <td>Горизонтальная</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Сложность запросов</td>
+                                        <td>Сложные JOIN операции</td>
+                                        <td>Проще, но менее гибко</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Когда использовать</td>
+                                        <td>Финансы, учет, ERP</td>
+                                        <td>Big Data, IoT, соцсети</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="visual-model">
+                        <h3><i class="fas fa-project-diagram"></i> Модели NoSQL баз данных</h3>
+                        <div class="models-grid">
+                            <div class="model-card">
+                                <div class="model-icon">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <h4>Документные</h4>
+                                <p>MongoDB, CouchDB</p>
+                            </div>
+                            
+                            <div class="model-card">
+                                <div class="model-icon">
+                                    <i class="fas fa-key"></i>
+                                </div>
+                                <h4>Ключ-значение</h4>
+                                <p>Redis, DynamoDB</p>
+                            </div>
+                            
+                            <div class="model-card">
+                                <div class="model-icon">
+                                    <i class="fas fa-columns"></i>
+                                </div>
+                                <h4>Колоночные</h4>
+                                <p>Cassandra, HBase</p>
+                            </div>
+                            
+                            <div class="model-card">
+                                <div class="model-icon">
+                                    <i class="fas fa-project-diagram"></i>
+                                </div>
+                                <h4>Графовые</h4>
+                                <p>Neo4j, ArangoDB</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="slide-footer">
+                    <div class="quiz">
+                        <h4><i class="fas fa-question-circle"></i> Проверь себя</h4>
+                        <p>Какая база данных НЕ является реляционной?</p>
+                        <div class="quiz-options">
+                            <button class="quiz-option" data-answer="wrong">MySQL</button>
+                            <button class="quiz-option" data-answer="wrong">PostgreSQL</button>
+                            <button class="quiz-option" data-answer="correct">MongoDB</button>
+                            <button class="quiz-option" data-answer="wrong">SQLite</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Слайд 3: SQL Основы -->
+        <section id="slide-3" class="slide">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <div class="slide-number">03</div>
+                    <h1 class="slide-title">Основы SQL</h1>
+                    <div class="slide-subtitle">Язык структурированных запросов</div>
+                </div>
+                
+                <div class="slide-body">
+                    <div class="sql-intro">
+                        <div class="sql-card">
+                            <h3><i class="fas fa-language"></i> Что такое SQL?</h3>
+                            <p>SQL (Structured Query Language) - стандартный язык для работы с реляционными базами данных.</p>
+                            <div class="sql-facts">
+                                <div class="fact">
+                                    <i class="fas fa-history"></i>
+                                    <span>Разработан в 1970-х</span>
+                                </div>
+                                <div class="fact">
+                                    <i class="fas fa-globe"></i>
+                                    <span>Международный стандарт</span>
+                                </div>
+                                <div class="fact">
+                                    <i class="fas fa-code"></i>
+                                    <span>Декларативный язык</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="sql-commands">
+                        <h3><i class="fas fa-terminal"></i> Основные команды SQL</h3>
+                        <div class="commands-grid">
+                            <div class="command-card" data-command="SELECT">
+                                <div class="command-header">
+                                    <h4>SELECT</h4>
+                                    <span class="command-type">DQL</span>
+                                </div>
+                                <p>Получение данных из таблицы</p>
+                                <pre><code>SELECT имя, фамилия 
+FROM студенты
+WHERE курс = 'Информатика';</code></pre>
+                            </div>
+                            
+                            <div class="command-card" data-command="INSERT">
+                                <div class="command-header">
+                                    <h4>INSERT</h4>
+                                    <span class="command-type">DML</span>
+                                </div>
+                                <p>Добавление новых записей</p>
+                                <pre><code>INSERT INTO студенты 
+VALUES (1, 'Иван', 'Иванов');</code></pre>
+                            </div>
+                            
+                            <div class="command-card" data-command="UPDATE">
+                                <div class="command-header">
+                                    <h4>UPDATE</h4>
+                                    <span class="command-type">DML</span>
+                                </div>
+                                <p>Изменение существующих записей</p>
+                                <pre><code>UPDATE студенты
+SET оценка = 5
+WHERE id = 1;</code></pre>
+                            </div>
+                            
+                            <div class="command-card" data-command="DELETE">
+                                <div class="command-header">
+                                    <h4>DELETE</h4>
+                                    <span class="command-type">DML</span>
+                                </div>
+                                <p>Удаление записей</p>
+                                <pre><code>DELETE FROM студенты
+WHERE выпускник = true;</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="interactive-sql">
+                        <h3><i class="fas fa-code"></i> Попробуйте сами</h3>
+                        <div class="sql-editor-container">
+                            <div class="editor-header">
+                                <div class="db-schema">
+                                    <select id="tableSelect">
+                                        <option value="students">Таблица: студенты</option>
+                                        <option value="teachers">Таблица: преподаватели</option>
+                                        <option value="courses">Таблица: курсы</option>
+                                    </select>
+                                </div>
+                                <button id="runQuery" class="run-btn">
+                                    <i class="fas fa-play"></i> Выполнить
+                                </button>
+                            </div>
+                            <div class="editor-area">
+                                <textarea id="sqlEditor" spellcheck="false">SELECT * FROM студенты;</textarea>
+                            </div>
+                            <div class="editor-result">
+                                <h4>Результат:</h4>
+                                <div class="result-table" id="queryResult">
+                                    <!-- Результаты будут здесь -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="slide-footer">
+                    <div class="quiz">
+                        <h4><i class="fas fa-question-circle"></i> Проверь себя</h4>
+                        <p>Какая команда используется для получения данных?</p>
+                        <div class="quiz-options">
+                            <button class="quiz-option" data-answer="wrong">INSERT</button>
+                            <button class="quiz-option" data-answer="correct">SELECT</button>
+                            <button class="quiz-option" data-answer="wrong">UPDATE</button>
+                            <button class="quiz-option" data-answer="wrong">DELETE</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Слайд 4: Связи между таблицами -->
+        <section id="slide-4" class="slide">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <div class="slide-number">04</div>
+                    <h1 class="slide-title">Связи между таблицами</h1>
+                    <div class="slide-subtitle">Ключи и отношения</div>
+                </div>
+                
+                <div class="slide-body">
+                    <div class="keys-section">
+                        <h3><i class="fas fa-key"></i> Типы ключей</h3>
+                        <div class="keys-grid">
+                            <div class="key-card">
+                                <div class="key-icon primary">
+                                    <i class="fas fa-key"></i>
+                                </div>
+                                <div class="key-content">
+                                    <h4>Первичный ключ (PK)</h4>
+                                    <p>Уникальный идентификатор записи</p>
+                                    <ul>
+                                        <li>Не может быть NULL</li>
+                                        <li>Уникален в таблице</li>
+                                        <li>Один на таблицу</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="key-card">
+                                <div class="key-icon foreign">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </div>
+                                <div class="key-content">
+                                    <h4>Внешний ключ (FK)</h4>
+                                    <p>Ссылка на первичный ключ другой таблицы</p>
+                                    <ul>
+                                        <li>Может быть NULL</li>
+                                        <li>Создает связь</li>
+                                        <li>Может быть несколько</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="relationships-section">
+                        <h3><i class="fas fa-project-diagram"></i> Типы связей</h3>
+                        <div class="relationships">
+                            <div class="relationship">
+                                <div class="relationship-visual">
+                                    <div class="table">A</div>
+                                    <div class="connector one-to-one">1:1</div>
+                                    <div class="table">B</div>
+                                </div>
+                                <div class="relationship-info">
+                                    <h4>Один к одному (1:1)</h4>
+                                    <p>Каждой записи в таблице A соответствует не более одной записи в таблице B</p>
+                                    <p class="example"><strong>Пример:</strong> Студент ↔ Паспорт</p>
+                                </div>
+                            </div>
+                            
+                            <div class="relationship">
+                                <div class="relationship-visual">
+                                    <div class="table">A</div>
+                                    <div class="connector one-to-many">1:N</div>
+                                    <div class="table">B</div>
+                                </div>
+                                <div class="relationship-info">
+                                    <h4>Один ко многим (1:N)</h4>
+                                    <p>Одной записи в таблице A соответствует несколько записей в таблице B</p>
+                                    <p class="example"><strong>Пример:</strong> Преподаватель ↔ Студенты</p>
+                                </div>
+                            </div>
+                            
+                            <div class="relationship">
+                                <div class="relationship-visual">
+                                    <div class="table">A</div>
+                                    <div class="connector many-to-many">N:M</div>
+                                    <div class="table">B</div>
+                                </div>
+                                <div class="relationship-info">
+                                    <h4>Многие ко многим (N:M)</h4>
+                                    <p>Нескольким записям в таблице A соответствует несколько записей в таблице B</p>
+                                    <p class="example"><strong>Пример:</strong> Студенты ↔ Курсы</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="join-section">
+                        <h3><i class="fas fa-link"></i> JOIN операции</h3>
+                        <div class="join-examples">
+                            <div class="join-example">
+                                <div class="join-type">
+                                    <span class="join-badge">INNER JOIN</span>
+                                </div>
+                                <p>Возвращает только совпадающие записи</p>
+                                <pre><code>SELECT s.имя, c.название
+FROM студенты s
+INNER JOIN курсы c 
+ON s.курс_id = c.id;</code></pre>
+                            </div>
+                            
+                            <div class="join-example">
+                                <div class="join-type">
+                                    <span class="join-badge">LEFT JOIN</span>
+                                </div>
+                                <p>Все записи из левой таблицы + совпадения из правой</p>
+                                <pre><code>SELECT s.имя, o.оценка
+FROM студенты s
+LEFT JOIN оценки o 
+ON s.id = o.студент_id;</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="slide-footer">
+                    <div class="quiz">
+                        <h4><i class="fas fa-question-circle"></i> Проверь себя</h4>
+                        <p>Какой JOIN вернет все записи из левой таблицы?</p>
+                        <div class="quiz-options">
+                            <button class="quiz-option" data-answer="wrong">INNER JOIN</button>
+                            <button class="quiz-option" data-answer="correct">LEFT JOIN</button>
+                            <button class="quiz-option" data-answer="wrong">RIGHT JOIN</button>
+                            <button class="quiz-option" data-answer="wrong">FULL JOIN</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Слайд 5: Практика и итоги - ИНТЕРАКТИВНОЕ ЗАДАНИЕ -->
+        <section id="slide-5" class="slide">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <div class="slide-number">05</div>
+                    <h1 class="slide-title">Практическое задание</h1>
+                    <div class="slide-subtitle">Создайте таблицу "Студенты"</div>
+                </div>
+                
+                <div class="slide-body">
+                    <div class="interactive-task">
+                        <!-- Задание -->
+                        <div class="task-description">
+                            <div class="task-header">
+                                <h3><i class="fas fa-graduation-cap"></i> Задание:</h3>
+                                <div class="task-points">
+                                    <span class="points-badge" id="pointsCounter">0/5</span>
+                                </div>
+                            </div>
+                            <div class="task-card">
+                                <p>Из предложенных ниже полей выберите <strong>5 наиболее подходящих</strong> для таблицы "Студенты".</p>
+                                <p class="task-hint"><i class="fas fa-lightbulb"></i> <strong>Подсказка:</strong> Подумайте, какая информация действительно нужна о студенте в университетской базе данных.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Область для создания таблицы -->
+                        <div class="table-builder">
+                            <div class="builder-header">
+                                <h4><i class="fas fa-table"></i> Таблица: <span class="table-name">студенты</span></h4>
+                                <div class="table-stats">
+                                    <span class="stat" id="fieldsCount">0 полей</span>
+                                    <span class="stat" id="correctCount">0/5 правильно</span>
+                                </div>
+                            </div>
+                            
+                            <div class="table-preview">
+                                <div class="table-header-preview">
+                                    <div class="field-cell pk">ID</div>
+                                    <!-- Сюда будут добавляться поля -->
+                                </div>
+                                <div class="table-body-preview" id="tablePreview">
+                                    <div class="empty-state">
+                                        <i class="fas fa-mouse-pointer"></i>
+                                        <p>Перетащите сюда поля из списка ниже</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Доступные поля для выбора -->
+                        <div class="fields-pool">
+                            <h4><i class="fas fa-list-ul"></i> Доступные поля:</h4>
+                            <div class="fields-grid" id="fieldsPool">
+                                <!-- Поля будут добавлены через JavaScript -->
+                            </div>
+                            <div class="fields-controls">
+                                <button class="control-btn" id="resetFields">
+                                    <i class="fas fa-redo"></i> Сбросить
+                                </button>
+                                <button class="control-btn" id="checkSolution">
+                                    <i class="fas fa-check-circle"></i> Проверить
+                                </button>
+                                <button class="control-btn" id="showSolution">
+                                    <i class="fas fa-eye"></i> Подсказка
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Результат -->
+                        <div class="task-result" id="taskResult" style="display: none;">
+                            <div class="result-content">
+                                <div class="result-icon">
+                                    <i class="fas fa-trophy"></i>
+                                </div>
+                                <h3>Отлично!</h3>
+                                <p id="resultMessage">Вы правильно выбрали все поля!</p>
+                                <div class="result-stats">
+                                    <div class="stat-item">
+                                        <i class="fas fa-clock"></i>
+                                        <span>Время: <span id="timer">0:00</span></span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <i class="fas fa-star"></i>
+                                        <span>Очки: <span id="score">100</span></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Итоги обучения -->
+                    <div class="learning-summary">
+                        <h3><i class="fas fa-chart-line"></i> Что вы изучили:</h3>
+                        <div class="summary-cards">
+                            <div class="summary-card">
+                                <div class="card-icon">
+                                    <i class="fas fa-database"></i>
+                                </div>
+                                <div class="card-content">
+                                    <h4>Основы БД</h4>
+                                    <p>Понимание структуры баз данных</p>
+                                </div>
+                            </div>
+                            
+                            <div class="summary-card">
+                                <div class="card-icon">
+                                    <i class="fas fa-code"></i>
+                                </div>
+                                <div class="card-content">
+                                    <h4>SQL Запросы</h4>
+                                    <p>Работа с данными через SQL</p>
+                                </div>
+                            </div>
+                            
+                            <div class="summary-card">
+                                <div class="card-icon">
+                                    <i class="fas fa-key"></i>
+                                </div>
+                                <div class="card-content">
+                                    <h4>Связи данных</h4>
+                                    <p>Ключи и отношения между таблицами</p>
+                                </div>
+                            </div>
+                            
+                            <div class="summary-card">
+                                <div class="card-icon">
+                                    <i class="fas fa-table"></i>
+                                </div>
+                                <div class="card-content">
+                                    <h4>Проектирование</h4>
+                                    <p>Создание структуры таблиц</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="slide-footer">
+                    <div class="navigation-hint">
+                        <p><i class="fas fa-info-circle"></i> Завершите задание, чтобы перейти к итогам</p>
+                        <button id="completeTask" class="complete-btn" disabled>
+                            <i class="fas fa-check"></i> Завершить курс
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Прогресс-бар -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
