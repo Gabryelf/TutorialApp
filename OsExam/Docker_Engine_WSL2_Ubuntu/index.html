@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐧 WSL2 + Docker + Django на Windows</title>
+    <link rel="stylesheet" href="style-dark.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fab fa-windows"></i>
+                <i class="fas fa-plus terminal-icon"></i>
+                <i class="fab fa-linux"></i>
+                <i class="fas fa-plus terminal-icon"></i>
+                <i class="fab fa-docker"></i>
+                <span class="logo-text">WSL2 + Docker</span>
+            </div>
+            <div class="nav-menu">
+                <a href="#slide-1" class="nav-link active">Начало</a>
+                <a href="#slide-2" class="nav-link">WSL2</a>
+                <a href="#slide-3" class="nav-link">Ubuntu</a>
+                <a href="#slide-4" class="nav-link">Docker</a>
+                <a href="#slide-5" class="nav-link">Django</a>
+                <a href="#slide-6" class="nav-link">Практика</a>
+            </div>
+            <div class="nav-controls">
+                <button id="prevSlide" class="nav-control"><i class="fas fa-chevron-left"></i></button>
+                <span class="slide-indicator">Слайд <span id="currentSlide">1</span>/6</span>
+                <button id="nextSlide" class="nav-control"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Терминальная строка -->
+    <div class="terminal-bar">
+        <div class="terminal-dots">
+            <span class="terminal-dot red"></span>
+            <span class="terminal-dot yellow"></span>
+            <span class="terminal-dot green"></span>
+        </div>
+        <div class="terminal-title">bash@wsl2:~</div>
+    </div>
+
+    <!-- Слайды презентации -->
+    <div class="slides-container">
+        <!-- Слайд 1: Введение -->
+        <section id="slide-1" class="slide active">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <div class="slide-number">01</div>
+                    <h1 class="slide-title">Запуск Django на Windows через WSL2 и Docker</h1>
+                    <div class="slide-subtitle">Полное руководство от установки до production</div>
+                </div>
+                
+                <div class="slide-body">
+                    <div class="tech-stack">
+                        <div class="tech-card windows">
+                            <div class="tech-icon">
+                                <i class="fab fa-windows"></i>
+                            </div>
+                            <div class="tech-content">
+                                <h3>Windows 10/11</h3>
+                                <p>Ваша основная система</p>
+                            </div>
+                        </div>
+                        
+                        <div class="tech-arrow">→</div>
+                        
+                        <div class="tech-card wsl">
+                            <div class="tech-icon">
+                                <i class="fas fa-terminal"></i>
+                            </div>
+                            <div class="tech-content">
+                                <h3>WSL2</h3>
+                                <p>Подсистема Linux</p>
+                            </div>
+                        </div>
+                        
+                        <div class="tech-arrow">→</div>
+                        
+                        <div class="tech-card ubuntu">
+                            <div class="tech-icon">
+                                <i class="fab fa-ubuntu"></i>
+                            </div>
+                            <div class="tech-content">
+                                <h3>Ubuntu 22.04</h3>
+                                <p>Дистрибутив Linux</p>
+                            </div>
+                        </div>
+                        
+                        <div class="tech-arrow">→</div>
+                        
+                        <div class="tech-card docker">
+                            <div class="tech-icon">
+                                <i class="fab fa-docker"></i>
+                            </div>
+                            <div class="tech-content">
+                                <h3>Docker Engine</h3>
+                                <p>Контейнеризация</p>
+                            </div>
+                        </div>
+                        
+                        <div class="tech-arrow">→</div>
+                        
+                        <div class="tech-card django">
+                            <div class="tech-icon">
+                                <i class="fab fa-python"></i>
+                            </div>
+                            <div class="tech-content">
+                                <h3>Django 5.x</h3>
+                                <p>Фреймворк Python</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="objectives">
+                        <h3><i class="fas fa-bullseye"></i> Цели этого руководства:</h3>
+                        <div class="objectives-grid">
+                            <div class="objective">
+                                <div class="objective-icon">
+                                    <i class="fas fa-linux"></i>
+                                </div>
+                                <div class="objective-content">
+                                    <h4>1. Установить Linux на Windows</h4>
+                                    <p>Без переустановки системы, без виртуальных машин</p>
+                                </div>
+                            </div>
+                            
+                            <div class="objective">
+                                <div class="objective-icon">
+                                    <i class="fas fa-cogs"></i>
+                                </div>
+                                <div class="objective-content">
+                                    <h4>2. Настроить Docker в терминале</h4>
+                                    <p>Чистая установка через bash, без Docker Desktop</p>
+                                </div>
+                            </div>
+                            
+                            <div class="objective">
+                                <div class="objective-icon">
+                                    <i class="fas fa-rocket"></i>
+                                </div>
+                                <div class="objective-content">
+                                    <h4>3. Запустить Django из Git</h4>
+                                    <p>Свой проект в контейнере за 5 минут</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="prerequisites">
+                        <h3><i class="fas fa-clipboard-check"></i> Требования:</h3>
+                        <div class="prereq-list">
+                            <div class="prereq-item">
+                                <i class="fas fa-check-circle success"></i>
+                                <span>Windows 10 версии 2004+ или Windows 11</span>
+                            </div>
+                            <div class="prereq-item">
+                                <i class="fas fa-check-circle success"></i>
+                                <span>Доступ в интернет для загрузки пакетов</span>
+                            </div>
+                            <div class="prereq-item">
+                                <i class="fas fa-check-circle success"></i>
+                                <span>Аккаунт GitHub (для своего проекта)</span>
+                            </div>
+                            <div class="prereq-item">
+                                <i class="fas fa-check-circle success"></i>
+                                <span>Права администратора</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="time-estimate">
+                        <h3><i class="fas fa-clock"></i> Время выполнения:</h3>
+                        <div class="time-cards">
+                            <div class="time-card">
+                                <div class="time-value">15-30 мин</div>
+                                <div class="time-label">Установка WSL2</div>
+                            </div>
+                            <div class="time-card">
+                                <div class="time-value">10-15 мин</div>
+                                <div class="time-label">Настройка Ubuntu</div>
+                            </div>
+                            <div class="time-card">
+                                <div class="time-value">15-20 мин</div>
+                                <div class="time-label">Установка Docker</div>
+                            </div>
+                            <div class="time-card">
+                                <div class="time-value">5-10 мин</div>
+                                <div class="time-label">Запуск Django</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="slide-footer">
+                    <div class="warning-box">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div class="warning-content">
+                            <h4>Важно!</h4>
+                            <p>Это руководство написано для новичков. Все команды проверены и работают.</p>
+                            <p>Если что-то не получается - скопируйте ошибку и проверьте решение в следующем слайде.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Слайд 2: Установка WSL2 -->
+        <section id="slide-2" class="slide">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <div class="slide-number">02</div>
+                    <h1 class="slide-title">Установка WSL2 на Windows</h1>
+                    <div class="slide-subtitle">Подсистема Linux для Windows</div>
+                </div>
+                
+                <div class="slide-body">
+                    <div class="wsl-explanation">
+                        <div class="explanation-card">
+                            <h3><i class="fas fa-question-circle"></i> Что такое WSL2?</h3>
+                            <p>Windows Subsystem for Linux 2 (WSL2) - это полноценная подсистема Linux, интегрированная в Windows.</p>
+                            
+                            <div class="features-grid">
+                                <div class="feature">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-bolt"></i>
+                                    </div>
+                                    <div class="feature-content">
+                                        <h4>Нативная скорость</h4>
+                                        <p>Практически нет накладных расходов</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="feature">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-code"></i>
+                                    </div>
+                                    <div class="feature-content">
+                                        <h4>Полный Linux</h4>
+                                        <p>Все команды bash, apt, ssh, git</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="feature">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-exchange-alt"></i>
+                                    </div>
+                                    <div class="feature-content">
+                                        <h4>Интеграция</h4>
+                                        <p>Доступ к файлам Windows из Linux</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="feature">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-laptop-code"></i>
+                                    </div>
+                                    <div class="feature-content">
+                                        <h4>Совместимость</h4>
+                                        <p>Работает с VS Code, Docker, Python</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="installation-steps">
+                        <h3><i class="fas fa-download"></i> Пошаговая установка WSL2:</h3>
+                        
+                        <div class="step-container">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h4>Проверка версии Windows</h4>
+                                    <p>Нажмите <kbd>Win + R</kbd>, введите <code>winver</code></p>
+                                    <div class="code-block">
+                                        <pre><code># Должна быть версия:
+# Windows 10: 2004 (19041) или выше
+# Windows 11: любая версия</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>Включение компонентов Windows</h4>
+                                    <p>Откройте PowerShell от имени администратора:</p>
+                                    <div class="code-block">
+                                        <pre><code class="powershell"># Запустите эти команды в PowerShell
+wsl --install</code></pre>
+                                    </div>
+                                    <p class="step-note">Эта команда автоматически установит WSL2 и Ubuntu</p>
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h4>Альтернативный способ (если первая не сработала)</h4>
+                                    <div class="code-block">
+                                        <pre><code class="powershell"># Включение компонентов вручную
+dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart</code></pre>
+                                    </div>
+                                    <p class="step-note">Перезагрузите компьютер после выполнения команд</p>
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <h4>Установка ядра Linux</h4>
+                                    <p>Скачайте и установите пакет обновления ядра:</p>
+                                    <div class="download-link">
+                                        <i class="fas fa-download"></i>
+                                        <a href="https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi" target="_blank">
+                                            Скачать WSL2 Kernel Update
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-number">5</div>
+                                <div class="step-content">
+                                    <h4>Установка WSL2 по умолчанию</h4>
+                                    <div class="code-block">
+                                        <pre><code class="powershell"># Установите WSL2 как версию по умолчанию
+wsl --set-default-version 2</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="verification">
+                        <h3><i class="fas fa-check-double"></i> Проверка установки:</h3>
+                        <div class="verification-card">
+                            <div class="code-block">
+                                <pre><code class="powershell"># Проверьте версию WSL
+wsl --version
+
+# Должно вывести:
+# WSL version: 2.0.9.0
+# Kernel version: 5.15.90.1
+# WSLg version: 1.0.51</code></pre>
+                            </div>
+                            <div class="terminal-output">
+                                <h4>Ожидаемый вывод:</h4>
+                                <div class="output-content">
+                                    <span class="prompt">PS C:\></span> wsl --version<br>
+                                    <span class="output">WSL version: 2.0.9.0</span><br>
+                                    <span class="output">Kernel version: 5.15.90.1</span><br>
+                                    <span class="output">WSLg version: 1.0.51</span><br>
+                                    <span class="output">MSRDC version: 1.2.3770</span><br>
+                                    <span class="output success">✓ WSL установлен успешно!</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="common-issues">
+                        <h3><i class="fas fa-exclamation-circle"></i> Частые проблемы и решения:</h3>
+                        <div class="issues-grid">
+                            <div class="issue">
+                                <div class="issue-header">
+                                    <h4>Ошибка: "WSL 2 requires an update to its kernel component"</h4>
+                                    <span class="issue-badge">Решение</span>
+                                </div>
+                                <p>Скачайте и установите пакет обновления ядра по ссылке выше.</p>
+                            </div>
+                            
+                            <div class="issue">
+                                <div class="issue-header">
+                                    <h4>Команда wsl не найдена</h4>
+                                    <span class="issue-badge">Решение</span>
+                                </div>
+                                <p>Обновите Windows до последней версии или установите WSL вручную через "Включение компонентов Windows".</p>
+                            </div>
+                            
+                            <div class="issue">
+                                <div class="issue-header">
+                                    <h4>Virtualization is disabled in BIOS</h4>
+                                    <span class="issue-badge">Решение</span>
+                                </div>
+                                <p>Включите виртуализацию в BIOS/UEFI (Intel VT-x или AMD-V).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="slide-footer">
+                    <div class="interactive-check">
+                        <h4><i class="fas fa-terminal"></i> Проверьте свою установку:</h4>
+                        <div class="check-options">
+                            <button class="check-btn" data-check="wsl-version">
+                                <i class="fas fa-play"></i> Запустить проверку
+                            </button>
+                            <div class="check-result" id="wsl-check-result"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Слайд 3: Установка Ubuntu -->
+        <section id="slide-3" class="slide">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <div class="slide-number">03</div>
+                    <h1 class="slide-title">Установка и настройка Ubuntu в WSL2</h1>
+                    <div class="slide-subtitle">Наш Linux-дистрибутив для работы</div>
+                </div>
+                
+                <div class="slide-body">
+                    <div class="distro-choice">
+                        <div class="distro-card">
+                            <h3><i class="fab fa-ubuntu"></i> Почему именно Ubuntu?</h3>
+                            <div class="distro-reasons">
+                                <div class="reason">
+                                    <i class="fas fa-thumbs-up"></i>
+                                    <div class="reason-content">
+                                        <h4>Самый популярный</h4>
+                                        <p>Больше всего документации и решений проблем</p>
+                                    </div>
+                                </div>
+                                <div class="reason">
+                                    <i class="fas fa-box"></i>
+                                    <div class="reason-content">
+                                        <h4>Огромные репозитории</h4>
+                                        <p>Все нужные пакеты доступны через apt</p>
+                                    </div>
+                                </div>
+                                <div class="reason">
+                                    <i class="fas fa-users"></i>
+                                    <div class="reason-content">
+                                        <h4>Большое сообщество</h4>
+                                        <p>Легко найти помощь в решении проблем</p>
+                                    </div>
+                                </div>
+                                <div class="reason">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <div class="reason-content">
+                                        <h4>Стабильность</h4>
+                                        <p>LTS версии поддерживаются 5 лет</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="ubuntu-installation">
+                        <h3><i class="fas fa-cogs"></i> Установка Ubuntu 22.04 LTS:</h3>
+                        
+                        <div class="install-step">
+                            <div class="step-header">
+                                <h4>1. Установка из Microsoft Store</h4>
+                                <span class="step-easy">Простой способ</span>
+                            </div>
+                            <p>Откройте Microsoft Store и найдите "Ubuntu":</p>
+                            <div class="store-instructions">
+                                <div class="instruction">
+                                    <div class="instruction-number">①</div>
+                                    <div class="instruction-content">
+                                        <p>В поиске Microsoft Store введите <strong>"Ubuntu"</strong></p>
+                                    </div>
+                                </div>
+                                <div class="instruction">
+                                    <div class="instruction-number">②</div>
+                                    <div class="instruction-content">
+                                        <p>Выберите <strong>"Ubuntu 22.04 LTS"</strong> (не Ubuntu 20.04 или 24.04)</p>
+                                    </div>
+                                </div>
+                                <div class="instruction">
+                                    <div class="instruction-number">③</div>
+                                    <div class="instruction-content">
+                                        <p>Нажмите <strong>"Получить"</strong> → <strong>"Установить"</strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="install-step">
+                            <div class="step-header">
+                                <h4>2. Установка через командную строку</h4>
+                                <span class="step-advanced">Для продвинутых</span>
+                            </div>
+                            <div class="code-block">
+                                <pre><code class="powershell"># Установите Ubuntu через PowerShell
+wsl --install -d Ubuntu-22.04</code></pre>
+                            </div>
+                        </div>
+                        
+                        <div class="install-step">
+                            <div class="step-header">
+                                <h4>3. Первый запуск и настройка</h4>
+                            </div>
+                            <p>После установки запустите Ubuntu из меню "Пуск" или выполните:</p>
+                            <div class="code-block">
+                                <pre><code class="powershell"># Запуск Ubuntu
+wsl</code></pre>
+                            </div>
+                            
+                            <div class="first-run">
+                                <h5>При первом запуске:</h5>
+                                <ol class="run-steps">
+                                    <li>Введите имя пользователя (латинскими буквами, без пробелов)</li>
+                                    <li>Введите пароль (не будет отображаться при вводе)</li>
+                                    <li>Подтвердите пароль</li>
+                                </ol>
+                                <div class="terminal-output">
+                                    <span class="prompt">Installing, this may take a few minutes...</span><br>
+                                    <span class="prompt">Please create a default UNIX user account.</span><br>
+                                    <span class="prompt">Username:</span> yourname<br>
+                                    <span class="prompt">New password:</span> [скрыто]<br>
+                                    <span class="prompt">Retype new password:</span> [скрыто]<br>
+                                    <span class="output success">✓ Installation successful!</span><br>
+                                    <span class="prompt">yourname@DESKTOP:~$</span> _
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="ubuntu-setup">
+                        <h3><i class="fas fa-tools"></i> Настройка Ubuntu после установки:</h3>
+                        
+                        <div class="setup-card">
+                            <h4>1. Обновление системы</h4>
+                            <div class="code-block">
+                                <pre><code class="bash"># Обновите список пакетов
+sudo apt update
+
+# Обновите установленные пакеты
+sudo apt upgrade -y
+
+# Установите базовые утилиты
+sudo apt install -y curl wget git vim nano</code></pre>
+                            </div>
+                        </div>
+                        
+                        <div class="setup-card">
+                            <h4>2. Настройка рабочего каталога</h4>
+                            <div class="code-block">
+                                <pre><code class="bash"># Перейдите в домашнюю директорию
+cd ~
+
+# Создайте папку для проектов
+mkdir -p projects/django
+
+# Проверьте доступ к Windows файлам
+ls /mnt/c/Users/ВашеИмяПользователяWindows/</code></pre>
+                            </div>
+                        </div>
+                        
+                        <div class="setup-card">
+                            <h4>3. Настройка Git</h4>
+                            <div class="code-block">
+                                <pre><code class="bash"># Настройте имя пользователя и email для Git
+git config --global user.name "Ваше Имя"
+git config --global user.email "ваш.email@example.com"
+
+# Сохраните пароли в кэше
+git config --global credential.helper store
+
+# Проверьте настройки
+git config --list</code></pre>
+                            </div>
+                        </div>
+                        
+                        <div class="setup-card">
+                            <h4>4. Настройка псевдонимов (aliases)</h4>
+                            <div class="code-block">
+                                <pre><code class="bash"># Откройте файл .bashrc
+nano ~/.bashrc
+
+# Добавьте в конец файла:
+alias ll='ls -la'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias python='python3'
+alias pip='pip3'
+
+# Сохраните изменения (Ctrl+X, Y, Enter)
+# Примените изменения:
+source ~/.bashrc</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="wsl-integration">
+                        <h3><i class="fas fa-handshake"></i> Интеграция WSL с Windows:</h3>
+                        <div class="integration-tips">
+                            <div class="tip">
+                                <div class="tip-icon">
+                                    <i class="fas fa-folder-open"></i>
+                                </div>
+                                <div class="tip-content">
+                                    <h4>Доступ к файлам Windows</h4>
+                                    <p>Все диски Windows доступны в <code>/mnt/c/</code>, <code>/mnt/d/</code> и т.д.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="tip">
+                                <div class="tip-icon">
+                                    <i class="fas fa-code"></i>
+                                </div>
+                                <div class="tip-content">
+                                    <h4>VS Code Integration</h4>
+                                    <p>Установите расширение "Remote - WSL" для работы из VS Code</p>
+                                </div>
+                            </div>
+                            
+                            <div class="tip">
+                                <div class="tip-icon">
+                                    <i class="fas fa-network-wired"></i>
+                                </div>
+                                <div class="tip-content">
+                                    <h4>Сетевые порты</h4>
+                                    <p>Порты в WSL автоматически пробрасываются в Windows</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="slide-footer">
+                    <div class="ubuntu-commands">
+                        <h4><i class="fas fa-terminal"></i> Полезные команды для Ubuntu:</h4>
+                        <div class="command-grid">
+                            <div class="command">
+                                <code>wsl --list --verbose</code>
+                                <span>Список установленных дистрибутивов</span>
+                            </div>
+                            <div class="command">
+                                <code>wsl --shutdown</code>
+                                <span>Полное отключение WSL</span>
+                            </div>
+                            <div class="command">
+                                <code>wsl -d Ubuntu-22.04</code>
+                                <span>Запуск конкретного дистрибутива</span>
+                            </div>
+                            <div class="command">
+                                <code>explorer.exe .</code>
+                                <span>Открыть текущую папку в Windows</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Слайд 4: Установка Docker в WSL2 -->
+        <section id="slide-4" class="slide">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <div class="slide-number">04</div>
+                    <h1 class="slide-title">Установка Docker Engine в Ubuntu WSL2</h1>
+                    <div class="slide-subtitle">Без Docker Desktop, только консоль</div>
+                </div>
+                
+                <div class="slide-body">
+                    <div class="docker-approach">
+                        <div class="approach-card">
+                            <h3><i class="fas fa-route"></i> Два пути установки Docker:</h3>
+                            <div class="approach-options">
+                                <div class="option">
+                                    <div class="option-header">
+                                        <h4><i class="fab fa-docker"></i> Docker Desktop</h4>
+                                        <span class="option-badge not-recommended">Не рекомендуется</span>
+                                    </div>
+                                    <ul class="option-list">
+                                        <li><i class="fas fa-times-circle danger"></i> Тяжеловесное приложение</li>
+                                        <li><i class="fas fa-times-circle danger"></i> Платно для компаний</li>
+                                        <li><i class="fas fa-times-circle danger"></i> Избыточно для WSL2</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="option-divider">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                                
+                                <div class="option">
+                                    <div class="option-header">
+                                        <h4><i class="fas fa-terminal"></i> Docker Engine</h4>
+                                        <span class="option-badge recommended">Наш выбор</span>
+                                    </div>
+                                    <ul class="option-list">
+                                        <li><i class="fas fa-check-circle success"></i> Легковесный, только CLI</li>
+                                        <li><i class="fas fa-check-circle success"></i> Бесплатный всегда</li>
+                                        <li><i class="fas fa-check-circle success"></i> Идеально для WSL2</li>
+                                        <li><i class="fas fa-check-circle success"></i> Полный контроль</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="docker-installation">
+                        <h3><i class="fas fa-wrench"></i> Пошаговая установка Docker Engine:</h3>
+                        
+                        <div class="install-step detailed">
+                            <div class="step-header">
+                                <h4>1. Удаление старых версий (если были)</h4>
+                            </div>
+                            <div class="code-block">
+                                <pre><code class="bash"># Удалите старые версии Docker
+sudo apt remove docker docker-engine docker.io containerd runc -y
+sudo apt autoremove -y</code></pre>
+                            </div>
+                        </div>
+                        
+                        <div class="install-step detailed">
+                            <div class="step-header">
+                                <h4>2. Установка зависимостей</h4>
+                            </div>
+                            <div class="code-block">
+                                <pre><code class="bash"># Обновите пакеты
+sudo apt update
+
+# Установите необходимые пакеты
+sudo apt install -y \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release</code></pre>
+                            </div>
+                        </div>
+                        
+                        <div class="install-step detailed">
+                            <div class="step-header">
+                                <h4>3. Добавление GPG-ключа Docker</h4>
+                            </div>
+                            <div class="code-block">
+                                <pre><code class="bash"># Создайте папку для ключей
+sudo mkdir -p /etc/apt/keyrings
+
+# Скачайте и добавьте ключ Docker
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
+sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg</code></pre>
+                            </div>
+                        </div>
+                        
+                        <div class="install-step detailed">
+                            <div class="step-header">
+                                <h4>4. Настройка репозитория Docker</h4>
+                            </div>
+                            <div class="code-block">
+                                <pre><code class="bash"># Добавьте репозиторий Docker
+echo \
+"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+https://download.docker.com/linux/ubuntu \
+$(lsb_release -cs) stable" | \
+sudo tee /etc/apt/sources.list.d/docker.list > /dev/null</code></pre>
+                            </div>
+                        </div>
+                        
+                        <div class="install-step detailed">
+                            <div class="step-header">
+                                <h4>5. Установка Docker Engine</h4>
+                            </div>
+                            <div class="code-block">
+                                <pre><code class="bash"># Обновите список пакетов
+sudo apt update
+
+# Установите Docker Engine
+sudo apt install -y docker-ce docker-ce-cli containerd.io
+
+# Проверьте установку
+docker --version</code></pre>
+                            </div>
+                            <div class="expected-output">
+                                <h5>Ожидаемый вывод:</h5>
+                                <code>Docker version 24.0.7, build afdd53b</code>
+                            </div>
+                        </div>
+                        
+                        <div class="install-step detailed">
+                            <div class="step-header">
+                                <h4>6. Настройка прав для пользователя</h4>
+                            </div>
+                            <p>По умолчанию Docker требует sudo. Исправим это:</p>
+                            <div class="code-block">
+                                <pre><code class="bash"># Добавьте текущего пользователя в группу docker
+sudo usermod -aG docker $USER
+
+# Примените изменения группы (нужен перезаход)
+newgrp docker
+
+# Проверьте, что docker работает без sudo
+docker run hello-world</code></pre>
+                            </div>
+                            <div class="expected-output">
+                                <h5>Должно вывести:</h5>
+                                <code>Hello from Docker!<br>This message shows that your installation appears to be working correctly.</code>
+                            </div>
+                        </div>
+                        
+                        <div class="install-step detailed">
+                            <div class="step-header">
+                                <h4>7. Настройка Docker для запуска при старте WSL</h4>
+                            </div>
+                            <div class="code-block">
+                                <pre><code class="bash"># Включите автозапуск Docker
+sudo systemctl enable docker
+
+# Но WSL2 не использует systemd по умолчанию
+# Решение: добавить запуск в .bashrc
+echo "# Start Docker daemon automatically when logging in if not running." >> ~/.bashrc
+echo 'RUNNING=`ps aux | grep dockerd | grep -v grep`' >> ~/.bashrc
+echo 'if [ -z "$RUNNING" ]; then' >> ~/.bashrc
+echo '    sudo dockerd > /dev/null 2>&1 &' >> ~/.bashrc
+echo '    disown' >> ~/.bashrc
+echo 'fi' >> ~/.bashrc
+
+# Примените изменения
+source ~/.bashrc</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="docker-post-install">
+                        <h3><i class="fas fa-check-circle"></i> Проверка и настройка после установки:</h3>
+                        
+                        <div class="check-container">
+                            <div class="check-item">
+                                <h4>1. Проверка установки</h4>
+                                <div class="code-block">
+                                    <pre><code class="bash"># Проверьте версию Docker
+docker --version
+
+# Проверьте версию Docker Compose
+docker compose version
+
+# Запустите тестовый контейнер
+docker run --rm hello-world</code></pre>
+                                </div>
+                            </div>
+                            
+                            <div class="check-item">
+                                <h4>2. Установка Docker Compose</h4>
+                                <div class="code-block">
+                                    <pre><code class="bash"># Docker Compose обычно устанавливается с Docker Engine
+# Если нет - установите отдельно:
+sudo apt install -y docker-compose
+
+# Или используйте новую версию:
+sudo apt install -y docker-compose-plugin</code></pre>
+                                </div>
+                            </div>
+                            
+                            <div class="check-item">
+                                <h4>3. Настройка Docker для WSL2</h4>
+                                <div class="code-block">
+                                    <pre><code class="bash"># Создайте конфигурацию для WSL2
+sudo tee /etc/docker/daemon.json > /dev/null <<EOF
+{
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": "3"
+  }
+}
+EOF
+
+# Перезапустите Docker
+sudo systemctl restart docker</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="docker-commands-reference">
+                        <h3><i class="fas fa-book"></i> Основные команды Docker:</h3>
+                        <div class="commands-grid">
+                            <div class="command-category">
+                                <h4>Работа с контейнерами</h4>
+                                <div class="command">
+                                    <code>docker ps</code>
+                                    <span>Список запущенных контейнеров</span>
+                                </div>
+                                <div class="command">
+                                    <code>docker ps -a</code>
+                                    <span>Список всех контейнеров</span>
+                                </div>
+                                <div class="command">
+                                    <code>docker run -d nginx</code>
+                                    <span>Запустить контейнер в фоне</span>
+                                </div>
+                                <div class="command">
+                                    <code>docker stop имя_контейнера</code>
+                                    <span>Остановить контейнер</span>
+                                </div>
+                                <div class="command">
+                                    <code>docker rm имя_контейнера</code>
+                                    <span>Удалить контейнер</span>
+                                </div>
+                            </div>
+                            
+                            <div class="command-category">
+                                <h4>Работа с образами</h4>
+                                <div class="command">
+                                    <code>docker images</code>
+                                    <span>Список образов</span>
+                                </div>
+                                <div class="command">
+                                    <code>docker pull ubuntu</code>
+                                    <span>Скачать образ</span>
+                                </div>
+                                <div class="command">
+                                    <code>docker rmi имя_образа</code>
+                                    <span>Удалить образ</span>
+                                </div>
+                                <div class="command">
+                                    <code>docker build -t имя .</code>
+                                    <span>Собрать образ из Dockerfile</span>
+                                </div>
+                            </div>
+                            
+                            <div class="command-category">
+                                <h4>Логи и мониторинг</h4>
+                                <div class="command">
+                                    <code>docker logs имя_контейнера</code>
+                                    <span>Показать логи контейнера</span>
+                                </div>
+                                <div class="command">
+                                    <code>docker stats</code>
+                                    <span>Статистика контейнеров</span>
+                                </div>
+                                <div class="command">
+                                    <code>docker exec -it имя_контейнера bash</code>
+                                    <span>Войти в контейнер</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="slide-footer">
+                    <div class="docker-test">
+                        <h4><i class="fas fa-vial"></i> Тестовая команда Docker:</h4>
+                        <div class="test-container">
+                            <div class="code-block interactive">
+                                <pre><code class="bash"># Запустите тестовый контейнер Nginx
+docker run -d -p 8080:80 --name test-nginx nginx</code></pre>
+                                <button class="run-test-btn" data-test="nginx">
+                                    <i class="fas fa-play"></i> Выполнить
+                                </button>
+                            </div>
+                            <div class="test-instructions">
+                                <p>После запуска откройте в браузере: <a href="http://localhost:8080" target="_blank">http://localhost:8080</a></p>
+                                <p>Должна появиться страница "Welcome to nginx!"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Слайд 5: Django в Docker -->
+        <section id="slide-5" class="slide">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <div class="slide-number">05</div>
+                    <h1 class="slide-title">Запуск Django проекта в Docker</h1>
+                    <div class="slide-subtitle">Контейнеризация интернет-магазина</div>
+                </div>
+                
+                <div class="slide-body">
+                    <div class="django-docker-architecture">
+                        <div class="architecture-card">
+                            <h3><i class="fas fa-project-diagram"></i> Архитектура нашего проекта:</h3>
+                            <div class="architecture-diagram">
+                                <div class="layer">
+                                    <div class="layer-icon">
+                                        <i class="fab fa-docker"></i>
+                                    </div>
+                                    <div class="layer-content">
+                                        <h4>Docker Контейнеры</h4>
+                                        <ul>
+                                            <li>📦 Django контейнер</li>
+                                            <li>🗄️ PostgreSQL контейнер</li>
+                                            <li>🚀 Nginx контейнер (опционально)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="layer-arrow">
+                                    <i class="fas fa-arrow-down"></i>
+                                </div>
+                                
+                                <div class="layer">
+                                    <div class="layer-icon">
+                                        <i class="fas fa-network-wired"></i>
+                                    </div>
+                                    <div class="layer-content">
+                                        <h4>Docker Compose</h4>
+                                        <p>Управление несколькими контейнерами</p>
+                                        <code>docker-compose.yml</code>
+                                    </div>
+                                </div>
+                                
+                                <div class="layer-arrow">
+                                    <i class="fas fa-arrow-down"></i>
+                                </div>
+                                
+                                <div class="layer">
+                                    <div class="layer-icon">
+                                        <i class="fab fa-github"></i>
+                                    </div>
+                                    <div class="layer-content">
+                                        <h4>GitHub репозиторий</h4>
+                                        <p>Ваш проект Django магазина</p>
+                                        <code>https://github.com/ваш-логин/django-shop</code>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="django-project-structure">
+                        <h3><i class="fas fa-folder-tree"></i> Структура Django проекта:</h3>
+                        <div class="file-tree">
+                            <div class="tree-item">
+                                <i class="fas fa-folder"></i>
+                                <span>django-shop/</span>
+                                <div class="tree-children">
+                                    <div class="tree-item">
+                                        <i class="fas fa-file"></i>
+                                        <span>Dockerfile</span>
+                                        <span class="file-desc">Конфигурация контейнера Django</span>
+                                    </div>
+                                    <div class="tree-item">
+                                        <i class="fas fa-file"></i>
+                                        <span>docker-compose.yml</span>
+                                        <span class="file-desc">Оркестрация контейнеров</span>
+                                    </div>
+                                    <div class="tree-item">
+                                        <i class="fas fa-file"></i>
+                                        <span>requirements.txt</span>
+                                        <span class="file-desc">Зависимости Python</span>
+                                    </div>
+                                    <div class="tree-item">
+                                        <i class="fas fa-folder"></i>
+                                        <span>config/</span>
+                                        <div class="tree-children">
+                                            <div class="tree-item">
+                                                <i class="fas fa-file"></i>
+                                                <span>settings.py</span>
+                                            </div>
+                                            <div class="tree-item">
+                                                <i class="fas fa-file"></i>
+                                                <span>urls.py</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tree-item">
+                                        <i class="fas fa-folder"></i>
+                                        <span>products/</span>
+                                    </div>
+                                    <div class="tree-item">
+                                        <i class="fas fa-folder"></i>
+                                        <span>cart/</span>
+                                    </div>
+                                    <div class="tree-item">
+                                        <i class="fas fa-folder"></i>
+                                        <span>static/</span>
+                                    </div>
+                                    <div class="tree-item">
+                                        <i class="fas fa-folder"></i>
+                                        <span>media/</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dockerfile-configuration">
+                        <h3><i class="fas fa-file-code"></i> 1. Dockerfile для Django:</h3>
+                        
+                        <div class="code-block file-block">
+                            <div class="file-header">
+                                <span>Dockerfile</span>
+                                <button class="copy-btn" data-clipboard-target="#dockerfile-code">
+                                    <i class="fas fa-copy"></i> Копировать
+                                </button>
+                            </div>
+                            <pre id="dockerfile-code"><code class="dockerfile"># Используем официальный Python образ
+FROM python:3.11-slim
+
+# Устанавливаем системные зависимости
+RUN apt-get update \
+    && apt-get install -y \
+        gcc \
+        libpq-dev \
+        && rm -rf /var/lib/apt/lists/*
+
+# Устанавливаем рабочую директорию
+WORKDIR /app
+
+# Копируем зависимости
+COPY requirements.txt .
+
+# Устанавливаем Python зависимости
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Копируем проект
+COPY . .
+
+# Создаем статику
+RUN python manage.py collectstatic --noinput
+
+# Открываем порт 8000
+EXPOSE 8000
+
+# Запускаем сервер
+CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]</code></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="docker-compose-configuration">
+                        <h3><i class="fas fa-file-code"></i> 2. docker-compose.yml:</h3>
+                        
+                        <div class="code-block file-block">
+                            <div class="file-header">
+                                <span>docker-compose.yml</span>
+                                <button class="copy-btn" data-clipboard-target="#compose-code">
+                                    <i class="fas fa-copy"></i> Копировать
+                                </button>
+                            </div>
+                            <pre id="compose-code"><code class="yaml">version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=django_shop
+      - POSTGRES_USER=django_user
+      - POSTGRES_PASSWORD=secret_password
+    restart: always
+
+  web:
+    build: .
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+      - static_volume:/app/static
+      - media_volume:/app/media
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgres://django_user:secret_password@db:5432/django_shop
+      - DEBUG=True
+    depends_on:
+      - db
+    restart: always
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:</code></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="requirements-configuration">
+                        <h3><i class="fas fa-file-code"></i> 3. requirements.txt:</h3>
+                        
+                        <div class="code-block file-block">
+                            <div class="file-header">
+                                <span>requirements.txt</span>
+                                <button class="copy-btn" data-clipboard-target="#requirements-code">
+                                    <i class="fas fa-copy"></i> Копировать
+                                </button>
+                            </div>
+                            <pre id="requirements-code"><code class="plaintext">Django>=5.0,<6.0
+gunicorn>=20.0,<22.0
+psycopg2-binary>=2.9,<3.0
+pillow>=10.0,<11.0
+django-environ>=0.10,<0.11
+
+# Для разработки
+ipython>=8.0,<9.0
+django-debug-toolbar>=4.0,<5.0</code></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="django-settings-configuration">
+                        <h3><i class="fas fa-file-code"></i> 4. Настройки Django для Docker:</h3>
+                        
+                        <div class="code-block file-block">
+                            <div class="file-header">
+                                <span>config/settings.py</span>
+                                <button class="copy-btn" data-clipboard-target="#settings-code">
+                                    <i class="fas fa-copy"></i> Копировать
+                                </button>
+                            </div>
+                            <pre id="settings-code"><code class="python">import os
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+SECRET_KEY = os.environ.get('SECRET_KEY', 'your-secret-key-here')
+
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
+# Настройки базы данных для Docker
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('POSTGRES_DB', 'django_shop'),
+        'USER': os.environ.get('POSTGRES_USER', 'django_user'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'secret_password'),
+        'HOST': os.environ.get('POSTGRES_HOST', 'db'),
+        'PORT': os.environ.get('POSTGRES_PORT', '5432'),
+    }
+}
+
+# Статические файлы
+STATIC_URL = '/static/'
+STATIC_ROOT = '/app/static'
+
+# Медиа файлы
+MEDIA_URL = '/media/'
+MEDIA_ROOT = '/app/media'</code></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="deployment-steps">
+                        <h3><i class="fas fa-play-circle"></i> Запуск проекта:</h3>
+                        
+                        <div class="deployment-step">
+                            <div class="step-header">
+                                <h4>1. Клонирование проекта из GitHub</h4>
+                            </div>
+                            <div class="code-block">
+                                <pre><code class="bash"># Перейдите в папку проектов
+cd ~/projects/django
+
+# Клонируйте ваш репозиторий
+git clone https://github.com/ваш-логин/django-shop.git
+cd django-shop</code></pre>
+                            </div>
+                        </div>
+                        
+                        <div class="deployment-step">
+                            <div class="step-header">
+                                <h4>2. Сборка и запуск контейнеров</h4>
+                            </div>
+                            <div class="code-block">
+                                <pre><code class="bash"># Соберите образы и запустите контейнеры
+docker-compose up --build -d
+
+# Проверьте статус
+docker-compose ps
+
+# Следите за логами
+docker-compose logs -f web</code></pre>
+                            </div>
+                        </div>
+                        
+                        <div class="deployment-step">
+                            <div class="step-header">
+                                <h4>3. Создание миграций и суперпользователя</h4>
+                            </div>
+                            <div class="code-block">
+                                <pre><code class="bash"># Выполните миграции
+docker-compose exec web python manage.py migrate
+
+# Создайте суперпользователя
+docker-compose exec web python manage.py createsuperuser
+
+# Загрузите фикстуры (если есть)
+docker-compose exec web python manage.py loaddata фикстуры.json</code></pre>
+                            </div>
+                        </div>
+                        
+                        <div class="deployment-step">
+                            <div class="step-header">
+                                <h4>4. Проверка работы</h4>
+                            </div>
+                            <p>Откройте в браузере:</p>
+                            <div class="url-list">
+                                <div class="url-item">
+                                    <i class="fas fa-globe"></i>
+                                    <a href="http://localhost:8000" target="_blank">http://localhost:8000</a>
+                                    <span>Главная страница</span>
+                                </div>
+                                <div class="url-item">
+                                    <i class="fas fa-cog"></i>
+                                    <a href="http://localhost:8000/admin" target="_blank">http://localhost:8000/admin</a>
+                                    <span>Админка Django</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="slide-footer">
+                    <div class="quick-start">
+                        <h4><i class="fas fa-bolt"></i> Быстрый старт одним скриптом:</h4>
+                        <div class="code-block file-block">
+                            <div class="file-header">
+                                <span>deploy.sh</span>
+                                <button class="copy-btn" data-clipboard-target="#deploy-code">
+                                    <i class="fas fa-copy"></i> Копировать
+                                </button>
+                            </div>
+                            <pre id="deploy-code"><code class="bash">#!/bin/bash
+
+# Скрипт для быстрого развертывания Django в Docker
+
+echo "🚀 Начинаем развертывание Django проекта..."
+
+# 1. Клонирование проекта
+git clone https://github.com/ваш-логин/django-shop.git
+cd django-shop
+
+# 2. Проверка Docker Compose
+if ! command -v docker-compose &> /dev/null; then
+    echo "❌ Docker Compose не установлен"
+    exit 1
+fi
+
+# 3. Сборка и запуск
+echo "🏗️ Собираем образы..."
+docker-compose build
+
+echo "🚀 Запускаем контейнеры..."
+docker-compose up -d
+
+# 4. Миграции
+echo "🗄️ Применяем миграции..."
+sleep 10  # Ждем запуска БД
+docker-compose exec web python manage.py migrate
+
+# 5. Статика
+echo "📦 Собираем статику..."
+docker-compose exec web python manage.py collectstatic --noinput
+
+echo "✅ Готово! Проект запущен на http://localhost:8000"
+echo "📊 Проверьте логи: docker-compose logs -f"</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Слайд 6: Практическое задание -->
+        <section id="slide-6" class="slide">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <div class="slide-number">06</div>
+                    <h1 class="slide-title">Практическое задание: Сборка проекта</h1>
+                    <div class="slide-subtitle">От теории к практике</div>
+                </div>
+                
+                <div class="slide-body">
+                    <div class="interactive-task">
+                        <!-- Задание -->
+                        <div class="task-description">
+                            <div class="task-header">
+                                <h3><i class="fas fa-tasks"></i> Задание:</h3>
+                                <div class="task-points">
+                                    <span class="points-badge" id="taskPoints">0/4</span>
+                                </div>
+                            </div>
+                            <div class="task-card">
+                                <p>Соберите полную конфигурацию для запуска Django проекта в Docker.</p>
+                                <p class="task-hint"><i class="fas fa-lightbulb"></i> <strong>Цель:</strong> Создать 4 ключевых файла для развертывания</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Файловый конструктор -->
+                        <div class="file-builder">
+                            <div class="builder-header">
+                                <h4><i class="fas fa-folder-open"></i> Файлы проекта:</h4>
+                                <div class="file-stats">
+                                    <span class="stat" id="filesCount">0 файлов</span>
+                                    <span class="stat" id="correctFiles">0/4 готово</span>
+                                </div>
+                            </div>
+                            
+                            <div class="files-preview" id="filesPreview">
+                                <div class="empty-files">
+                                    <i class="fas fa-file-code"></i>
+                                    <p>Перетащите сюда блоки кода из списка</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Доступные блоки кода -->
+                        <div class="code-blocks-pool">
+                            <h4><i class="fas fa-code"></i> Доступные блоки кода:</h4>
+                            <div class="blocks-grid" id="blocksPool">
+                                <!-- Блоки будут добавлены через JavaScript -->
+                            </div>
+                            <div class="blocks-controls">
+                                <button class="control-btn" id="resetFiles">
+                                    <i class="fas fa-redo"></i> Сбросить
+                                </button>
+                                <button class="control-btn" id="checkFiles">
+                                    <i class="fas fa-check-circle"></i> Проверить
+                                </button>
+                                <button class="control-btn" id="showFilesHint">
+                                    <i class="fas fa-question-circle"></i> Подсказка
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Результат -->
+                        <div class="task-result" id="taskResult" style="display: none;">
+                            <div class="result-content">
+                                <div class="result-icon">
+                                    <i class="fas fa-rocket"></i>
+                                </div>
+                                <h3>Отлично!</h3>
+                                <p id="resultMessage">Все файлы собраны правильно!</p>
+                                <div class="result-stats">
+                                    <div class="stat-item">
+                                        <i class="fas fa-clock"></i>
+                                        <span>Время: <span id="taskTimer">0:00</span></span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <i class="fas fa-star"></i>
+                                        <span>Очки: <span id="taskScore">100</span></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Готовый проект -->
+                    <div class="final-project">
+                        <h3><i class="fas fa-box-open"></i> Готовый проект для скачивания:</h3>
+                        <div class="project-download">
+                            <div class="download-card">
+                                <div class="download-icon">
+                                    <i class="fab fa-github"></i>
+                                </div>
+                                <div class="download-content">
+                                    <h4>Полная конфигурация</h4>
+                                    <p>Все файлы для быстрого старта</p>
+                                    <button class="download-btn" id="downloadProject">
+                                        <i class="fas fa-download"></i> Скачать архив
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="project-structure">
+                            <h4>Содержимое архива:</h4>
+                            <div class="structure-tree">
+                                <pre><code class="plaintext">django-docker-template/
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
+├── .env.example
+├── .dockerignore
+├── deploy.sh
+├── nginx/
+│   └── nginx.conf
+├── config/
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+└── README.md</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Что мы изучили -->
+                    <div class="learning-summary">
+                        <h3><i class="fas fa-graduation-cap"></i> Что вы изучили:</h3>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <div class="summary-icon">
+                                    <i class="fab fa-windows"></i>
+                                </div>
+                                <div class="summary-content">
+                                    <h4>WSL2 на Windows</h4>
+                                    <p>Установка и настройка Linux подсистемы</p>
+                                </div>
+                            </div>
+                            
+                            <div class="summary-item">
+                                <div class="summary-icon">
+                                    <i class="fab fa-ubuntu"></i>
+                                </div>
+                                <div class="summary-content">
+                                    <h4>Ubuntu в WSL</h4>
+                                    <p>Работа с терминалом Linux</p>
+                                </div>
+                            </div>
+                            
+                            <div class="summary-item">
+                                <div class="summary-icon">
+                                    <i class="fab fa-docker"></i>
+                                </div>
+                                <div class="summary-content">
+                                    <h4>Docker Engine</h4>
+                                    <p>Установка и управление контейнерами</p>
+                                </div>
+                            </div>
+                            
+                            <div class="summary-item">
+                                <div class="summary-icon">
+                                    <i class="fab fa-python"></i>
+                                </div>
+                                <div class="summary-content">
+                                    <h4>Django в Docker</h4>
+                                    <p>Контейнеризация веб-приложений</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Следующие шаги -->
+                    <div class="next-steps">
+                        <h3><i class="fas fa-road"></i> Что дальше:</h3>
+                        <div class="steps-grid">
+                            <div class="step-card">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h4>Оптимизация Dockerfile</h4>
+                                    <p>Многоступенчатая сборка, кэширование</p>
+                                </div>
+                            </div>
+                            
+                            <div class="step-card">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>База данных PostgreSQL</h4>
+                                    <p>Настройка репликации, бэкапы</p>
+                                </div>
+                            </div>
+                            
+                            <div class="step-card">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h4>CI/CD пайплайн</h4>
+                                    <p>Автоматическое развертывание</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="slide-footer">
+                    <div class="completion-message">
+                        <h3>🎉 Поздравляем!</h3>
+                        <p>Вы освоили полный цикл развертывания Django на Windows через WSL2 и Docker!</p>
+                        <div class="completion-buttons">
+                            <button id="startOver" class="completion-btn">
+                                <i class="fas fa-redo"></i> Начать сначала
+                            </button>
+                            <button id="shareProject" class="completion-btn">
+                                <i class="fas fa-share"></i> Поделиться
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Терминальный вывод -->
+    <div class="terminal-output-panel" id="terminalOutput">
+        <div class="terminal-output-header">
+            <span>Терминал</span>
+            <button class="terminal-clear-btn">
+                <i class="fas fa-trash"></i> Очистить
+            </button>
+        </div>
+        <div class="terminal-output-content" id="terminalContent">
+            <div class="terminal-line">
+                <span class="prompt">$</span> <span class="command">Добро пожаловать в терминал презентации!</span>
+            </div>
+            <div class="terminal-line">
+                <span class="prompt">$</span> <span class="command">Используйте кнопки для выполнения команд.</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
