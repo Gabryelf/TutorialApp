@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Архитектура игрового проекта | Модульный подход</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #4cc9f0;
+            --danger: #f72585;
+            --success: #06d6a0;
+            --warning: #ffd166;
+            --dark: #0a0a0f;
+            --darker: #050508;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --card-bg: rgba(20, 20, 30, 0.95);
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--darker);
+            color: var(--light);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background: linear-gradient(135deg, var(--darker) 0%, #0a0a1a 100%);
+        }
+        
+        /* Заголовок */
+        .header {
+            height: 60px;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(76, 201, 240, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            z-index: 100;
+            position: relative;
+            flex-shrink: 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-icon {
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+        
+        .logo-text {
+            font-size: 1.1rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .progress-bar {
+            width: 180px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+        
+        /* Основное содержимое */
+        .slides-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            padding: 15px;
+        }
+        
+        .slide {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transform: translateX(50px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            pointer-events: none;
+        }
+        
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: all;
+        }
+        
+        .slide-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .slide-title {
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            font-weight: 800;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(76, 201, 240, 0.2);
+            flex-shrink: 0;
+            line-height: 1.3;
+        }
+        
+        .slide-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 5px 0;
+        }
+        
+        /* Компактные карточки */
+        .compact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 12px;
+            height: 100%;
+            align-content: start;
+        }
+        
+        .compact-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 18px;
+            border: 1px solid rgba(76, 201, 240, 0.1);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            min-height: 150px;
+        }
+        
+        .compact-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(76, 201, 240, 0.3);
+        }
+        
+        .compact-icon {
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+            color: var(--accent);
+        }
+        
+        .compact-title {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: var(--accent);
+            font-weight: 600;
+        }
+        
+        .compact-text {
+            flex: 1;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        
+        /* Компактные колонки */
+        .compact-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            height: 100%;
+        }
+        
+        /* Компактный flow */
+        .compact-flow {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            height: 100%;
+        }
+        
+        .compact-step {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 14px;
+            border-radius: 8px;
+            text-align: center;
+            position: relative;
+            font-size: 0.9rem;
+        }
+        
+        .compact-step-num {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            width: 20px;
+            height: 20px;
+            background: var(--danger);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 0.7rem;
+        }
+        
+        /* Бейджи */
+        .badges-container {
+            margin-top: 15px;
+            flex-shrink: 0;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+        }
+        
+        .badge {
+            background: rgba(67, 97, 238, 0.15);
+            border: 1px solid var(--primary);
+            color: var(--accent);
+            padding: 5px 10px;
+            border-radius: 14px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .badge:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Навигация */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            background: rgba(10, 10, 15, 0.95);
+            border-top: 1px solid rgba(76, 201, 240, 0.1);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            flex-shrink: 0;
+        }
+        
+        .nav-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+        }
+        
+        .nav-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+        }
+        
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        .slide-counter {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+        
+        .slide-dots {
+            display: flex;
+            gap: 6px;
+        }
+        
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .dot.active {
+            background: var(--accent);
+            transform: scale(1.2);
+        }
+        
+        /* Анимации */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.03); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-6px); }
+            20%, 40%, 60%, 80% { transform: translateX(6px); }
+        }
+        
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        /* Кнопки действий */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(76, 201, 240, 0.3);
+            color: var(--accent);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+        
+        .action-btn:hover {
+            background: rgba(76, 201, 240, 0.2);
+        }
+        
+        /* Модульная визуализация */
+        .module-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            position: relative;
+            min-height: 200px;
+        }
+        
+        .module-center {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            z-index: 2;
+        }
+        
+        .satellite-module {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--danger), #b5179e);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.5s ease;
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        .satellite-module:hover {
+            transform: scale(1.05);
+            z-index: 3;
+        }
+        
+        /* Компактные экраны */
+        .screens-compact {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+            height: 100%;
+            align-content: start;
+        }
+        
+        .screen-compact {
+            background: rgba(30, 30, 45, 0.8);
+            border-radius: 8px;
+            padding: 14px;
+            border-left: 3px solid var(--accent);
+        }
+        
+        .screen-compact-title {
+            font-size: 1rem;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .screen-compact-items {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+        
+        /* Компактные компоненты */
+        .components-compact {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 10px;
+            height: 100%;
+            align-content: start;
+        }
+        
+        .component-compact {
+            background: rgba(30, 30, 45, 0.8);
+            border-radius: 8px;
+            padding: 14px;
+            border-top: 3px solid var(--warning);
+        }
+        
+        .component-compact-name {
+            font-size: 1rem;
+            color: var(--light);
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .component-compact-desc {
+            font-size: 0.8rem;
+            color: var(--gray);
+            line-height: 1.3;
+        }
+        
+        /* Компактные фичи */
+        .features-compact {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 10px;
+            height: 100%;
+            align-content: start;
+        }
+        
+        .feature-compact {
+            background: rgba(40, 40, 60, 0.8);
+            border-radius: 8px;
+            padding: 14px;
+            border-top: 3px solid var(--success);
+        }
+        
+        .feature-compact-title {
+            font-size: 1rem;
+            color: var(--success);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .feature-compact-list {
+            font-size: 0.8rem;
+            color: var(--light);
+            padding-left: 15px;
+        }
+        
+        .feature-compact-list li {
+            margin: 4px 0;
+        }
+        
+        /* Респонсив */
+        @media (max-width: 1024px) {
+            .compact-columns {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .compact-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .slide-title {
+                font-size: 1.4rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                padding: 0 15px;
+                height: 55px;
+            }
+            
+            .navigation {
+                padding: 10px 15px;
+            }
+            
+            .slide {
+                top: 10px;
+                left: 10px;
+                right: 10px;
+                bottom: 10px;
+            }
+            
+            .slides-container {
+                padding: 10px;
+            }
+            
+            .slide-title {
+                font-size: 1.2rem;
+                margin-bottom: 10px;
+            }
+            
+            .module-visual {
+                min-height: 180px;
+            }
+            
+            .satellite-module {
+                width: 60px;
+                height: 60px;
+                font-size: 0.7rem;
+            }
+            
+            .module-center {
+                width: 80px;
+                height: 80px;
+                font-size: 1.5rem;
+            }
+            
+            .screens-compact,
+            .components-compact,
+            .features-compact {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Утилиты */
+        .text-center {
+            text-align: center;
+        }
+        
+        .mt-5 {
+            margin-top: 5px;
+        }
+        
+        .mt-8 {
+            margin-top: 8px;
+        }
+        
+        .mt-10 {
+            margin-top: 10px;
+        }
+        
+        .full-height {
+            height: 100%;
+        }
+        
+        .no-overflow {
+            overflow: hidden !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-code-branch"></i>
+                </div>
+                <div class="logo-text">
+                    Архитектура игрового проекта
+                </div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+        
+        <div class="slides-container" id="slidesContainer">
+            <!-- Слайд 1: Введение -->
+            <div class="slide active" id="slide1">
+                <div class="slide-content">
+                    <h1 class="slide-title">
+                        <i class="fas fa-layer-group"></i> Модульная архитектура
+                    </h1>
+                    
+                    <div class="slide-body no-overflow">
+                        <div class="compact-columns">
+                            <div class="compact-card">
+                                <div class="compact-icon">
+                                    <i class="fas fa-cubes"></i>
+                                </div>
+                                <div class="compact-title">Что такое модульность?</div>
+                                <div class="compact-text">
+                                    Разделение кода на независимые блоки, каждый из которых выполняет конкретную задачу.
+                                </div>
+                                <div class="action-buttons">
+                                    <button class="action-btn" onclick="showModuleDemo()">
+                                        <i class="fas fa-play-circle"></i> Демо
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="compact-card">
+                                <div class="compact-icon">
+                                    <i class="fas fa-sitemap"></i>
+                                </div>
+                                <div class="compact-title">Основные преимущества</div>
+                                <div class="compact-text">
+                                    • Простота поддержки<br>
+                                    • Легкость тестирования<br>
+                                    • Переиспользование кода<br>
+                                    • Параллельная разработка
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="badges-container">
+                            <div class="badges">
+                                <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Guide/Modules" target="_blank" class="badge">
+                                    <i class="fab fa-js-square"></i> ES6 Modules
+                                </a>
+                                <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Classes" target="_blank" class="badge">
+                                    <i class="fas fa-cube"></i> Классы в JS
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Слайд 2: Основные модули -->
+            <div class="slide" id="slide2">
+                <div class="slide-content">
+                    <h1 class="slide-title">
+                        <i class="fas fa-puzzle-piece"></i> Ключевые компоненты
+                    </h1>
+                    
+                    <div class="slide-body no-overflow">
+                        <div class="compact-grid">
+                            <div class="compact-card">
+                                <div class="compact-icon" style="color: #4cc9f0;">
+                                    <i class="fas fa-database"></i>
+                                </div>
+                                <div class="compact-title">Data Module</div>
+                                <div class="compact-text">
+                                    Хранилище данных: словари, настройки. Только данные, без логики.
+                                </div>
+                            </div>
+                            
+                            <div class="compact-card">
+                                <div class="compact-icon" style="color: #f72585;">
+                                    <i class="fas fa-cogs"></i>
+                                </div>
+                                <div class="compact-title">Core Logic</div>
+                                <div class="compact-text">
+                                    Игровая логика: правила, механики. "Мозг" игры.
+                                </div>
+                            </div>
+                            
+                            <div class="compact-card">
+                                <div class="compact-icon" style="color: #7209b7;">
+                                    <i class="fas fa-paint-brush"></i>
+                                </div>
+                                <div class="compact-title">UI Layer</div>
+                                <div class="compact-text">
+                                    Пользовательский интерфейс. Только рисует, не принимает решений.
+                                </div>
+                            </div>
+                            
+                            <div class="compact-card">
+                                <div class="compact-icon" style="color: #3a0ca3;">
+                                    <i class="fas fa-tools"></i>
+                                </div>
+                                <div class="compact-title">Utilities</div>
+                                <div class="compact-text">
+                                    Вспомогательные функции. Переиспользуемый код.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="badges-container">
+                            <div class="badges">
+                                <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/JSON" target="_blank" class="badge">
+                                    <i class="fas fa-code"></i> JSON
+                                </a>
+                                <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Array" target="_blank" class="badge">
+                                    <i class="fas fa-layer-group"></i> Массивы
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Слайд 3: Визуализация архитектуры -->
+            <div class="slide" id="slide3">
+                <div class="slide-content">
+                    <h1 class="slide-title">
+                        <i class="fas fa-project-diagram"></i> Взаимодействие модулей
+                    </h1>
+                    
+                    <div class="slide-body no-overflow">
+                        <div class="module-visual">
+                            <div class="module-center float-animation">
+                                <i class="fas fa-gamepad"></i>
+                            </div>
+                            
+                            <div class="satellite-module" style="top: 15%; left: 5%; background: linear-gradient(135deg, #4cc9f0, #4361ee);" onclick="showModuleInfo('data')">
+                                <i class="fas fa-database"></i>
+                                <span>Data</span>
+                            </div>
+                            
+                            <div class="satellite-module" style="top: 15%; right: 5%; background: linear-gradient(135deg, #f72585, #b5179e);" onclick="showModuleInfo('logic')">
+                                <i class="fas fa-brain"></i>
+                                <span>Logic</span>
+                            </div>
+                            
+                            <div class="satellite-module" style="bottom: 15%; left: 5%; background: linear-gradient(135deg, #7209b7, #560bad);" onclick="showModuleInfo('ui')">
+                                <i class="fas fa-desktop"></i>
+                                <span>UI</span>
+                            </div>
+                            
+                            <div class="satellite-module" style="bottom: 15%; right: 5%; background: linear-gradient(135deg, #3a0ca3, #480ca8);" onclick="showModuleInfo('utils')">
+                                <i class="fas fa-toolbox"></i>
+                                <span>Utils</span>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-8">
+                            <p style="font-size: 0.9rem;">Каждый модуль независим и взаимодействует через четкие интерфейсы.</p>
+                            <button class="action-btn mt-5" onclick="showInteractionDemo()">
+                                <i class="fas fa-exchange-alt"></i> Взаимодействие
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Слайд 4: Структура экранов -->
+            <div class="slide" id="slide4">
+                <div class="slide-content">
+                    <h1 class="slide-title">
+                        <i class="fas fa-desktop"></i> Структура экранов
+                    </h1>
+                    
+                    <div class="slide-body no-overflow">
+                        <div class="screens-compact">
+                            <div class="screen-compact">
+                                <div class="screen-compact-title">Главное меню</div>
+                                <div class="screen-compact-items">
+                                    • Логотип и название<br>
+                                    • Кнопки режимов<br>
+                                    • Настройки
+                                </div>
+                            </div>
+                            
+                            <div class="screen-compact">
+                                <div class="screen-compact-title">Игровой экран</div>
+                                <div class="screen-compact-items">
+                                    • Панель статистики<br>
+                                    • Сетка слов<br>
+                                    • Поле ввода<br>
+                                    • Круг букв
+                                </div>
+                            </div>
+                            
+                            <div class="screen-compact">
+                                <div class="screen-compact-title">Экран результатов</div>
+                                <div class="screen-compact-items">
+                                    • Иконка результата<br>
+                                    • Статистика<br>
+                                    • Кнопки действий<br>
+                                    • Анимации
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-10">
+                            <button class="action-btn" onclick="demoScreenTransition()">
+                                <i class="fas fa-eye"></i> Показать детали
+                            </button>
+                        </div>
+                        
+                        <div class="badges-container">
+                            <div class="badges">
+                                <a href="https://developer.mozilla.org/ru/docs/Web/CSS/CSS_Flexible_Box_Layout" target="_blank" class="badge">
+                                    <i class="fas fa-th-large"></i> Flexbox
+                                </a>
+                                <a href="https://developer.mozilla.org/ru/docs/Web/CSS/CSS_Grid_Layout" target="_blank" class="badge">
+                                    <i class="fas fa-table"></i> CSS Grid
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Слайд 5: Компоненты UI -->
+            <div class="slide" id="slide5">
+                <div class="slide-content">
+                    <h1 class="slide-title">
+                        <i class="fas fa-th"></i> Компоненты UI
+                    </h1>
+                    
+                    <div class="slide-body no-overflow">
+                        <div class="components-compact">
+                            <div class="component-compact">
+                                <div class="component-compact-name">
+                                    <i class="fas fa-circle" style="color: #ffd166;"></i>
+                                    Circle Input
+                                </div>
+                                <div class="component-compact-desc">
+                                    Буквы по кругу с центральной кнопкой. CSS позиционирование.
+                                </div>
+                            </div>
+                            
+                            <div class="component-compact">
+                                <div class="component-compact-name">
+                                    <i class="fas fa-keyboard" style="color: #ffd166;"></i>
+                                    Words Grid
+                                </div>
+                                <div class="component-compact-desc">
+                                    Сетка слов с анимацией открытия. Grid/Flexbox.
+                                </div>
+                            </div>
+                            
+                            <div class="component-compact">
+                                <div class="component-compact-name">
+                                    <i class="fas fa-chart-bar" style="color: #ffd166;"></i>
+                                    Game Header
+                                </div>
+                                <div class="component-compact-desc">
+                                    Статистика игры. Динамическое обновление.
+                                </div>
+                            </div>
+                            
+                            <div class="component-compact">
+                                <div class="component-compact-name">
+                                    <i class="fas fa-comment-alt" style="color: #ffd166;"></i>
+                                    Messages
+                                </div>
+                                <div class="component-compact-desc">
+                                    Всплывающие сообщения. Анимации, таймеры.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="badges-container">
+                            <div class="badges">
+                                <a href="https://developer.mozilla.org/ru/docs/Web/API/Document_Object_Model" target="_blank" class="badge">
+                                    <i class="fas fa-sitemap"></i> DOM API
+                                </a>
+                                <a href="https://developer.mozilla.org/ru/docs/Web/API/EventTarget/addEventListener" target="_blank" class="badge">
+                                    <i class="fas fa-mouse-pointer"></i> Event Listeners
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Слайд 6: Менеджер анимаций (исправленный) -->
+            <div class="slide" id="slide6">
+                <div class="slide-content">
+                    <h1 class="slide-title">
+                        <i class="fas fa-film"></i> Менеджер анимаций
+                    </h1>
+                    
+                    <div class="slide-body no-overflow">
+                        <div class="compact-columns">
+                            <div class="compact-card">
+                                <div class="compact-icon" style="color: #ffd166;">
+                                    <i class="fas fa-magic"></i>
+                                </div>
+                                <div class="compact-title">Как работает?</div>
+                                <div class="compact-text">
+                                    CSS @keyframes + JavaScript управление. Централизованный класс.
+                                </div>
+                                <div class="action-buttons">
+                                    <button class="action-btn" onclick="demoAnimation('pulse')">
+                                        <i class="fas fa-expand-alt"></i> Pulse
+                                    </button>
+                                    <button class="action-btn" onclick="demoAnimation('shake')">
+                                        <i class="fas fa-vibration"></i> Shake
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="compact-flow">
+                                <div class="compact-step">
+                                    <div class="compact-step-num">1</div>
+                                    CSS @keyframes
+                                </div>
+                                <div class="compact-step">
+                                    <div class="compact-step-num">2</div>
+                                    Классы анимаций
+                                </div>
+                                <div class="compact-step">
+                                    <div class="compact-step-num">3</div>
+                                    JS управление
+                                </div>
+                                <div class="compact-step">
+                                    <div class="compact-step-num">4</div>
+                                    Автоудаление
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="badges-container">
+                            <div class="badges">
+                                <a href="https://developer.mozilla.org/ru/docs/Web/CSS/@keyframes" target="_blank" class="badge">
+                                    <i class="fas fa-film"></i> CSS @keyframes
+                                </a>
+                                <a href="https://developer.mozilla.org/ru/docs/Web/API/window/requestAnimationFrame" target="_blank" class="badge">
+                                    <i class="fas fa-sync-alt"></i> requestAnimationFrame
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Слайд 7: Генератор звуков -->
+            <div class="slide" id="slide7">
+                <div class="slide-content">
+                    <h1 class="slide-title">
+                        <i class="fas fa-volume-up"></i> Генератор звуков
+                    </h1>
+                    
+                    <div class="slide-body no-overflow">
+                        <div class="compact-grid">
+                            <div class="compact-card">
+                                <div class="compact-icon" style="color: #4361ee;">
+                                    <i class="fas fa-wave-square"></i>
+                                </div>
+                                <div class="compact-title">Web Audio API</div>
+                                <div class="compact-text">
+                                    Программная генерация звуков без файлов.
+                                </div>
+                                <div class="action-buttons">
+                                    <button class="action-btn" onclick="playDemoSound('click')">
+                                        <i class="fas fa-mouse-pointer"></i> Клик
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="compact-card">
+                                <div class="compact-icon" style="color: #f72585;">
+                                    <i class="fas fa-sliders-h"></i>
+                                </div>
+                                <div class="compact-title">Параметры</div>
+                                <div class="compact-text">
+                                    • Тип волны<br>
+                                    • Частота<br>
+                                    • Длительность<br>
+                                    • Эффекты
+                                </div>
+                            </div>
+                            
+                            <div class="compact-card">
+                                <div class="compact-icon" style="color: #4cc9f0;">
+                                    <i class="fas fa-code-branch"></i>
+                                </div>
+                                <div class="compact-title">Архитектура</div>
+                                <div class="compact-text">
+                                    Изолированный модуль. Подключается к любому проекту.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="badges-container">
+                            <div class="badges">
+                                <a href="https://developer.mozilla.org/ru/docs/Web/API/Web_Audio_API" target="_blank" class="badge">
+                                    <i class="fas fa-wave-square"></i> Web Audio API
+                                </a>
+                                <a href="https://developer.mozilla.org/ru/docs/Web/API/AudioContext" target="_blank" class="badge">
+                                    <i class="fas fa-microphone-alt"></i> AudioContext
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Слайд 8: Менеджер сохранений (исправленный) -->
+            <div class="slide" id="slide8">
+                <div class="slide-content">
+                    <h1 class="slide-title">
+                        <i class="fas fa-save"></i> Система сохранений
+                    </h1>
+                    
+                    <div class="slide-body no-overflow">
+                        <div class="compact-columns">
+                            <div class="compact-card">
+                                <div class="compact-icon" style="color: #3a0ca3;">
+                                    <i class="fas fa-hdd"></i>
+                                </div>
+                                <div class="compact-title">LocalStorage</div>
+                                <div class="compact-text">
+                                    Хранение в браузере без сервера. JSON формат.
+                                </div>
+                            </div>
+                            
+                            <div class="compact-flow">
+                                <div class="compact-step">
+                                    <div class="compact-step-num">1</div>
+                                    Данные игры
+                                </div>
+                                <div class="compact-step">
+                                    <div class="compact-step-num">2</div>
+                                    Оптимизация
+                                </div>
+                                <div class="compact-step">
+                                    <div class="compact-step-num">3</div>
+                                    Сохранение
+                                </div>
+                                <div class="compact-step">
+                                    <div class="compact-step-num">4</div>
+                                    Загрузка
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="features-compact mt-8">
+                            <div class="feature-compact">
+                                <div class="feature-compact-title">SaveManager методы</div>
+                                <ul class="feature-compact-list">
+                                    <li>save(game) - сохраняет</li>
+                                    <li>load(game) - загружает</li>
+                                    <li>delete() - удаляет</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="feature-compact">
+                                <div class="feature-compact-title">Переиспользование</div>
+                                <ul class="feature-compact-list">
+                                    <li>Копируем класс</li>
+                                    <li>Настраиваем ключ</li>
+                                    <li>Интегрируем</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="badges-container">
+                            <div class="badges">
+                                <a href="https://developer.mozilla.org/ru/docs/Web/API/Window/localStorage" target="_blank" class="badge">
+                                    <i class="fas fa-database"></i> LocalStorage
+                                </a>
+                                <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/JSON" target="_blank" class="badge">
+                                    <i class="fas fa-code"></i> JSON
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Слайд 9: Особенности архитектуры -->
+            <div class="slide" id="slide9">
+                <div class="slide-content">
+                    <h1 class="slide-title">
+                        <i class="fas fa-star"></i> Ключевые особенности
+                    </h1>
+                    
+                    <div class="slide-body no-overflow">
+                        <div class="features-compact">
+                            <div class="feature-compact">
+                                <div class="feature-compact-title">Разделение</div>
+                                <ul class="feature-compact-list">
+                                    <li>Data → данные</li>
+                                    <li>Logic → логика</li>
+                                    <li>UI → отображение</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="feature-compact">
+                                <div class="feature-compact-title">Поток данных</div>
+                                <ul class="feature-compact-list">
+                                    <li>Пользователь → UI</li>
+                                    <li>UI → Logic</li>
+                                    <li>Logic → State</li>
+                                    <li>State → UI</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="feature-compact">
+                                <div class="feature-compact-title">Тестирование</div>
+                                <ul class="feature-compact-list">
+                                    <li>Модули отдельно</li>
+                                    <li>Моки зависимостей</li>
+                                    <li>Юнит-тесты</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="feature-compact">
+                                <div class="feature-compact-title">Масштабируемость</div>
+                                <ul class="feature-compact-list">
+                                    <li>Новые экраны</li>
+                                    <li>Расширение функционала</li>
+                                    <li>Рефакторинг частями</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-10">
+                            <div style="display: inline-flex; flex-wrap: wrap; gap: 8px; justify-content: center;">
+                                <span style="background: rgba(6, 214, 160, 0.2); padding: 6px 12px; border-radius: 4px; font-size: 0.8rem;">
+                                    🏗️ Module Pattern
+                                </span>
+                                <span style="background: rgba(255, 209, 102, 0.2); padding: 6px 12px; border-radius: 4px; font-size: 0.8rem;">
+                                    👁️ Observer
+                                </span>
+                                <span style="background: rgba(76, 201, 240, 0.2); padding: 6px 12px; border-radius: 4px; font-size: 0.8rem;">
+                                    🏭 Factory
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Слайд 10: Ресурсы и итоги (исправленный) -->
+            <div class="slide" id="slide10">
+                <div class="slide-content">
+                    <h1 class="slide-title">
+                        <i class="fas fa-graduation-cap"></i> Ресурсы и итоги
+                    </h1>
+                    
+                    <div class="slide-body no-overflow">
+                        <div class="compact-columns">
+                            <div class="compact-card">
+                                <div class="compact-icon" style="color: #4361ee;">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                                <div class="compact-title">Учебные материалы</div>
+                                <div class="compact-text">
+                                    Полный курс по созданию игр на чистом JavaScript.
+                                </div>
+                                <div class="action-buttons">
+                                    <button class="action-btn" onclick="openCourse()">
+                                        <i class="fas fa-external-link-alt"></i> Курс
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="compact-card">
+                                <div class="compact-icon" style="color: #f72585;">
+                                    <i class="fas fa-file-code"></i>
+                                </div>
+                                <div class="compact-title">Исходный код</div>
+                                <div class="compact-text">
+                                    Полная реализация архитектуры на GitHub.
+                                </div>
+                                <div class="action-buttons">
+                                    <button class="action-btn" onclick="openGitHub()">
+                                        <i class="fab fa-github"></i> GitHub
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-10">
+                            <h3 style="color: var(--accent); font-size: 1rem; margin-bottom: 8px;">Ключевые технологии</h3>
+                            <div class="badges">
+                                <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript" target="_blank" class="badge">
+                                    <i class="fab fa-js"></i> JavaScript
+                                </a>
+                                <a href="https://developer.mozilla.org/ru/docs/Web/API/Web_Audio_API" target="_blank" class="badge">
+                                    <i class="fas fa-wave-square"></i> Web Audio
+                                </a>
+                                <a href="https://developer.mozilla.org/ru/docs/Web/API/Window/localStorage" target="_blank" class="badge">
+                                    <i class="fas fa-database"></i> LocalStorage
+                                </a>
+                                <a href="https://developer.mozilla.org/ru/docs/Web/CSS/CSS_Animations" target="_blank" class="badge">
+                                    <i class="fab fa-css3-alt"></i> CSS Animations
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-10">
+                            <p style="font-size: 0.9rem; color: var(--accent);">
+                                Модульная архитектура делает код читаемым, поддерживаемым и переиспользуемым.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Навигация -->
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="prevSlide()" disabled>
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            
+            <div class="slide-dots" id="slideDots">
+                <!-- Точки будут добавлены через JS -->
+            </div>
+            
+            <div class="slide-counter">
+                <span id="currentSlideNum">1</span> / <span id="totalSlidesNum">10</span>
+            </div>
+            
+            <button class="nav-btn" id="nextBtn" onclick="nextSlide()">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Состояние презентации
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        let audioContext = null;
+        
+        // Инициализация
+        function initPresentation() {
+            updateSlideCounter();
+            createSlideDots();
+            updateProgress();
+            initAudioContext();
+            
+            // Активация аудиоконтекста при первом клике
+            document.addEventListener('click', function initAudioOnClick() {
+                if (audioContext && audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+                document.removeEventListener('click', initAudioOnClick);
+            });
+        }
+        
+        // Переключение слайдов
+        function goToSlide(index) {
+            if (index < 0 || index >= totalSlides) return;
+            
+            slides[currentSlideIndex].classList.remove('active');
+            currentSlideIndex = index;
+            slides[currentSlideIndex].classList.add('active');
+            
+            updateSlideCounter();
+            updateProgress();
+            updateDots();
+            updateNavButtons();
+        }
+        
+        function nextSlide() {
+            goToSlide(currentSlideIndex + 1);
+        }
+        
+        function prevSlide() {
+            goToSlide(currentSlideIndex - 1);
+        }
+        
+        // Обновление UI
+        function updateSlideCounter() {
+            document.getElementById('currentSlideNum').textContent = currentSlideIndex + 1;
+            document.getElementById('totalSlidesNum').textContent = totalSlides;
+        }
+        
+        function updateProgress() {
+            const progress = ((currentSlideIndex + 1) / totalSlides) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+        }
+        
+        function createSlideDots() {
+            const dotsContainer = document.getElementById('slideDots');
+            dotsContainer.innerHTML = '';
+            
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = `dot ${i === currentSlideIndex ? 'active' : ''}`;
+                dot.onclick = () => goToSlide(i);
+                dotsContainer.appendChild(dot);
+            }
+        }
+        
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlideIndex);
+            });
+        }
+        
+        function updateNavButtons() {
+            document.getElementById('prevBtn').disabled = currentSlideIndex === 0;
+            document.getElementById('nextBtn').disabled = currentSlideIndex === totalSlides - 1;
+        }
+        
+        // Демонстрационные функции
+        function showModuleDemo() {
+            alert("📦 Модульная архитектура:\n\nКаждый файл — отдельный модуль с четкими границами ответственности.");
+        }
+        
+        function showModuleInfo(type) {
+            const info = {
+                data: "📊 Data Layer\nХранит словари, настройки\nТолько данные",
+                logic: "🧠 Core Logic\nПравила игры\n'Мозг' системы",
+                ui: "🎨 UI Layer\nОтображение\nТолько рисует",
+                utils: "🔧 Utilities\nВспомогательные функции\nПереиспользуемый код"
+            };
+            alert(info[type]);
+        }
+        
+        function showInteractionDemo() {
+            alert("🔄 Взаимодействие:\n\n1. UI фиксирует действие\n2. Передает Logic\n3. Logic принимает решение\n4. Обновляет State\n5. UI отображает результат");
+        }
+        
+        function demoScreenTransition() {
+            alert("📱 Экраны игры:\n\n• Главное меню - выбор режимов\n• Игровой экран - основная игра\n• Экран результатов - статистика");
+        }
+        
+        // Демо анимаций
+        function demoAnimation(type) {
+            const demoElement = document.createElement('div');
+            demoElement.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 70px;
+                height: 70px;
+                background: linear-gradient(135deg, var(--primary), var(--accent));
+                border-radius: 14px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.5rem;
+                color: white;
+                z-index: 9999;
+                pointer-events: none;
+            `;
+            demoElement.innerHTML = type === 'shake' ? '📱' : '⚡';
+            
+            if (type === 'pulse') {
+                demoElement.style.animation = 'pulse 0.5s ease';
+            } else if (type === 'shake') {
+                demoElement.style.animation = 'shake 0.5s ease';
+            }
+            
+            document.body.appendChild(demoElement);
+            
+            setTimeout(() => {
+                demoElement.style.opacity = '0';
+                demoElement.style.transition = 'opacity 0.3s';
+                setTimeout(() => demoElement.remove(), 300);
+            }, 1000);
+        }
+        
+        // Система звуков
+        function initAudioContext() {
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            } catch (e) {
+                console.log("Web Audio API не поддерживается");
+            }
+        }
+        
+        function playDemoSound(type) {
+            if (!audioContext) {
+                alert("🎵 Web Audio API не поддерживается");
+                return;
+            }
+            
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            let frequency = 440;
+            let duration = 0.1;
+            
+            if (type === 'click') {
+                oscillator.type = 'sine';
+                frequency = 800;
+                duration = 0.08;
+            }
+            
+            oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration);
+            
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + duration);
+        }
+        
+        // Открытие ресурсов
+        function openCourse() {
+            alert("📚 Переход к учебному курсу\n\nhttps://github.com/Gabryelf/WordGame/blob/main/constructor.md");
+        }
+        
+        function openGitHub() {
+            alert("💻 Переход к GitHub\n\nhttps://github.com/Gabryelf/WordGame");
+        }
+        
+        // Горячие клавиши
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'ArrowRight':
+                case ' ':
+                    e.preventDefault();
+                    nextSlide();
+                    break;
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    prevSlide();
+                    break;
+                case '1': goToSlide(0); break;
+                case '2': goToSlide(1); break;
+                case '3': goToSlide(2); break;
+                case '4': goToSlide(3); break;
+                case '5': goToSlide(4); break;
+                case '6': goToSlide(5); break;
+                case '7': goToSlide(6); break;
+                case '8': goToSlide(7); break;
+                case '9': goToSlide(8); break;
+                case '0': goToSlide(9); break;
+            }
+        });
+        
+        // Инициализация при загрузке
+        window.addEventListener('load', initPresentation);
+    </script>
+</body>
+</html>
