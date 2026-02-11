@@ -1,0 +1,1670 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Базы данных: типы и применение</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --relational: #4361ee;
+            --document: #06d6a0;
+            --keyvalue: #f72585;
+            --columnar: #ff9e00;
+            --graph: #7209b7;
+            --timeseries: #3a86ff;
+            --spatial: #38b000;
+            --dark: #0a0a0f;
+            --darker: #050508;
+            --light: #f8f9fa;
+            --gray: #adb5bd;
+            --card-bg: rgba(20, 20, 30, 0.95);
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--darker);
+            color: var(--light);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background: linear-gradient(135deg, var(--darker) 0%, #0a0a1a 100%);
+        }
+        
+        /* Заголовок */
+        .header {
+            height: 60px;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(76, 201, 240, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            z-index: 100;
+            position: relative;
+            flex-shrink: 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-icon {
+            font-size: 1.5rem;
+            color: #4cc9f0;
+        }
+        
+        .logo-text {
+            font-size: 1.1rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #4cc9f0, #4361ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .progress-bar {
+            width: 180px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4361ee, #4cc9f0);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+        
+        /* Основное содержимое */
+        .slides-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            padding: 15px;
+        }
+        
+        .slide {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transform: translateX(50px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            pointer-events: none;
+        }
+        
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: all;
+        }
+        
+        .slide-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .slide-title {
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #4cc9f0, #4361ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            font-weight: 800;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(76, 201, 240, 0.2);
+            flex-shrink: 0;
+            line-height: 1.3;
+        }
+        
+        .slide-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 5px 0;
+        }
+        
+        /* Компактные карточки */
+        .compact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 12px;
+            height: 100%;
+            align-content: start;
+        }
+        
+        .db-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 18px;
+            border-top: 4px solid;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            min-height: 160px;
+        }
+        
+        .db-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        .db-icon {
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+        }
+        
+        .db-title {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .db-desc {
+            flex: 1;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: var(--gray);
+        }
+        
+        /* Цвета для типов БД */
+        .relational { border-color: var(--relational); }
+        .document { border-color: var(--document); }
+        .keyvalue { border-color: var(--keyvalue); }
+        .columnar { border-color: var(--columnar); }
+        .graph { border-color: var(--graph); }
+        .timeseries { border-color: var(--timeseries); }
+        .spatial { border-color: var(--spatial); }
+        
+        .relational .db-icon { color: var(--relational); }
+        .document .db-icon { color: var(--document); }
+        .keyvalue .db-icon { color: var(--keyvalue); }
+        .columnar .db-icon { color: var(--columnar); }
+        .graph .db-icon { color: var(--graph); }
+        .timeseries .db-icon { color: var(--timeseries); }
+        .spatial .db-icon { color: var(--spatial); }
+        
+        /* Детали БД */
+        .db-details {
+            margin-top: 10px;
+            font-size: 0.8rem;
+        }
+        
+        .db-tech, .db-use, .db-store {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin: 4px 0;
+        }
+        
+        /* Компактные колонки */
+        .compact-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            height: 100%;
+        }
+        
+        /* Сравнительная таблица */
+        .comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            height: 100%;
+            align-content: start;
+        }
+        
+        .comparison-card {
+            background: rgba(40, 40, 60, 0.8);
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .comparison-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #4cc9f0;
+            text-align: center;
+        }
+        
+        .comparison-list {
+            font-size: 0.8rem;
+            line-height: 1.3;
+        }
+        
+        .comparison-list li {
+            margin: 4px 0;
+            padding-left: 5px;
+        }
+        
+        /* Категории БД */
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+            height: 100%;
+            align-content: start;
+        }
+        
+        .category-card {
+            background: rgba(30, 30, 45, 0.8);
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 3px solid;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .category-title {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .category-dbs {
+            font-size: 0.85rem;
+            color: var(--gray);
+            line-height: 1.3;
+        }
+        
+        /* Выбор БД */
+        .choice-guide {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            height: 100%;
+            align-content: start;
+        }
+        
+        .guide-card {
+            background: rgba(35, 35, 50, 0.9);
+            border-radius: 10px;
+            padding: 16px;
+            border: 1px solid rgba(76, 201, 240, 0.2);
+        }
+        
+        .guide-scenario {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #4cc9f0;
+            margin-bottom: 8px;
+        }
+        
+        .guide-recommendation {
+            font-size: 0.85rem;
+            color: var(--light);
+            margin-bottom: 10px;
+        }
+        
+        .guide-reason {
+            font-size: 0.8rem;
+            color: var(--gray);
+            line-height: 1.3;
+        }
+        
+        /* Бейджи */
+        .badges-container {
+            margin-top: 15px;
+            flex-shrink: 0;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+        }
+        
+        .badge {
+            background: rgba(67, 97, 238, 0.15);
+            border: 1px solid #4361ee;
+            color: #4cc9f0;
+            padding: 5px 10px;
+            border-radius: 14px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .badge:hover {
+            background: #4361ee;
+            color: white;
+        }
+        
+        /* Навигация */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            background: rgba(10, 10, 15, 0.95);
+            border-top: 1px solid rgba(76, 201, 240, 0.1);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            flex-shrink: 0;
+        }
+        
+        .nav-btn {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+        }
+        
+        .nav-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+        }
+        
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        .slide-counter {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+        
+        .slide-dots {
+            display: flex;
+            gap: 6px;
+        }
+        
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .dot.active {
+            background: #4cc9f0;
+            transform: scale(1.2);
+        }
+        
+        /* Анимации */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-8px) scale(1.03); }
+        }
+        
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        /* Кнопки действий */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(76, 201, 240, 0.3);
+            color: #4cc9f0;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+        
+        .action-btn:hover {
+            background: rgba(76, 201, 240, 0.2);
+        }
+        
+        /* Респонсив */
+        @media (max-width: 1024px) {
+            .compact-columns {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .compact-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .slide-title {
+                font-size: 1.4rem;
+            }
+            
+            .comparison, .categories, .choice-guide {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                padding: 0 15px;
+                height: 55px;
+            }
+            
+            .navigation {
+                padding: 10px 15px;
+            }
+            
+            .slide {
+                top: 10px;
+                left: 10px;
+                right: 10px;
+                bottom: 10px;
+            }
+            
+            .slides-container {
+                padding: 10px;
+            }
+            
+            .slide-title {
+                font-size: 1.2rem;
+                margin-bottom: 10px;
+            }
+        }
+        
+        /* Утилиты */
+        .text-center {
+            text-align: center;
+        }
+        
+        .mt-5 {
+            margin-top: 5px;
+        }
+        
+        .mt-8 {
+            margin-top: 8px;
+        }
+        
+        .mt-10 {
+            margin-top: 10px;
+        }
+        
+        .full-height {
+            height: 100%;
+        }
+        
+        .no-overflow {
+            overflow: hidden !important;
+        }
+        
+        .tech-tag {
+            display: inline-block;
+            background: rgba(67, 97, 238, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-database"></i>
+                </div>
+                <div class="logo-text">
+                    Базы данных: типы и применение
+                </div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+        
+        <div class="slides-container" id="slidesContainer">
+            <!-- Слайд 1: Введение -->
+            <div class="slide active" id="slide1">
+                <div class="slide-content">
+                    <h1 class="slide-title">
+                        <i class="fas fa-database"></i> Мир баз данных
+                    </h1>
+                    
+                    <div class="slide-body no-overflow">
+                        <div class="compact-columns">
+                            <div class="db-card relational">
+                                <div class="db-icon">
+                                    <i class="fas fa-table"></i>
+                                </div>
+                                <div class="db-title">Реляционные БД</div>
+                                <div class="db-desc">
+                                    Таблицы со строгими схемами. SQL для запросов. ACID транзакции.
+                                </div>
+                            </div>
+                            
+                            <div class="db-card document">
+                                <div class="db-icon">
+                                    <i class="fas fa-file-code"></i>
+                                </div>
+                                <div class="db-title">NoSQL БД</div>
+                                <div class="db-desc">
+                                    Гибкие схемы, горизонтальное масштабирование. Документы, ключ-значение, графы.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="comparison mt-10">
+                            <div class="comparison-card">
+                                <div class="comparison-title">SQL базы</div>
+                                <ul class="comparison-list">
+                                    <li>Строгие схемы</li>
+                                    <li>Сложные запросы</li>
+                                    <li>ACID гарантии</li>
+                                    <li>Вертикальное масштабирование</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="comparison-card">
+                                <div class="comparison-title">NoSQL базы</div>
+                                <ul class="comparison-list">
+                                    <li>Гибкие схемы</li>
+                                    <li>Простое масштабирование</li>
+                                    <li>Высокая производительность</li>
+                                    <li>Специализированные модели</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="badges-container">
+                            <div class="badges">
+                                <a href="https://ru.wikipedia.org/wiki/Реляционная_база_данных" target="_blank" class="badge">
+                                    <i class="fas fa-database"></i> Реляционные БД
+                                </a>
+                                <a href="https://ru.wikipedia.org/wiki/NoSQL" target="_blank" class="badge">
+                                    <i class="fas fa-server"></i> NoSQL
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Слайд 2: Реляционные БД -->
+            <div class="slide" id="slide2">
+                <div class="slide-content">
+                    <h1 class="slide-title">
+                        <i class="fas fa-table"></i> Реляционные базы данных
+                    </h1>
+                    
+                    <div class="slide-body no-overflow">
+                        <div class="compact-grid">
+                            <div class="db-card relational">
+                                <div class="db-icon">
+                                    <i class="fab fa-mysql"></i>
+                                </div>
+                                <div class="db-title">MySQL</div>
+                                <div class="db-desc">
+                                    Популярная open-source БД для веб-приложений.
+                                </div>
+                                <div class="db-details">
+                                    <div class="db-use">
+                                        <i class="fas fa-globe"></i>
+                                        <span>Веб-сайты, CMS, e-commerce</span>
+                                    </div>
+                                    <div class="db-tech">
+                                        <i class="fas fa-code"></i>
+                                        <span>PHP, Python, Java, Node.js</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="db-card relational">
+                                <div class="db-icon">
+                                    <i class="fas fa-database"></i>
+                                </div>
+                                <div class="db-title">PostgreSQL</div>
+                                <div class="db-desc">
+                                    Продвинутая БД с поддержкой JSON, геоданных.
+                                </div>
+                                <div class="db-details">
+                                    <div class="db-use">
+                                        <i class="fas fa-chart-line"></i>
+                                        <span>Сложные приложения, аналитика</span>
+                                    </div>
+                                    <div class="db-tech">
+                                        <i class="fas fa-code"></i>
+                                        <span>Python, Java, Go, Ruby</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="db-card relational">
+                                <div class="db-icon">
+                                    <i class="fab fa-microsoft"></i>
+                                </div>
+                                <div class="db-title">SQL Server</div>
+                                <div class="db-desc">
+                                    Корпоративная БД от Microsoft для Windows-сред.
+                                </div>
+                                <div class="db-details">
+                                    <div class="db-use">
+                                        <i class="fas fa-building"></i>
+                                        <span>Корпоративные системы</span>
+                                    </div>
+                                    <div class="db-tech">
+                                        <i class="fas fa-code"></i>
+                                        <span>.NET, C#, Java</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="db-card relational">
+                                <div class="db-icon">
+                                    <i class="fas fa-cloud"></i>
+                                </div>
+                                <div class="db-title">Oracle DB</div>
+                                <div class="db-desc">
+                                    Мощная БД для крупных предприятий и транзакций.
+                                </div>
+                                <div class="db-details">
+                                    <div class="db-use">
+                                        <i class="fas fa-industry"></i>
+                                        <span>Банки, телеком, крупный бизнес</span>
+                                    </div>
+                                    <div class="db-tech">
+                                        <i class="fas fa-code"></i>
+                                        <span>Java, PL/SQL, .NET</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-10">
+                            <div class="action-buttons" style="justify-content: center;">
+                                <button class="action-btn" onclick="showDBDetails('mysql')">
+                                    <i class="fas fa-info-circle"></i> О MySQL
+                                </button>
+                                <button class="action-btn" onclick="showDBDetails('postgresql')">
+                                    <i class="fas fa-info-circle"></i> О PostgreSQL
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="badges-container">
+                            <div class="badges">
+                                <span class="tech-tag">SQL</span>
+                                <span class="tech-tag">ACID</span>
+                                <span class="tech-tag">Таблицы</span>
+                                <span class="tech-tag">Схемы</span>
+                                <span class="tech-tag">JOIN</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Слайд 3: Документные БД -->
+            <div class="slide" id="slide3">
+                <div class="slide-content">
+                    <h1 class="slide-title">
+                        <i class="fas fa-file-code"></i> Документные базы данных
+                    </h1>
+                    
+                    <div class="slide-body no-overflow">
+                        <div class="compact-grid">
+                            <div class="db-card document">
+                                <div class="db-icon">
+                                    <i class="fas fa-leaf"></i>
+                                </div>
+                                <div class="db-title">MongoDB</div>
+                                <div class="db-desc">
+                                    Самая популярная документная БД. JSON-документы.
+                                </div>
+                                <div class="db-details">
+                                    <div class="db-use">
+                                        <i class="fas fa-mobile-alt"></i>
+                                        <span>Мобильные приложения, контент</span>
+                                    </div>
+                                    <div class="db-store">
+                                        <i class="fas fa-save"></i>
+                                        <span>JSON/BSON документы</span>
+                                    </div>
+                                    <div class="db-tech">
+                                        <i class="fas fa-code"></i>
+                                        <span>JavaScript, Python, Java</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="db-card document">
+                                <div class="db-icon">
+                                    <i class="fab fa-amazon"></i>
+                                </div>
+                                <div class="db-title">Amazon DynamoDB</div>
+                                <div class="db-desc">
+                                    Управляемая NoSQL БД от AWS. Автомасштабирование.
+                                </div>
+                                <div class="db-details">
+                                    <div class="db-use">
+                                        <i class="fas fa-cloud"></i>
+                                        <span>Сервисы AWS, веб-приложения</span>
+                                    </div>
+                                    <div class="db-tech">
+                                        <i class="fas fa-code"></i>
+                                        <span>Node.js, Python, Java</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="db-card document">
+                                <div class="db-icon">
+                                    <i class="fas fa-couch"></i>
+                                </div>
+                                <div class="db-title">CouchDB</div>
+                                <div class="db-desc">
+                                    БД с репликацией и офлайн-работой. HTTP API.
+                                </div>
+                                <div class="db-details">
+                                    <div class="db-use">
+                                        <i class="fas fa-sync-alt"></i>
+                                        <span>Офлайн-приложения, синхронизация</span>
+                                    </div>
+                                    <div class="db-tech">
+                                        <i class="fas fa-code"></i>
+                                        <span>JavaScript, REST API</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="db-card document">
+                                <div class="db-icon">
+                                    <i class="fas fa-fire"></i>
+                                </div>
+                                <div class="db-title">Firestore</div>
+                                <div class="db-desc">
+                                    Реальная база данных от Google для мобильных и веб-приложений.
+                                </div>
+                                <div class="db-details">
+                                    <div class="db-use">
+                                        <i class="fas fa-mobile"></i>
+                                        <span>Мобильные приложения, чаты</span>
+                                    </div>
+                                    <div class="db-tech">
+                                        <i class="fas fa-code"></i>
+                                        <span>JavaScript, Swift, Kotlin</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-10">
+                            <p style="font-size: 0.85rem; color: var(--gray);">
+                                Используются для: каталогов товаров, пользовательских профилей, контент-систем, логов
+                            </p>
+                        </div>
+                        
+                        <div class="badges-container">
+                            <div class="badges">
+                                <span class="tech-tag">JSON</span>
+                                <span class="tech-tag">Гибкая схема</span>
+                                <span class="tech-tag">Горизонтальное масштабирование</span>
+                                <span class="tech-tag">API</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Слайд 4: Ключ-значение и колоночные -->
+            <div class="slide" id="slide4">
+                <div class="slide-content">
+                    <h1 class="slide-title">
+                        <i class="fas fa-key"></i> Ключ-значение и колоночные БД
+                    </h1>
+                    
+                    <div class="slide-body no-overflow">
+                        <div class="compact-columns">
+                            <div>
+                                <h3 style="color: var(--keyvalue); margin-bottom: 10px; font-size: 1rem;">
+                                    <i class="fas fa-key"></i> БД ключ-значение
+                                </h3>
+                                <div class="db-card keyvalue">
+                                    <div class="db-icon">
+                                        <i class="fab fa-reddit-alien"></i>
+                                    </div>
+                                    <div class="db-title">Redis</div>
+                                    <div class="db-desc">
+                                        Хранилище в памяти. Кэширование, сессии, очереди.
+                                    </div>
+                                    <div class="db-details">
+                                        <div class="db-use">
+                                            <i class="fas fa-bolt"></i>
+                                            <span>Кэширование, сессии, очереди</span>
+                                        </div>
+                                        <div class="db-tech">
+                                            <i class="fas fa-code"></i>
+                                            <span>Любой язык с Redis клиентом</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="db-card keyvalue mt-8">
+                                    <div class="db-icon">
+                                        <i class="fas fa-memory"></i>
+                                    </div>
+                                    <div class="db-title">Memcached</div>
+                                    <div class="db-desc">
+                                        Простое распределенное кэширование в памяти.
+                                    </div>
+                                    <div class="db-details">
+                                        <div class="db-use">
+                                            <i class="fas fa-tachometer-alt"></i>
+                                            <span>Ускорение веб-сайтов</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h3 style="color: var(--columnar); margin-bottom: 10px; font-size: 1rem;">
+                                    <i class="fas fa-columns"></i> Колоночные БД
+                                </h3>
+                                <div class="db-card columnar">
+                                    <div class="db-icon">
+                                        <i class="fas fa-chart-bar"></i>
+                                    </div>
+                                    <div class="db-title">Cassandra</div>
+                                    <div class="db-desc">
+                                        Высокомасштабируемая БД для больших данных.
+                                    </div>
+                                    <div class="db-details">
+                                        <div class="db-use">
+                                            <i class="fas fa-chart-line"></i>
+                                            <span>Аналитика, IoT, временные ряды</span>
+                                        </div>
+                                        <div class="db-tech">
+                                            <i class="fas fa-code"></i>
+                                            <span>Java, Python, CQL</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="db-card columnar mt-8">
+                                    <div class="db-icon">
+                                        <i class="fas fa-database"></i>
+                                    </div>
+                                    <div class="db-title">ClickHouse</div>
+                                    <div class="db-desc">
+                                        Высокопроизводительная колоночная БД для аналитики.
+                                    </div>
+                                    <div class="db-details">
+                                        <div class="db-use">
+                                            <i class="fas fa-search"></i>
+                                            <span>Аналитика в реальном времени</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="comparison mt-10">
+                            <div class="comparison-card">
+                                <div class="comparison-title" style="color: var(--keyvalue);">Ключ-значение</div>
+                                <ul class="comparison-list">
+                                    <li>Кэширование</li>
+                                    <li>Сессии пользователей</li>
+                                    <li>Очереди сообщений</li>
+                                    <li>Конфигурации</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="comparison-card">
+                                <div class="comparison-title" style="color: var(--columnar);">Колоночные</div>
+                                <ul class="comparison-list">
+                                    <li>Аналитика больших данных</li>
+                                    <li>Временные ряды</li>
+                                    <li>Логи и метрики</li>
+                                    <li>IoT данные</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Слайд 5: Графовые БД -->
+            <div class="slide" id="slide5">
+                <div class="slide-content">
+                    <h1 class="slide-title">
+                        <i class="fas fa-project-diagram"></i> Графовые базы данных
+                    </h1>
+                    
+                    <div class="slide-body no-overflow">
+                        <div class="compact-grid">
+                            <div class="db-card graph">
+                                <div class="db-icon">
+                                    <i class="fas fa-network-wired"></i>
+                                </div>
+                                <div class="db-title">Neo4j</div>
+                                <div class="db-desc">
+                                    Самая популярная графовая БД. Узлы и связи.
+                                </div>
+                                <div class="db-details">
+                                    <div class="db-use">
+                                        <i class="fas fa-user-friends"></i>
+                                        <span>Социальные сети, рекомендации</span>
+                                    </div>
+                                    <div class="db-store">
+                                        <i class="fas fa-sitemap"></i>
+                                        <span>Узлы, связи, свойства</span>
+                                    </div>
+                                    <div class="db-tech">
+                                        <i class="fas fa-code"></i>
+                                        <span>Cypher, Java, Python, .NET</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="db-card graph">
+                                <div class="db-icon">
+                                    <i class="fab fa-microsoft"></i>
+                                </div>
+                                <div class="db-title">Azure Cosmos DB</div>
+                                <div class="db-desc">
+                                    Мультимодельная БД с поддержкой графов Gremlin.
+                                </div>
+                                <div class="db-details">
+                                    <div class="db-use">
+                                        <i class="fas fa-cloud"></i>
+                                        <span>Облачные приложения</span>
+                                    </div>
+                                    <div class="db-tech">
+                                        <i class="fas fa-code"></i>
+                                        <span>Gremlin, .NET, Java</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="db-card graph">
+                                <div class="db-icon">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <div class="db-title">Amazon Neptune</div>
+                                <div class="db-desc">
+                                    Управляемая графовая БД от AWS.
+                                </div>
+                                <div class="db-details">
+                                    <div class="db-use">
+                                        <i class="fas fa-robot"></i>
+                                        <span>Машинное обучение, фрод-детекция</span>
+                                    </div>
+                                    <div class="db-tech">
+                                        <i class="fas fa-code"></i>
+                                        <span>Gremlin, SPARQL</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="db-card graph">
+                                <div class="db-icon">
+                                    <i class="fas fa-code-branch"></i>
+                                </div>
+                                <div class="db-title">JanusGraph</div>
+                                <div class="db-desc">
+                                    Масштабируемая графовая БД с открытым исходным кодом.
+                                </div>
+                                <div class="db-details">
+                                    <div class="db-use">
+                                        <i class="fas fa-expand-arrows-alt"></i>
+                                        <span>Большие графы, аналитика</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-10">
+                            <div class="action-buttons" style="justify-content: center;">
+                                <button class="action-btn" onclick="showGraphUseCases()">
+                                    <i class="fas fa-lightbulb"></i> Примеры использования
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="badges-container">
+                            <div class="badges">
+                                <span class="tech-tag">Социальные сети</span>
+                                <span class="tech-tag">Рекомендации</span>
+                                <span class="tech-tag">Фрод-детекция</span>
+                                <span class="tech-tag">Знаниевые графы</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Слайд 6: Временные ряды и пространственные -->
+            <div class="slide" id="slide6">
+                <div class="slide-content">
+                    <h1 class="slide-title">
+                        <i class="fas fa-clock"></i> Специализированные БД
+                    </h1>
+                    
+                    <div class="slide-body no-overflow">
+                        <div class="compact-columns">
+                            <div>
+                                <h3 style="color: var(--timeseries); margin-bottom: 10px; font-size: 1rem;">
+                                    <i class="fas fa-chart-line"></i> Временные ряды
+                                </h3>
+                                <div class="db-card timeseries">
+                                    <div class="db-icon">
+                                        <i class="fas fa-temperature-high"></i>
+                                    </div>
+                                    <div class="db-title">InfluxDB</div>
+                                    <div class="db-desc">
+                                        Специализированная БД для временных рядов.
+                                    </div>
+                                    <div class="db-details">
+                                        <div class="db-use">
+                                            <i class="fas fa-tachometer-alt"></i>
+                                            <span>Мониторинг, IoT, метрики</span>
+                                        </div>
+                                        <div class="db-tech">
+                                            <i class="fas fa-code"></i>
+                                            <span>Flux, Python, Go</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="db-card timeseries mt-8">
+                                    <div class="db-icon">
+                                        <i class="fas fa-database"></i>
+                                    </div>
+                                    <div class="db-title">TimescaleDB</div>
+                                    <div class="db-desc">
+                                        Расширение PostgreSQL для временных рядов.
+                                    </div>
+                                    <div class="db-details">
+                                        <div class="db-use">
+                                            <i class="fas fa-satellite-dish"></i>
+                                            <span>IoT, финансы, аналитика</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h3 style="color: var(--spatial); margin-bottom: 10px; font-size: 1rem;">
+                                    <i class="fas fa-map-marked-alt"></i> Пространственные
+                                </h3>
+                                <div class="db-card spatial">
+                                    <div class="db-icon">
+                                        <i class="fas fa-globe-americas"></i>
+                                    </div>
+                                    <div class="db-title">PostGIS</div>
+                                    <div class="db-desc">
+                                        Расширение PostgreSQL для геопространственных данных.
+                                    </div>
+                                    <div class="db-details">
+                                        <div class="db-use">
+                                            <i class="fas fa-map"></i>
+                                            <span>ГИС, навигация, геоданные</span>
+                                        </div>
+                                        <div class="db-tech">
+                                            <i class="fas fa-code"></i>
+                                            <span>SQL, Python, JavaScript</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="db-card spatial mt-8">
+                                    <div class="db-icon">
+                                        <i class="fas fa-location-arrow"></i>
+                                    </div>
+                                    <div class="db-title">MongoDB Geospatial</div>
+                                    <div class="db-desc">
+                                        Поддержка геопространственных данных в MongoDB.
+                                    </div>
+                                    <div class="db-details">
+                                        <div class="db-use">
+                                            <i class="fas fa-car"></i>
+                                            <span>Локационные сервисы</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="comparison mt-10">
+                            <div class="comparison-card">
+                                <div class="comparison-title" style="color: var(--timeseries);">Временные ряды</div>
+                                <ul class="comparison-list">
+                                    <li>Мониторинг систем</li>
+                                    <li>Датчики IoT</li>
+                                    <li>Финансовые данные</li>
+                                    <li>Метрики приложений</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="comparison-card">
+                                <div class="comparison-title" style="color: var(--spatial);">Пространственные</div>
+                                <ul class="comparison-list">
+                                    <li>Картографические сервисы</li>
+                                    <li>Навигация</li>
+                                    <li>Геомаркетинг</li>
+                                    <li>Логистика</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Слайд 7: Категории БД -->
+            <div class="slide" id="slide7">
+                <div class="slide-content">
+                    <h1 class="slide-title">
+                        <i class="fas fa-sitemap"></i> Категории баз данных
+                    </h1>
+                    
+                    <div class="slide-body no-overflow">
+                        <div class="categories">
+                            <div class="category-card" style="border-left-color: var(--relational);">
+                                <div class="category-title" style="color: var(--relational);">
+                                    Реляционные (SQL)
+                                </div>
+                                <div class="category-dbs">
+                                    MySQL, PostgreSQL, SQL Server, Oracle, SQLite
+                                </div>
+                                <div style="font-size: 0.8rem; color: var(--gray);">
+                                    Таблицы, связи, ACID, сложные запросы
+                                </div>
+                            </div>
+                            
+                            <div class="category-card" style="border-left-color: var(--document);">
+                                <div class="category-title" style="color: var(--document);">
+                                    Документные
+                                </div>
+                                <div class="category-dbs">
+                                    MongoDB, CouchDB, Firebase, DynamoDB
+                                </div>
+                                <div style="font-size: 0.8rem; color: var(--gray);">
+                                    JSON документы, гибкие схемы
+                                </div>
+                            </div>
+                            
+                            <div class="category-card" style="border-left-color: var(--keyvalue);">
+                                <div class="category-title" style="color: var(--keyvalue);">
+                                    Ключ-значение
+                                </div>
+                                <div class="category-dbs">
+                                    Redis, Memcached, etcd, Consul
+                                </div>
+                                <div style="font-size: 0.8rem; color: var(--gray);">
+                                    Кэширование, сессии, конфигурации
+                                </div>
+                            </div>
+                            
+                            <div class="category-card" style="border-left-color: var(--columnar);">
+                                <div class="category-title" style="color: var(--columnar);">
+                                    Колоночные
+                                </div>
+                                <div class="category-dbs">
+                                    Cassandra, HBase, ClickHouse, ScyllaDB
+                                </div>
+                                <div style="font-size: 0.8rem; color: var(--gray);">
+                                    Аналитика, большие данные
+                                </div>
+                            </div>
+                            
+                            <div class="category-card" style="border-left-color: var(--graph);">
+                                <div class="category-title" style="color: var(--graph);">
+                                    Графовые
+                                </div>
+                                <div class="category-dbs">
+                                    Neo4j, Amazon Neptune, JanusGraph
+                                </div>
+                                <div style="font-size: 0.8rem; color: var(--gray);">
+                                    Социальные связи, рекомендации
+                                </div>
+                            </div>
+                            
+                            <div class="category-card" style="border-left-color: var(--timeseries);">
+                                <div class="category-title" style="color: var(--timeseries);">
+                                    Временные ряды
+                                </div>
+                                <div class="category-dbs">
+                                    InfluxDB, TimescaleDB, Prometheus
+                                </div>
+                                <div style="font-size: 0.8rem; color: var(--gray);">
+                                    Метрики, мониторинг, IoT
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-10">
+                            <p style="font-size: 0.85rem; color: var(--gray);">
+                                Каждая категория решает специфические задачи и оптимизирована под определенные сценарии использования
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Слайд 8: Как выбрать БД -->
+            <div class="slide" id="slide8">
+                <div class="slide-content">
+                    <h1 class="slide-title">
+                        <i class="fas fa-question-circle"></i> Как выбрать базу данных?
+                    </h1>
+                    
+                    <div class="slide-body no-overflow">
+                        <div class="choice-guide">
+                            <div class="guide-card">
+                                <div class="guide-scenario">Веб-приложение</div>
+                                <div class="guide-recommendation">
+                                    <strong>MySQL / PostgreSQL</strong>
+                                </div>
+                                <div class="guide-reason">
+                                    Универсальные, хорошая поддержка, много готовых решений
+                                </div>
+                            </div>
+                            
+                            <div class="guide-card">
+                                <div class="guide-scenario">Мобильное приложение</div>
+                                <div class="guide-recommendation">
+                                    <strong>Firebase / MongoDB</strong>
+                                </div>
+                                <div class="guide-reason">
+                                    Гибкие схемы, офлайн-синхронизация, простота использования
+                                </div>
+                            </div>
+                            
+                            <div class="guide-card">
+                                <div class="guide-scenario">Социальная сеть</div>
+                                <div class="guide-recommendation">
+                                    <strong>Neo4j + PostgreSQL</strong>
+                                </div>
+                                <div class="guide-reason">
+                                    Графы для связей + реляционная для остальных данных
+                                </div>
+                            </div>
+                            
+                            <div class="guide-card">
+                                <div class="guide-scenario">Аналитика данных</div>
+                                <div class="guide-recommendation">
+                                    <strong>ClickHouse / Cassandra</strong>
+                                </div>
+                                <div class="guide-reason">
+                                    Высокая производительность на больших объемах данных
+                                </div>
+                            </div>
+                            
+                            <div class="guide-card">
+                                <div class="guide-scenario">Кэширование</div>
+                                <div class="guide-recommendation">
+                                    <strong>Redis</strong>
+                                </div>
+                                <div class="guide-reason">
+                                    Высокая скорость, структуры данных, persistence
+                                </div>
+                            </div>
+                            
+                            <div class="guide-card">
+                                <div class="guide-scenario">Мониторинг систем</div>
+                                <div class="guide-recommendation">
+                                    <strong>InfluxDB / TimescaleDB</strong>
+                                </div>
+                                <div class="guide-reason">
+                                    Специализированы для временных рядов, агрегаций
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-10">
+                            <div class="action-buttons" style="justify-content: center;">
+                                <button class="action-btn" onclick="showSelectionGuide()">
+                                    <i class="fas fa-clipboard-list"></i> Критерии выбора
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Слайд 9: Тренды и будущее -->
+            <div class="slide" id="slide9">
+                <div class="slide-content">
+                    <h1 class="slide-title">
+                        <i class="fas fa-rocket"></i> Тренды и будущее
+                    </h1>
+                    
+                    <div class="slide-body no-overflow">
+                        <div class="compact-grid">
+                            <div class="db-card" style="border-top-color: #4cc9f0;">
+                                <div class="db-icon" style="color: #4cc9f0;">
+                                    <i class="fas fa-cloud"></i>
+                                </div>
+                                <div class="db-title">Управляемые БД</div>
+                                <div class="db-desc">
+                                    AWS RDS, Azure SQL, Google Cloud SQL. Минимальные усилия на администрирование.
+                                </div>
+                            </div>
+                            
+                            <div class="db-card" style="border-top-color: #ff6b6b;">
+                                <div class="db-icon" style="color: #ff6b6b;">
+                                    <i class="fas fa-layer-group"></i>
+                                </div>
+                                <div class="db-title">Полиглот персистентность</div>
+                                <div class="db-desc">
+                                    Использование разных БД в одном приложении для разных задач.
+                                </div>
+                            </div>
+                            
+                            <div class="db-card" style="border-top-color: #06d6a0;">
+                                <div class="db-icon" style="color: #06d6a0;">
+                                    <i class="fas fa-bolt"></i>
+                                </div>
+                                <div class="db-title">In-memory вычисления</div>
+                                <div class="db-desc">
+                                    Redis, Memcached, Apache Ignite для мгновенного доступа к данным.
+                                </div>
+                            </div>
+                            
+                            <div class="db-card" style="border-top-color: #ffd166;">
+                                <div class="db-icon" style="color: #ffd166;">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <div class="db-title">AI/ML интеграция</div>
+                                <div class="db-desc">
+                                    БД со встроенной поддержкой машинного обучения и векторных поисков.
+                                </div>
+                            </div>
+                            
+                            <div class="db-card" style="border-top-color: #7209b7;">
+                                <div class="db-icon" style="color: #7209b7;">
+                                    <i class="fas fa-server"></i>
+                                </div>
+                                <div class="db-title">Edge computing</div>
+                                <div class="db-desc">
+                                    Локальные БД для устройств IoT и edge-устройств.
+                                </div>
+                            </div>
+                            
+                            <div class="db-card" style="border-top-color: #3a86ff;">
+                                <div class="db-icon" style="color: #3a86ff;">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <div class="db-title">Безопасность и compliance</div>
+                                <div class="db-desc">
+                                    Встроенное шифрование, аудит, соответствие стандартам.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-10">
+                            <p style="font-size: 0.85rem; color: var(--gray);">
+                                Будущее — за гибридными подходами, облачными решениями и специализированными БД под конкретные задачи
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Слайд 10: Итоги -->
+            <div class="slide" id="slide10">
+                <div class="slide-content">
+                    <h1 class="slide-title">
+                        <i class="fas fa-graduation-cap"></i> Итоги и ресурсы
+                    </h1>
+                    
+                    <div class="slide-body no-overflow">
+                        <div class="compact-columns">
+                            <div class="comparison-card">
+                                <div class="comparison-title">Ключевые выводы</div>
+                                <ul class="comparison-list">
+                                    <li>Нет "лучшей" БД — есть подходящая под задачу</li>
+                                    <li>SQL — для структурированных данных и ACID</li>
+                                    <li>NoSQL — для гибкости и масштабирования</li>
+                                    <li>Специализированные БД — для специфических задач</li>
+                                    <li>Полиглот персистентность — современный тренд</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="comparison-card">
+                                <div class="comparison-title">Рекомендации для начала</div>
+                                <ul class="comparison-list">
+                                    <li>Начните с PostgreSQL или MySQL</li>
+                                    <li>Изучите MongoDB для NoSQL</li>
+                                    <li>Попробуйте Redis для кэширования</li>
+                                    <li>Экспериментируйте с облачными БД</li>
+                                    <li>Выбирайте БД под конкретную задачу</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-10">
+                            <h3 style="color: #4cc9f0; font-size: 1rem; margin-bottom: 8px;">Дополнительные ресурсы</h3>
+                            <div class="badges">
+                                <a href="https://db-engines.com" target="_blank" class="badge">
+                                    <i class="fas fa-chart-line"></i> DB-Engines Ranking
+                                </a>
+                                <a href="https://www.mongodb.com/university" target="_blank" class="badge">
+                                    <i class="fas fa-graduation-cap"></i> MongoDB University
+                                </a>
+                                <a href="https://www.postgresql.org/docs" target="_blank" class="badge">
+                                    <i class="fas fa-book"></i> PostgreSQL Docs
+                                </a>
+                                <a href="https://redis.io/documentation" target="_blank" class="badge">
+                                    <i class="fas fa-book-open"></i> Redis Docs
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-10">
+                            <p style="font-size: 0.85rem; color: #4cc9f0;">
+                                Правильный выбор базы данных — ключ к успеху вашего приложения
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Навигация -->
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="prevSlide()" disabled>
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            
+            <div class="slide-dots" id="slideDots">
+                <!-- Точки будут добавлены через JS -->
+            </div>
+            
+            <div class="slide-counter">
+                <span id="currentSlideNum">1</span> / <span id="totalSlidesNum">10</span>
+            </div>
+            
+            <button class="nav-btn" id="nextBtn" onclick="nextSlide()">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Состояние презентации
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        // Инициализация
+        function initPresentation() {
+            updateSlideCounter();
+            createSlideDots();
+            updateProgress();
+        }
+        
+        // Переключение слайдов
+        function goToSlide(index) {
+            if (index < 0 || index >= totalSlides) return;
+            
+            slides[currentSlideIndex].classList.remove('active');
+            currentSlideIndex = index;
+            slides[currentSlideIndex].classList.add('active');
+            
+            updateSlideCounter();
+            updateProgress();
+            updateDots();
+            updateNavButtons();
+        }
+        
+        function nextSlide() {
+            goToSlide(currentSlideIndex + 1);
+        }
+        
+        function prevSlide() {
+            goToSlide(currentSlideIndex - 1);
+        }
+        
+        // Обновление UI
+        function updateSlideCounter() {
+            document.getElementById('currentSlideNum').textContent = currentSlideIndex + 1;
+            document.getElementById('totalSlidesNum').textContent = totalSlides;
+        }
+        
+        function updateProgress() {
+            const progress = ((currentSlideIndex + 1) / totalSlides) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+        }
+        
+        function createSlideDots() {
+            const dotsContainer = document.getElementById('slideDots');
+            dotsContainer.innerHTML = '';
+            
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = `dot ${i === currentSlideIndex ? 'active' : ''}`;
+                dot.onclick = () => goToSlide(i);
+                dotsContainer.appendChild(dot);
+            }
+        }
+        
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlideIndex);
+            });
+        }
+        
+        function updateNavButtons() {
+            document.getElementById('prevBtn').disabled = currentSlideIndex === 0;
+            document.getElementById('nextBtn').disabled = currentSlideIndex === totalSlides - 1;
+        }
+        
+        // Информационные функции
+        function showDBDetails(db) {
+            const details = {
+                mysql: "MySQL:\n• Open-source реляционная БД\n• Используется в WordPress, Facebook, Twitter\n• Поддерживает множество движков хранения\n• Хорошая поддержка репликации",
+                postgresql: "PostgreSQL:\n• Продвинутая open-source БД\n• Поддержка JSON, геоданных, полнотекстового поиска\n• Расширения: PostGIS, TimescaleDB\n• Используется в Instagram, Spotify, Reddit"
+            };
+            alert(details[db] || "Информация о базе данных");
+        }
+        
+        function showGraphUseCases() {
+            alert("📊 Примеры использования графовых БД:\n\n" +
+                  "1. Социальные сети — связи между пользователями\n" +
+                  "2. Рекомендательные системы — связи между товарами\n" +
+                  "3. Фрод-детекция — выявление мошеннических схем\n" +
+                  "4. Знаниевые графы — связи между понятиями\n" +
+                  "5. Биоинформатика — связи между генами и белками\n" +
+                  "6. Логистика — оптимизация маршрутов доставки");
+        }
+        
+        function showSelectionGuide() {
+            alert("📋 Критерии выбора базы данных:\n\n" +
+                  "1. Структура данных — таблицы, документы, графы?\n" +
+                  "2. Объем данных — сколько и как быстро растет?\n" +
+                  "3. Требования к производительности\n" +
+                  "4. Масштабируемость — вертикально или горизонтально?\n" +
+                  "5. Транзакционные требования — нужны ли ACID?\n" +
+                  "6. Бюджет и команда — open-source или коммерческая?\n" +
+                  "7. Экосистема — интеграции, инструменты, сообщество");
+        }
+        
+        // Горячие клавиши
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'ArrowRight':
+                case ' ':
+                    e.preventDefault();
+                    nextSlide();
+                    break;
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    prevSlide();
+                    break;
+                case '1': goToSlide(0); break;
+                case '2': goToSlide(1); break;
+                case '3': goToSlide(2); break;
+                case '4': goToSlide(3); break;
+                case '5': goToSlide(4); break;
+                case '6': goToSlide(5); break;
+                case '7': goToSlide(6); break;
+                case '8': goToSlide(7); break;
+                case '9': goToSlide(8); break;
+                case '0': goToSlide(9); break;
+            }
+        });
+        
+        // Инициализация при загрузке
+        window.addEventListener('load', initPresentation);
+    </script>
+</body>
+</html>
