@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>База данных "Домашняя библиотека" — практикум</title>
+    <!-- Подключаем шрифт Inter для современного вида -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <!-- Подключаем Font Awesome для иконок и баджей -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecf2 100%);
+            color: #1e293b;
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.75);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            padding: 2.5rem;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(145deg, #0f2b4b, #1e4a6f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h1 i {
+            background: #1e4a6f;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.5rem;
+        }
+
+        .subhead {
+            font-size: 1.2rem;
+            color: #475569;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px dashed #cbd5e1;
+        }
+
+        .card {
+            background: white;
+            border-radius: 2rem;
+            padding: 1.8rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 20px -6px rgba(0,32,64,0.12);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            transition: transform 0.1s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 16px 28px -8px rgba(0,64,128,0.15);
+        }
+
+        h2 {
+            font-size: 1.9rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            color: #0c4a6e;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2 i {
+            color: #2563eb;
+            font-size: 2rem;
+            width: 2rem;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 1.5rem 0 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        h3 i {
+            color: #3b82f6;
+            font-size: 1.4rem;
+        }
+
+        .badge-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin: 1rem 0 1.2rem 0;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #eef2ff;
+            color: #1e3a8a;
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-left: 4px solid #3b82f6;
+            box-shadow: 0 2px 6px rgba(0,64,255,0.1);
+        }
+
+        .badge-warning {
+            background: #fffbeb;
+            color: #92400e;
+            border-left-color: #f59e0b;
+        }
+
+        .badge-important {
+            background: #fef2f2;
+            color: #991b1b;
+            border-left-color: #ef4444;
+        }
+
+        .badge-success {
+            background: #f0fdf4;
+            color: #166534;
+            border-left-color: #22c55e;
+        }
+
+        .code-block {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 1.2rem 1.5rem;
+            border-radius: 1.5rem;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.95rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            box-shadow: inset 0 0 0 1px #334155, 0 8px 12px -8px #0f172a;
+            margin: 1.2rem 0;
+            border-left: 6px solid #3b82f6;
+        }
+
+        .code-block--success {
+            border-left-color: #10b981;
+        }
+
+        .code-block--warning {
+            border-left-color: #f59e0b;
+        }
+
+        .code-block--danger {
+            border-left-color: #ef4444;
+        }
+
+        .tip {
+            background: #e6f7ff;
+            border-radius: 1.2rem;
+            padding: 1rem 1.5rem;
+            border-left: 8px solid #0284c7;
+            margin: 1rem 0;
+            font-weight: 500;
+        }
+
+        .tip i {
+            color: #0284c7;
+            margin-right: 10px;
+            font-size: 1.4rem;
+            vertical-align: middle;
+        }
+
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .task-item {
+            background: #f8fafc;
+            border-radius: 1.2rem;
+            padding: 1.2rem 1.5rem;
+            border: 1px solid #d1d9e6;
+            transition: 0.1s;
+        }
+
+        .task-item:hover {
+            background: #ffffff;
+            border-color: #94a3b8;
+        }
+
+        .task-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .task-num {
+            background: #2563eb;
+            color: white;
+            font-weight: 700;
+            width: 2.2rem;
+            height: 2.2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 60%;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 8px #2563eb80;
+        }
+
+        .task-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #0f2b4b;
+        }
+
+        .task-command {
+            background: #1e293b;
+            border-radius: 1rem;
+            padding: 0.8rem 1.2rem;
+            font-family: monospace;
+            color: #bbd7fb;
+            margin-top: 12px;
+            border-left: 6px solid #3b82f6;
+            font-size: 0.95rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .hr-glow {
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #0284c7, #a855f7, #0284c7, transparent);
+            border: 0;
+            margin: 2rem 0;
+            border-radius: 4px;
+            opacity: 0.4;
+        }
+
+        button.copy-btn {
+            background: #e2e8f0;
+            border: none;
+            padding: 0.2rem 1rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: 0.1s;
+            color: #1e293b;
+            border: 1px solid #b9c7da;
+        }
+
+        button.copy-btn:hover {
+            background: #cbd5e1;
+        }
+
+        .footer-note {
+            text-align: center;
+            color: #4b5563;
+            margin-top: 3rem;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>
+        <i class="fas fa-database"></i> 
+        Домашняя библиотека на SQLite
+    </h1>
+    <div class="subhead">
+        <i class="fas fa-lightbulb" style="color: #eab308;"></i> 
+        Полное руководство + 15 заданий для смелых. Всё в браузере, без установок.
+    </div>
+
+    <!-- Карточка: что такое БД и старт -->
+    <div class="card">
+        <h2><i class="fas fa-book-open"></i> Начинаем путешествие</h2>
+        <div class="badge-container">
+            <span class="badge"><i class="fas fa-check-circle"></i> Никакой установки</span>
+            <span class="badge badge-warning"><i class="fas fa-globe"></i> SQLite Online</span>
+            <span class="badge badge-success"><i class="fas fa-table"></i> Таблица = Excel</span>
+        </div>
+        <p>Открываем <strong style="color:#2563eb;">https://sqliteonline.com/</strong> — левое окно для команд, кнопка <kbd>Run</kbd> выполнит запрос.</p>
+        <div class="tip">
+            <i class="fas fa-info-circle"></i> В левом верхнем углу должна быть выбрана <b>SQLite</b> (по умолчанию).
+        </div>
+    </div>
+
+    <!-- Шаг 1: создание таблицы -->
+    <div class="card">
+        <h2><i class="fas fa-plus-circle" style="color:#2b6e4f;"></i> 1. Создаём таблицу <code style="background:#e9eef3;">books</code></h2>
+        <div class="badge-container">
+            <span class="badge badge-important"><i class="fas fa-key"></i> PRIMARY KEY</span>
+            <span class="badge"><i class="fas fa-ban"></i> NOT NULL</span>
+            <span class="badge badge-success"><i class="fas fa-arrow-up"></i> AUTOINCREMENT</span>
+        </div>
+        <div class="code-block">
+CREATE TABLE books (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;id INTEGER PRIMARY KEY AUTOINCREMENT,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;title TEXT NOT NULL,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;author TEXT NOT NULL,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;year INTEGER,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;rating INTEGER<br>
+);
+        </div>
+        <p><i class="fas fa-copy" style="color: gray;"></i> Скопируй и выполни. После этого таблица пуста, но готова к наполнению.</p>
+    </div>
+
+    <!-- Шаг 2: INSERT -->
+    <div class="card">
+        <h2><i class="fas fa-arrow-down"></i> 2. Добавляем книги (INSERT)</h2>
+        <div class="code-block code-block--success">
+-- Первая книга<br>
+INSERT INTO books (title, author, year, rating) VALUES ('Маленький принц', 'Антуан де Сент-Экзюпери', 1943, 10);<br><br>
+-- Вторая<br>
+INSERT INTO books (title, author, year, rating) VALUES ('1984', 'Джордж Оруэлл', 1949, 9);<br><br>
+-- Третья (без рейтинга)<br>
+INSERT INTO books (title, author, year) VALUES ('Война и мир', 'Лев Толстой', 1867);
+        </div>
+        <p>✨ Чтобы увидеть результат: <code style="background:#e2e8f0;">SELECT * FROM books;</code></p>
+    </div>
+
+    <!-- Шаг 3: UPDATE -->
+    <div class="card">
+        <h2><i class="fas fa-edit"></i> 3. Изменяем записи (UPDATE)</h2>
+        <div class="code-block code-block--warning">
+-- Исправляем рейтинг 1984 на 10<br>
+UPDATE books SET rating = 10 WHERE id = 2;<br><br>
+-- Добавляем рейтинг Войне и миру<br>
+UPDATE books SET rating = 8 WHERE id = 3;
+        </div>
+        <div class="tip"><i class="fas fa-exclamation-triangle"></i> Всегда используй <code>WHERE</code> с уникальным <code>id</code>, иначе обновятся все строки!</div>
+    </div>
+
+    <!-- Шаг 4: DELETE -->
+    <div class="card">
+        <h2><i class="fas fa-trash-alt"></i> 4. Удаление (DELETE)</h2>
+        <div class="code-block code-block--danger">
+DELETE FROM books WHERE id = 1;  -- прощай, Маленький принц
+        </div>
+        <p>После удаления проверь: <code>SELECT * FROM books;</code> — первая книга исчезла.</p>
+    </div>
+
+    <hr class="hr-glow">
+
+    <!-- 15 ЗАДАНИЙ -->
+    <h2 style="font-size:2.2rem;"><i class="fas fa-tasks"></i> 15 практических заданий</h2>
+    <p style="margin-bottom:1.5rem;">⭐ Каждое задание можно выполнять независимо. Команды приведены готовые, но ты можешь их изменять.</p>
+
+    <div class="task-list">
+        <!-- 1 -->
+        <div class="task-item">
+            <div class="task-header">
+                <span class="task-num">1</span>
+                <span class="task-title">Добавь свою любимую книгу</span>
+            </div>
+            <div class="task-command">
+INSERT INTO books (title, author, year, rating) VALUES ('Гарри Поттер и философский камень', 'Дж. Роулинг', 1997, 10);
+            </div>
+        </div>
+        <!-- 2 -->
+        <div class="task-item">
+            <div class="task-header">
+                <span class="task-num">2</span>
+                <span class="task-title">Книга без года</span>
+            </div>
+            <div class="task-command">
+INSERT INTO books (title, author, rating) VALUES ('Слово о полку Игореве', 'Неизвестен', 9);
+            </div>
+        </div>
+        <!-- 3 -->
+        <div class="task-item">
+            <div class="task-header">
+                <span class="task-num">3</span>
+                <span class="task-title">Массовое добавление (две сразу)</span>
+            </div>
+            <div class="task-command">
+INSERT INTO books (title, author, year, rating) VALUES <br>('Преступление и наказание', 'Ф. Достоевский', 1866, 10),<br> ('Идиот', 'Ф. Достоевский', 1869, 9);
+            </div>
+        </div>
+        <!-- 4 -->
+        <div class="task-item">
+            <div class="task-header">
+                <span class="task-num">4</span>
+                <span class="task-title">Проверь ограничение NOT NULL</span>
+            </div>
+            <div class="task-command">
+INSERT INTO books (title, year) VALUES ('Книга без автора', 2020);<br>
+<span style="color:#f87171;">-- ожидай ошибку: поле author не может быть пустым</span>
+            </div>
+        </div>
+        <!-- 5 -->
+        <div class="task-item">
+            <div class="task-header">
+                <span class="task-num">5</span>
+                <span class="task-title">Исправь год Войны и мира</span>
+            </div>
+            <div class="task-command">
+UPDATE books SET year = 1869 WHERE title = 'Война и мир';
+            </div>
+        </div>
+        <!-- 6 -->
+        <div class="task-item">
+            <div class="task-header">
+                <span class="task-num">6</span>
+                <span class="task-title">Подними рейтинг всем книгам с rating < 5</span>
+            </div>
+            <div class="task-command">
+UPDATE books SET rating = 5 WHERE rating < 5;
+            </div>
+        </div>
+        <!-- 7 -->
+        <div class="task-item">
+            <div class="task-header">
+                <span class="task-num">7</span>
+                <span class="task-title">Добавь " (роман)" к названиям Толстого</span>
+            </div>
+            <div class="task-command">
+UPDATE books SET title = title || ' (роман)' WHERE author LIKE '%Толстой%';
+            </div>
+        </div>
+        <!-- 8 -->
+        <div class="task-item">
+            <div class="task-header">
+                <span class="task-num">8</span>
+                <span class="task-title">Проставь рейтинг 7 книгам без рейтинга (NULL)</span>
+            </div>
+            <div class="task-command">
+UPDATE books SET rating = 7 WHERE rating IS NULL;
+            </div>
+        </div>
+        <!-- 9 -->
+        <div class="task-item">
+            <div class="task-header">
+                <span class="task-num">9</span>
+                <span class="task-title">Удали книгу по id (например, id = 5)</span>
+            </div>
+            <div class="task-command">
+DELETE FROM books WHERE id = 5;
+            </div>
+        </div>
+        <!-- 10 -->
+        <div class="task-item">
+            <div class="task-header">
+                <span class="task-num">10</span>
+                <span class="task-title">Удали все книги до 1900 года</span>
+            </div>
+            <div class="task-command">
+DELETE FROM books WHERE year < 1900;
+            </div>
+        </div>
+        <!-- 11 -->
+        <div class="task-item">
+            <div class="task-header">
+                <span class="task-num">11</span>
+                <span class="task-title">Удали книги с рейтингом меньше 4</span>
+            </div>
+            <div class="task-command">
+DELETE FROM books WHERE rating < 4;
+            </div>
+        </div>
+        <!-- 12 -->
+        <div class="task-item">
+            <div class="task-header">
+                <span class="task-num">12</span>
+                <span class="task-title">Удали все книги определённого автора (например, Достоевского)</span>
+            </div>
+            <div class="task-command">
+DELETE FROM books WHERE author LIKE '%Достоевский%';
+            </div>
+        </div>
+        <!-- 13 -->
+        <div class="task-item">
+            <div class="task-header">
+                <span class="task-num">13</span>
+                <span class="task-title">Выбери книги 90-х (1990–1999)</span>
+            </div>
+            <div class="task-command">
+SELECT * FROM books WHERE year BETWEEN 1990 AND 1999;
+            </div>
+        </div>
+        <!-- 14 -->
+        <div class="task-item">
+            <div class="task-header">
+                <span class="task-num">14</span>
+                <span class="task-title">Топ книг по рейтингу (сортировка)</span>
+            </div>
+            <div class="task-command">
+SELECT title, author, rating FROM books ORDER BY rating DESC;
+            </div>
+        </div>
+        <!-- 15 -->
+        <div class="task-item">
+            <div class="task-header">
+                <span class="task-num">15</span>
+                <span class="task-title">Удали книги с названием короче 3 символов</span>
+            </div>
+            <div class="task-command">
+DELETE FROM books WHERE LENGTH(title) < 3;
+            </div>
+        </div>
+    </div>
+
+    <!-- Финальный бонус: ALTER -->
+    <div class="card" style="margin-top:2rem;">
+        <h2><i class="fas fa-gem"></i> Бонус: добавляем столбец price</h2>
+        <div class="code-block code-block--success">
+ALTER TABLE books ADD COLUMN price REAL;<br><br>
+-- Теперь можно проставить цены, например:<br>
+UPDATE books SET price = 499.99 WHERE id = 2;
+        </div>
+        <div class="badge-container">
+            <span class="badge badge-success"><i class="fas fa-tag"></i> REAL для дробных чисел</span>
+        </div>
+    </div>
+
+    <!-- Ещё раз важное предупреждение -->
+    <div class="tip" style="background: #fff3cd; border-left-color: #b45309;">
+        <i class="fas fa-skull-crosswalk"></i> 
+        <strong>Правило выживания:</strong> Перед выполнением <code>UPDATE</code> или <code>DELETE</code> без WHERE — подумай дважды. Лучше сначала сделай <code>SELECT</code> с тем же условием, чтобы увидеть, что именно ты собрался менять.
+    </div>
+
+    <!-- Подвал -->
+    <div class="footer-note">
+        <i class="fas fa-heart" style="color:#dc2626;"></i> Твой первый шаг в базы данных. Пробуй, ошибайся, исправляй — это нормально.
+    </div>
+</div>
+
+<!-- Простая кнопка "копировать" не реализована интерактивно, но можно добавить по желанию -->
+</body>
+</html>
