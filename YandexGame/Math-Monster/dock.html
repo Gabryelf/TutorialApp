@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 Полное руководство: публикация игры на Яндекс.Играх</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            font-family: 'Segoe UI', 'Comic Neue', 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .doc-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255,248,235,0.98);
+            border-radius: 60px;
+            padding: 40px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        h1 {
+            font-size: 2.8rem;
+            color: #e67e22;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        h2 {
+            font-size: 1.8rem;
+            color: #2c3e66;
+            border-left: 8px solid #f39c12;
+            padding-left: 20px;
+            margin: 30px 0 20px 0;
+        }
+        h3 {
+            font-size: 1.4rem;
+            color: #8e44ad;
+            margin: 20px 0 10px 0;
+        }
+        .warning {
+            background: #ffe6e6;
+            border-left: 8px solid #e74c3c;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 20px;
+        }
+        .tip {
+            background: #e6f7e6;
+            border-left: 8px solid #2ecc71;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 20px;
+        }
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 20px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #f39c12;
+            color: white;
+        }
+        .step {
+            background: white;
+            border-radius: 30px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .step-number {
+            display: inline-block;
+            background: #e67e22;
+            color: white;
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            line-height: 40px;
+            border-radius: 50%;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        .screenshot-placeholder {
+            background: #ecf0f1;
+            border: 3px dashed #bdc3c7;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+            color: #7f8c8d;
+        }
+        @media (max-width: 768px) {
+            .doc-container { padding: 20px; }
+            h1 { font-size: 1.8rem; }
+            h2 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="doc-container">
+    <h1>🎮 ПОЛНОЕ РУКОВОДСТВО</h1>
+    <h1 style="font-size:1.5rem; color:#2c3e66;">Как опубликовать игру на Яндекс.Играх</h1>
+    
+    <div class="tip">
+        📌 <strong>Для кого:</strong> Ученики 10–14 лет<br>
+        📌 <strong>Что нужно:</strong> Компьютер, браузер, аккаунт Яндекса<br>
+        📌 <strong>Время:</strong> 30–40 минут
+    </div>
+
+    <!-- ==================== ЧАСТЬ 1 ==================== -->
+    <h2>📁 ЧАСТЬ 1. ПРАВИЛЬНОЕ ИМЯ ФАЙЛА И ПАПКИ</h2>
+    <div class="warning">
+        ⚠️ <strong>ВАЖНО!</strong> На Яндекс.Играх нельзя использовать русские буквы и пробелы в именах файлов и папок!
+    </div>
+    
+    <h3>Правила именования:</h3>
+    <ul>
+        <li>✅ Только <strong>латинские буквы</strong> (a-z, A-Z)</li>
+        <li>✅ Только <strong>цифры</strong> (0-9)</li>
+        <li>✅ Только <strong>дефис (-) или нижнее подчёркивание (_)</strong></li>
+        <li>❌ <strong>НЕЛЬЗЯ:</strong> пробелы, русские буквы, спецсимволы (#$%&)</li>
+    </ul>
+    
+    <div class="code-block">
+        ❌ ПЛОХО: "Моя игра/index.html"<br>
+        ❌ ПЛОХО: "Новая папка/game.html"<br>
+        ✅ ХОРОШО: "my_game/index.html"<br>
+        ✅ ХОРОШО: "math-monster/index.html"
+    </div>
+    
+    <div class="step">
+        <span class="step-number">1</span> <strong>Создай папку на английском</strong><br>
+        На рабочем столе создай папку и назови её <code class="code-inline">math_monster</code> или <code class="code-inline">my-first-game</code>
+    </div>
+    
+    <div class="step">
+        <span class="step-number">2</span> <strong>Создай HTML-файл</strong><br>
+        Внутри папки создай файл с именем <code class="code-inline">index.html</code> (только маленькими буквами!)
+    </div>
+    
+    <div class="step">
+        <span class="step-number">3</span> <strong>Скопируй код игры</strong><br>
+        Открой <code class="code-inline">index.html</code> в блокноте и вставь код из финальной версии игры
+    </div>
+
+    <!-- ==================== ЧАСТЬ 2 ==================== -->
+    <h2>🎨 ЧАСТЬ 2. ПОДГОТОВКА МЕДИАФАЙЛОВ</h2>
+    
+    <h3>Иконка игры (обязательно!)</h3>
+    <ul>
+        <li>Размер: <strong>512×512 пикселей</strong></li>
+        <li>Формат: <strong>PNG или JPG</strong></li>
+        <li>Название файла: <code class="code-inline">icon.png</code> (только латиница!)</li>
+        <li>Что нарисовать: мордочку монстрика, цифру, смайлик</li>
+    </ul>
+    <div class="tip">
+        💡 <strong>Где сделать иконку:</strong><br>
+        - Нарисовать в Paint<br>
+        - Использовать <a href="https://www.canva.com" target="_blank">Canva</a><br>
+        - Создать в <a href="https://www.figma.com" target="_blank">Figma</a><br>
+        - Взять готовый смайлик и увеличить
+    </div>
+    
+    <h3>Скриншоты (3–5 штук, обязательно!)</h3>
+    <ul>
+        <li>Размер: <strong>1280×720 или 1920×1080</strong></li>
+        <li>Формат: <strong>PNG или JPG</strong></li>
+        <li>Названия: <code class="code-inline">screenshot1.png</code>, <code class="code-inline">screenshot2.png</code> и т.д.</li>
+        <li>Что показывать: главный экран, процесс игры, окно коллекции, сообщение о победе/поражении</li>
+    </ul>
+    <div class="tip">
+        📸 <strong>Как сделать скриншот:</strong><br>
+        - Нажми <code>Win + Shift + S</code> (Windows)<br>
+        - Или <code>Cmd + Shift + 4</code> (Mac)<br>
+        - Или используй сервис <a href="https://snipboard.io" target="_blank">Snipboard</a>
+    </div>
+    
+    <div class="screenshot-placeholder">
+        🖼️ ЗДЕСЬ БУДЕТ ТВОЙ СКРИНШОТ №1<br>
+        <small>(Покажи игровой процесс с вопросом и кнопками)</small>
+    </div>
+    <div class="screenshot-placeholder">
+        🖼️ ЗДЕСЬ БУДЕТ ТВОЙ СКРИНШОТ №2<br>
+        <small>(Покажи окно коллекции с открытыми фактами)</small>
+    </div>
+    
+    <h3>Видео (необязательно, но повышает шансы на одобрение)</h3>
+    <ul>
+        <li>Длительность: <strong>30–60 секунд</strong></li>
+        <li>Формат: <strong>MP4</strong></li>
+        <li>Название: <code class="code-inline">gameplay.mp4</code></li>
+        <li>Что записать: как играешь, нажимаешь кнопки, открываешь коллекцию</li>
+    </ul>
+    <div class="tip">
+        🎥 <strong>Как записать видео:</strong><br>
+        - Используй <strong>OBS Studio</strong> (бесплатно)<br>
+        - Или встроенную запись в <strong>Xbox Game Bar</strong> (Win + G)<br>
+        - Или попроси учителя помочь
+    </div>
+
+    <!-- ==================== ЧАСТЬ 3 ==================== -->
+    <h2>📦 ЧАСТЬ 3. СОЗДАНИЕ ZIP-АРХИВА</h2>
+    <div class="step">
+        <span class="step-number">1</span> Выдели ВСЕ файлы в папке игры:<br>
+        - <code>index.html</code><br>
+        - <code>icon.png</code> (если добавишь в папку)<br>
+        - Другие файлы (стили, картинки)
+    </div>
+    <div class="step">
+        <span class="step-number">2</span> Нажми правой кнопкой → <strong>«Отправить»</strong> → <strong>«Сжатая ZIP-папка»</strong>
+    </div>
+    <div class="step">
+        <span class="step-number">3</span> Назови архив ТОЛЬКО латиницей:<br>
+        <code class="code-inline">math_monster.zip</code> или <code class="code-inline">my-game.zip</code>
+    </div>
+    <div class="warning">
+        ⚠️ <strong>Важно!</strong> Не называй архив "Моя игра.zip" — русские буквы и пробелы вызовут ошибку!
+    </div>
+
+    <!-- ==================== ЧАСТЬ 4 ==================== -->
+    <h2>☁️ ЧАСТЬ 4. ПУБЛИКАЦИЯ НА ЯНДЕКС.ИГРАХ (ПОЛНЫЙ ГАЙД)</h2>
+    
+    <div class="step">
+        <span class="step-number">1</span> <strong>Зайди в кабинет разработчика</strong><br>
+        <a href="https://yandex.ru/games/dev" target="_blank">https://yandex.ru/games/dev</a><br>
+        Войди под своим Яндекс-аккаунтом (почта @yandex.ru или @ya.ru)
+    </div>
+    
+    <div class="step">
+        <span class="step-number">2</span> <strong>Нажми «Создать игру»</strong><br>
+        Большая синяя кнопка в правом верхнем углу
+    </div>
+    
+    <div class="step">
+        <span class="step-number">3</span> <strong>Заполни ВСЕ поля</strong> — ниже таблица с примерами
+    </div>
+    
+    <h3>Таблица заполнения карточки игры</h3>
+    <table>
+        <thead>
+            <tr><th>Поле</th><th>Что писать (пример)</th><th>Правила</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><strong>Название игры</strong></td><td>«Математический монстрик»</td><td>На русском, яркое, запоминающееся</td></tr>
+            <tr><td><strong>Короткое описание</strong></td><td>Решай примеры, открывай факты и бей рекорды!</td><td>До 150 символов, интригует</td></tr>
+            <tr><td><strong>Полное описание</strong></td><td>Помоги монстрику решать примеры на сложение и вычитание. За каждые 10 правильных ответов ты получаешь новый математический факт в коллекцию. Собирай все 30 фактов, улучшай свой рекорд и становись королём математики!</td><td>До 4000 символов, подробно расскажи механику</td></tr>
+            <tr><td><strong>Как играть (инструкция)</strong></td><td>1. Смотри на пример в пузыре над монстриком<br>2. Нажимай на кнопку с правильным ответом<br>3. За правильный ответ +1 очко<br>4. За ошибку −1 жизнь (всего 3 жизни)<br>5. Каждые 10 очков — новый факт в коллекцию<br>6. Заходи в «Коллекцию», чтобы читать открытые факты</td><td>Пошагово, понятно ребёнку</td></tr>
+            <tr><td><strong>Ключевые слова (SEO)</strong></td><td>математика, игра для детей, примеры, счёт, коллекция, факты, монстрик, обучение</td><td>5–10 слов через запятую, на русском</td></tr>
+            <tr><td><strong>Категория</strong></td><td>Обучающие / Головоломки</td><td>Выбери из списка</td></tr>
+            <tr><td><strong>Возрастной рейтинг</strong></td><td>0+</td><td>Для всех возрастов</td></tr>
+            <tr><td><strong>Ориентация экрана</strong></td><td>Портретная + Альбомная</td><td>Отметь оба варианта</td></tr>
+            <tr><td><strong>Язык интерфейса</strong></td><td>Русский</td><td>Основной язык игры</td></tr>
+            <tr><td><strong>Теги</strong></td><td>#математика #детям #обучение #викторина</td><td>3–5 хештегов</td></tr>
+        </tbody>
+    </table>
+    
+    <div class="step">
+        <span class="step-number">4</span> <strong>Загрузи медиафайлы</strong>
+        <ul>
+            <li>📸 <strong>Иконка</strong> — загрузи твою <code>icon.png</code> 512×512</li>
+            <li>📸 <strong>Скриншоты</strong> — загрузи 3–5 штук (перетащи в окно)</li>
+            <li>🎥 <strong>Видео</strong> — опционально, но очень помогает (загрузи <code>gameplay.mp4</code>)</li>
+        </ul>
+    </div>
+    
+    <div class="step">
+        <span class="step-number">5</span> <strong>Загрузи архив с игрой</strong>
+        <ul>
+            <li>Найди раздел <strong>«Файлы игры»</strong></li>
+            <li>Нажми <strong>«Загрузить»</strong> и выбери <code>math_monster.zip</code></li>
+            <li>Дождись проверки (обычно 1–2 минуты)</li>
+        </ul>
+    </div>
+    
+    <div class="step">
+        <span class="step-number">6</span> <strong>Настрой рекламу (опционально)</strong>
+        <ul>
+            <li>Реклама <strong>необязательна</strong>, но если хочешь — включи</li>
+            <li>Яндекс сам добавит баннеры в игру</li>
+            <li>Для первой публикации лучше <strong>отключить рекламу</strong> (проще пройти модерацию)</li>
+        </ul>
+    </div>
+    
+    <div class="step">
+        <span class="step-number">7</span> <strong>Проверь всё ещё раз</strong> по чек-листу:
+        <ul>
+            <li>✅ Название папки и архива без русских букв и пробелов</li>
+            <li>✅ Главный файл называется <code>index.html</code></li>
+            <li>✅ Игра запускается локально в браузере</li>
+            <li>✅ На телефоне всё кликабельно</li>
+            <li>✅ Заполнены ВСЕ поля (описание, как играть, ключевые слова)</li>
+            <li>✅ Загружены иконка и 3+ скриншота</li>
+        </ul>
+    </div>
+    
+    <div class="step">
+        <span class="step-number">8</span> <strong>Нажми «Отправить на модерацию»</strong>
+    </div>
+
+    <!-- ==================== ЧАСТЬ 5 ==================== -->
+    <h2>⏳ ЧАСТЬ 5. ЧТО ДАЛЬШЕ? (МОДЕРАЦИЯ)</h2>
+    <ul>
+        <li>Модерация длится <strong>от 2 часов до 2 дней</strong></li>
+        <li>Ты получишь уведомление на почту</li>
+        <li><strong>Если одобрили:</strong> 🎉 Поздравляю! Игра опубликована. Можешь делиться ссылкой!</li>
+        <li><strong>Если отклонили:</strong> Прочитай причину, исправь ошибки и отправь снова</li>
+    </ul>
+    
+    <div class="warning">
+        ⚠️ <strong>Частые причины отклонения:</strong>
+        <ul>
+            <li>❌ В имени файла или папки русские буквы/пробелы</li>
+            <li>❌ Не заполнены поля «Как играть» или «SEO»</li>
+            <li>❌ Скриншоты не соответствуют игре</li>
+            <li>❌ Игра вылетает или зависает</li>
+            <li>❌ На телефоне кнопки слишком мелкие</li>
+        </ul>
+    </div>
+
+    <!-- ==================== ЧАСТЬ 6 ==================== -->
+    <h2>🛠️ ЧАСТЬ 6. ПРИМЕРЫ ПРАВИЛЬНОГО ЗАПОЛНЕНИЯ</h2>
+    
+    <h3>Пример полного описания (скопируй и измени под себя):</h3>
+    <div class="code-block">
+        «Математический монстрик» — это увлекательная игра для детей, которая помогает тренировать устный счёт в игровой форме. 
+        
+        Тебе предстоит помогать милому монстрику решать примеры на сложение и вычитание. За каждый правильный ответ ты получаешь одно очко. 
+        
+        Но будь осторожен: у тебя всего 3 жизни! Ошибка отнимает одну жизнь. Игра заканчивается, когда жизни заканчиваются.
+        
+        Самое интересное — коллекция математических фактов! За каждые 10 правильных ответов ты открываешь новый удивительный факт о числах, геометрии и великих математиках. Всего в коллекции 30 фактов. Заходи в «Коллекцию» в любое время, чтобы перечитать открытые факты.
+        
+        Соревнуйся сам с собой: каждый раз старайся побить свой рекорд. Лучший результат сохраняется навсегда!
+        
+        Идеально для детей 7–12 лет. Никакой рекламы, только полезная математика и интересные факты.
+    </div>
+    
+    <h3>Пример поля «Как играть» (скопируй):</h3>
+    <div class="code-block">
+        1. Посмотри на пример в белом облачке над монстриком (например, «5 + 3 = ?»)
+        2. Нажми на кнопку с правильным ответом (варианты под монстриком)
+        3. Если ответил правильно — получи +1 очко и монстрик обрадуется
+        4. Если ошибся — потеряешь 1 жизнь (всего их 3)
+        5. Следи за счётом и сердечками в верхней панели
+        6. За каждые 10 правильных ответов открывается новый математический факт
+        7. Нажми кнопку «📚 КОЛЛЕКЦИЯ», чтобы прочитать открытые факты
+        8. Если проиграл — нажми «Новая игра», чтобы начать заново
+        9. Старайся побить свой рекорд — он сохраняется в браузере
+    </div>
+    
+    <h3>Пример ключевых слов (SEO):</h3>
+    <div class="code-block">
+        математика, примеры, счёт для детей, обучение, игра для школьников, устный счёт, коллекция фактов, монстрик, детская игра, головоломка
+    </div>
+
+    <!-- ==================== ЧАСТЬ 7 ==================== -->
+    <h2>🐛 ЧАСТЬ 7. ЧТО ДЕЛАТЬ, ЕСЛИ ИГРУ ОТКЛОНИЛИ?</h2>
+    <table>
+        <thead><tr><th>Ошибка в письме</th><th>Как исправить</th></tr></thead>
+        <tbody>
+            <tr><td>«Файл index.html не найден»</td><td>Переименуй главный файл точно в <code>index.html</code> (маленькими буквами)</td></tr>
+            <tr><td>«В имени архива запрещённые символы»</td><td>Переименуй архив, убери пробелы и русские буквы</td></tr>
+            <tr><td>«Не заполнено описание»</td><td>Напиши развёрнутое описание, не оставляй пустых полей</td></tr>
+            <tr><td>«Скриншоты не соответствуют игре»</td><td>Сделай новые скриншоты прямо из игры и загрузи</td></tr>
+            <tr><td>«Игра не загружается на телефоне»</td><td>Проверь адаптив (CSS медиа-запросы), увеличь кнопки</td></tr>
+        </tbody>
+    </table>
+    
+    <div class="tip">
+        💡 <strong>Совет:</strong> Перед отправкой на модерацию покажи игру 3–4 друзьям. Если им понятно, как играть — всё хорошо!
+    </div>
+
+    <!-- ==================== ЧАСТЬ 8 ==================== -->
+    <h2>🚀 ЧАСТЬ 8. ПОСЛЕ ПУБЛИКАЦИИ</h2>
+    <ul>
+        <li>📊 <strong>Смотри статистику</strong> в кабинете разработчика (сколько игроков, какой счёт)</li>
+        <li>⭐ <strong>Читай отзывы</strong> — они помогут улучшить игру</li>
+        <li>🔄 <strong>Выпускай обновления</strong> — добавляй новые факты, уровни сложности, звуки</li>
+        <li>📢 <strong>Делитесь ссылкой</strong> в соцсетях и чатах с друзьями</li>
+        <li>🏆 <strong>Участвуй в конкурсах</strong> разработчиков на Яндекс.Играх</li>
+    </ul>
+
+    <!-- ==================== ЧАСТЬ 9 ==================== -->
+    <h2>📚 ПОЛЕЗНЫЕ ССЫЛКИ (СОХРАНИ СЕБЕ)</h2>
+    <ul>
+        <li>🔗 <a href="https://yandex.ru/games/dev" target="_blank">Кабинет разработчика Яндекс.Игр</a></li>
+        <li>🔗 <a href="https://yandex.ru/games" target="_blank">Яндекс.Игры — смотреть все игры</a></li>
+        <li>🔗 <a href="https://colorhunt.co" target="_blank">Красивые цвета для дизайна</a></li>
+        <li>🔗 <a href="https://emojipedia.org" target="_blank">Смайлики для монстрика</a></li>
+        <li>🔗 <a href="https://www.figma.com" target="_blank">Figma — дизайн иконок</a></li>
+        <li>🔗 <a href="https://validator.w3.org" target="_blank">Проверка HTML-кода на ошибки</a></li>
+    </ul>
+
+    <!-- ==================== ЧАСТЬ 10 ==================== -->
+    <h2>🎉 ПОЗДРАВЛЯЮ!</h2>
+    <div class="tip" style="text-align: center; font-size: 1.3rem;">
+        🎮 Ты теперь официальный разработчик игр на Яндекс.Играх! 🎮<br>
+        Гордись собой и покажи игру всем друзьям!
+    </div>
+    
+    <hr style="margin: 40px 0; border: 2px dashed #f39c12;">
+    
+    <p style="text-align: center; color: #7f8c8d;">
+        📖 Документация создана для обучения публикации игр на Яндекс.Играх<br>
+        💡 Версия 1.0 — используй, дополняй, делись с друзьями!
+    </p>
+</div>
+</body>
+</html>
