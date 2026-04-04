@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Математическая битва — Коллекция знаний</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            position: fixed;
+            background: linear-gradient(145deg, #2b5e3b 0%, #1d3e28 100%);
+            font-family: 'Segoe UI', 'Comic Neue', 'Comic Sans MS', 'Chalkboard SE', cursive, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, rgba(46,204,113,0.05) 100%);
+            animation: bgPulse 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes bgPulse {
+            0%, 100% { transform: translate(-25%, -25%) scale(1); opacity: 0.5; }
+            50% { transform: translate(-25%, -25%) scale(1.1); opacity: 0.8; }
+        }
+
+        .game {
+            width: 100%;
+            height: 100%;
+            max-width: 750px;
+            max-height: 1100px;
+            background: rgba(255,248,225,0.97);
+            border-radius: 48px;
+            margin: 12px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.3);
+            position: relative;
+            backdrop-filter: blur(2px);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stats {
+            background: linear-gradient(135deg, #ffd966, #ffb347);
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            border-radius: 40px 40px 30px 30px;
+            margin: 12px 12px 8px 12px;
+            flex-shrink: 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .stat-card {
+            background: rgba(255,243,207,0.95);
+            padding: 6px 12px;
+            border-radius: 60px;
+            font-weight: bold;
+            text-align: center;
+            flex: 1;
+            box-shadow: inset 0 -1px 0 rgba(0,0,0,0.05), 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .stat-card:active { transform: scale(0.95); }
+        .stat-label {
+            font-size: 0.65rem;
+            color: #b45f06;
+        }
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e67e22;
+            line-height: 1;
+        }
+        .hearts {
+            font-size: 1.5rem;
+            letter-spacing: 3px;
+            color: #e74c3c;
+            text-shadow: 0 0 5px rgba(231,76,60,0.5);
+        }
+        .collection-btn {
+            background: linear-gradient(135deg, #8e44ad, #9b59b6);
+            color: white;
+            border: none;
+            border-radius: 40px;
+            padding: 8px 16px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .collection-btn:active { transform: scale(0.95); }
+
+        .monster-area {
+            background: linear-gradient(135deg, #fae67a, #f5d76e);
+            margin: 5px 12px;
+            border-radius: 60px;
+            padding: 12px;
+            text-align: center;
+            box-shadow: inset 0 0 0 3px white, 0 8px 12px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .monster-face {
+            width: 110px;
+            height: 110px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #ffb347, #ff8c00);
+            border-radius: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 0 #c16f1a;
+            transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            cursor: pointer;
+            overflow: hidden;
+        }
+        .monster-face img {
+            width: 80%;
+            height: 80%;
+            object-fit: contain;
+        }
+        .monster-face:active { transform: scale(0.95); }
+        
+        .question-bubble {
+            background: white;
+            padding: 10px 15px;
+            border-radius: 50px;
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #2c3e66;
+            display: inline-block;
+            margin-top: 8px;
+            box-shadow: 0 5px 0 #bbada0;
+            animation: bounce 0.5s ease-out;
+        }
+
+        @keyframes bounce {
+            0% { transform: scale(0.8); opacity: 0; }
+            80% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .options-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            min-height: 0;
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 12px;
+            margin: 0px 10px 20px 10px;
+        }
+        .answer-btn {
+            background: linear-gradient(135deg, #f9a826, #f39c12);
+            border: none;
+            border-radius: 80px;
+            padding: 16px 6px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 8px 0 #b45f06;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .answer-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+        .answer-btn:active::before {
+            width: 200px;
+            height: 200px;
+        }
+        .answer-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 4px 0 #b45f06;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            box-shadow: 0 6px 0 #1e8449;
+            margin: 0px 30px 20px 30px;
+            padding: 14px;
+            font-size: 1.3rem;
+            border-radius: 60px;
+            border: none;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all 0.2s;
+            display: none;
+            animation: slideUp 0.4s ease-out;
+        }
+        .restart-btn.show { display: block; }
+        .restart-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 3px 0 #1e8449;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .modal-content {
+            background: linear-gradient(135deg, #fff8e7, #ffefc0);
+            border-radius: 48px;
+            max-width: 90%;
+            max-height: 85%;
+            width: 500px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 30px rgba(0,0,0,0.5);
+            animation: modalPop 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #ffb347;
+            padding-bottom: 10px;
+        }
+        .modal-header h2 { color: #8e44ad; }
+        .close-modal {
+            background: #e74c3c;
+            border: none;
+            font-size: 1.5rem;
+            width: 40px;
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .close-modal:active { transform: scale(0.9); }
+        .facts-list {
+            overflow-y: auto;
+            margin: 15px 0;
+            padding-right: 5px;
+            flex: 1;
+        }
+        .fact-item {
+            background: #fef1cf;
+            margin: 8px 0;
+            padding: 12px;
+            border-radius: 30px;
+            border-left: 12px solid #f39c12;
+            transition: all 0.2s;
+        }
+        .fact-item:active { transform: scale(0.98); }
+        .fact-locked {
+            opacity: 0.6;
+            filter: grayscale(0.2);
+            background: #e0d6c0;
+        }
+        .fact-title {
+            font-weight: bold;
+            color: #2c3e66;
+        }
+
+        @media (max-width: 600px) {
+            .monster-face { width: 85px; height: 85px; }
+            .question-bubble { font-size: 1.2rem; }
+            .answer-btn { font-size: 1.4rem; padding: 12px; }
+            .stat-value { font-size: 1.2rem; }
+        }
+        @media (max-width: 450px), (orientation: landscape) and (max-height: 500px) {
+            .monster-face { width: 65px; height: 65px; }
+            .question-bubble { font-size: 1rem; padding: 5px 10px; }
+            .answer-btn { font-size: 1.2rem; padding: 8px; }
+            .stats { gap: 5px; padding: 6px 10px; }
+            .collection-btn { padding: 4px 10px; font-size: 0.7rem;}
+        }
+    </style>
+</head>
+<body>
+<div class="game">
+    <div class="stats">
+        <div class="stat-card">🌟 СЧЁТ<br><span class="stat-value" id="scoreValue">0</span></div>
+        <div class="stat-card">❤️ ЖИЗНИ<br><span class="hearts" id="heartsValue">❤️❤️❤️</span></div>
+        <div class="stat-card">🏆 РЕКОРД<br><span class="stat-value" id="bestValue">0</span></div>
+        <button class="collection-btn" id="openCollectionBtn">📚</button>
+    </div>
+
+    <div class="monster-area">
+        <div class="monster-face" id="monsterFace">
+            <img id="monsterImg" src="https://github.com/Gabryelf/Atlas-Assets/raw/main/docs/images/pokemon/Common/Abra.png" alt="Monster" onerror="this.style.display='none'; document.getElementById('monsterFallback').style.display='block'">
+            <span id="monsterFallback" style="display:none; font-size:4rem;">🐲</span>
+        </div>
+        <div class="question-bubble" id="questionText">Сколько будет?</div>
+    </div>
+
+    <div class="options-wrapper">
+        <div class="options-grid" id="optionsContainer">
+            <button class="answer-btn" data-value="0">0</button>
+            <button class="answer-btn" data-value="1">1</button>
+            <button class="answer-btn" data-value="2">2</button>
+            <button class="answer-btn" data-value="3">3</button>
+        </div>
+    </div>
+
+    <button class="restart-btn" id="restartGameBtn">🔄 Новая игра</button>
+</div>
+
+<div id="collectionModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>📖 Математическая коллекция</h2>
+            <button class="close-modal" id="closeModalBtn">✖</button>
+        </div>
+        <div class="facts-list" id="factsList"></div>
+        <p style="font-size:0.7rem; text-align:center;">⭐ Новые факты открываются каждые 10 очков</p>
+    </div>
+</div>
+
+<script>
+    // БЕЗОПАСНАЯ ЗАГРУЗКА SDK (без ошибок postMessage)
+    (function() {
+        let sdkLoaded = false;
+        window.YaGames = null;
+        
+        // Загружаем SDK только после полной загрузки страницы
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                let script = document.createElement('script');
+                script.src = "https://yandex.ru/games/sdk/v2";
+                script.async = true;
+                script.onload = function() {
+                    if (window.YaGames && !sdkLoaded) {
+                        sdkLoaded = true;
+                        window.YaGames.init().then(function(sdk) {
+                            window.YaGames = sdk;
+                            console.log("✅ Яндекс SDK готов");
+                        }).catch(function(e) {
+                            console.warn("SDK init error:", e);
+                        });
+                    }
+                };
+                script.onerror = function() {
+                    console.warn("SDK не загрузился (игра продолжит работу)");
+                };
+                document.head.appendChild(script);
+            }, 100);
+        });
+    })();
+
+    // КОЛЛЕКЦИЯ МАТЕМАТИЧЕСКИХ ФАКТОВ
+    const ALL_FACTS = [
+        "🧮 Ноль — единственное число, которое нельзя написать римскими цифрами.",
+        "🔢 1 — не простое и не составное число.",
+        "🐝 У пчёл в сотах шестиугольная форма, потому что шестиугольник — самая экономичная фигура.",
+        "🔁 Число 2 — единственное чётное простое число.",
+        "📐 Сумма углов любого треугольника равна 180°.",
+        "💎 Золотое сечение (1.618) встречается в искусстве и природе.",
+        "♾️ 4 — единственное число, у которого количество букв в названии равно самому числу (четыре).",
+        "🎲 Вероятность выпадения шестёрки на кубике — 1/6.",
+        "⭐ 7 считается магическим числом во многих культурах.",
+        "∞ Лента Мёбиуса — поверхность с одной стороной.",
+        "🔟 Десятичная система возникла из-за 10 пальцев на руках.",
+        "🧩 Число 12 — самое популярное для деления (12 часов, 12 месяцев).",
+        "🤝 13 — в некоторых странах считается несчастливым.",
+        "🧠 В математике есть премия Филдса — аналог Нобелевской для математиков.",
+        "📏 Число Пи (π) бесконечно и не повторяется.",
+        "⚡ Софизм — ошибка в рассуждении, которая выглядит как правильное доказательство.",
+        "🌀 Фракталы — фигуры, которые выглядят одинаково при любом увеличении.",
+        "📊 Теория графов помогает строить соцсети и карты.",
+        "🎯 0.999... (в периоде) математически равно 1.",
+        "🃏 Шахматная доска имеет 64 клетки, и число 64 — это 8².",
+        "🌐 Теорема Пифагора известна ещё древним вавилонянам.",
+        "⚖️ Число 100 — это 10², а также процент — сотая часть.",
+        "📈 Последовательность Фибоначчи встречается в природе: 1,1,2,3,5,8...",
+        "🎲 Простых чисел бесконечно много (доказал Евклид).",
+        "🧮 Сутки — 24 часа, 24 делится на 2,3,4,6,8,12.",
+        "🕰️ 60 минут в часе, 360° в круге — наследие шестидесятеричной системы.",
+        "📐 Египетский треугольник 3-4-5 используется для построения прямых углов.",
+        "🧩 Название 'алгебра' происходит от арабского 'аль-джебр'.",
+        "🎯 Решето Эратосфена — древний алгоритм поиска простых чисел.",
+        "🌟 Единица и ноль — основа двоичного кода, на котором работают компьютеры."
+    ];
+    const FACTS_PER_CHECKPOINT = 10;
+
+    let currentScore = 0;
+    let lives = 3;
+    let bestScore = 0;
+    let currentQuestion = { text: "", correctAnswer: 0 };
+    let canAnswer = true;
+    let isProcessing = false;  // Защита от двойных кликов
+    let unlockedFacts = [];
+
+    // DOM элементы
+    const scoreSpan = document.getElementById('scoreValue');
+    const heartsSpan = document.getElementById('heartsValue');
+    const bestSpan = document.getElementById('bestValue');
+    const questionEl = document.getElementById('questionText');
+    const monsterFace = document.getElementById('monsterFace');
+    const monsterImg = document.getElementById('monsterImg');
+    const monsterFallback = document.getElementById('monsterFallback');
+    const restartBtn = document.getElementById('restartGameBtn');
+
+    function loadCollection() {
+        let saved = localStorage.getItem('mathFactsUnlocked');
+        if(saved) {
+            try {
+                let arr = JSON.parse(saved);
+                if(Array.isArray(arr) && arr.length === ALL_FACTS.length) {
+                    unlockedFacts = arr;
+                    return;
+                }
+            } catch(e) {}
+        }
+        unlockedFacts = new Array(ALL_FACTS.length).fill(false);
+        saveCollection();
+    }
+    
+    function saveCollection() {
+        localStorage.setItem('mathFactsUnlocked', JSON.stringify(unlockedFacts));
+    }
+
+    function tryUnlockNewFact() {
+        let expectedUnlockCount = Math.floor(currentScore / FACTS_PER_CHECKPOINT);
+        let currentlyUnlockedCount = unlockedFacts.filter(v => v === true).length;
+        if(expectedUnlockCount > currentlyUnlockedCount) {
+            let toUnlock = expectedUnlockCount - currentlyUnlockedCount;
+            for(let i=0; i<toUnlock; i++) {
+                let nextLocked = unlockedFacts.findIndex(f => f === false);
+                if(nextLocked !== -1) {
+                    unlockedFacts[nextLocked] = true;
+                    showTemporaryMessage(`🎉 НОВЫЙ ФАКТ! 🎉<br>📖 ${ALL_FACTS[nextLocked].substring(0, 70)}...`);
+                } else break;
+            }
+            saveCollection();
+        }
+    }
+
+    function showTemporaryMessage(msg, duration = 2500) {
+        const msgDiv = document.createElement('div');
+        msgDiv.style.position = 'fixed';
+        msgDiv.style.bottom = '100px';
+        msgDiv.style.left = '50%';
+        msgDiv.style.transform = 'translateX(-50%)';
+        msgDiv.style.background = '#2c3e66';
+        msgDiv.style.color = 'white';
+        msgDiv.style.padding = '12px 20px';
+        msgDiv.style.borderRadius = '40px';
+        msgDiv.style.fontWeight = 'bold';
+        msgDiv.style.zIndex = '1000';
+        msgDiv.style.textAlign = 'center';
+        msgDiv.style.maxWidth = '80%';
+        msgDiv.style.boxShadow = '0 5px 15px black';
+        msgDiv.innerHTML = msg;
+        document.body.appendChild(msgDiv);
+        setTimeout(() => msgDiv.remove(), duration);
+    }
+
+    function updateHeartsUI() {
+        if(lives === 3) heartsSpan.innerText = "❤️❤️❤️";
+        else if(lives === 2) heartsSpan.innerText = "❤️❤️🖤";
+        else if(lives === 1) heartsSpan.innerText = "❤️🖤🖤";
+        else heartsSpan.innerText = "🖤🖤🖤";
+    }
+
+    function loadBestScore() {
+        let saved = localStorage.getItem('mathMonsterBest');
+        if(saved && !isNaN(parseInt(saved))) {
+            bestScore = parseInt(saved);
+            bestSpan.innerText = bestScore;
+        } else {
+            bestScore = 0;
+            bestSpan.innerText = "0";
+        }
+    }
+    
+    function saveBestScore() {
+        if(currentScore > bestScore) {
+            bestScore = currentScore;
+            bestSpan.innerText = bestScore;
+            localStorage.setItem('mathMonsterBest', bestScore);
+            showTemporaryMessage("🏆 НОВЫЙ РЕКОРД! 🏆", 1500);
+        }
+    }
+
+    function generateMathQuestion() {
+        let useAdd = Math.random() > 0.5;
+        let a, b, answer, text;
+        if(useAdd) {
+            a = Math.floor(Math.random() * 11) + 1;
+            b = Math.floor(Math.random() * 11) + 1;
+            answer = a + b;
+            if(answer > 20) { a = Math.floor(Math.random() * 10); b = Math.floor(Math.random() * 10); answer = a+b; }
+            text = `${a} + ${b} = ?`;
+        } else {
+            a = Math.floor(Math.random() * 20) + 5;
+            b = Math.floor(Math.random() * a);
+            answer = a - b;
+            if(answer < 0) { a = Math.floor(Math.random() * 15)+5; b = Math.floor(Math.random() * a); answer = a-b; }
+            text = `${a} - ${b} = ?`;
+        }
+        if(answer > 20) answer = 20;
+        return { text, correctAnswer: answer };
+    }
+
+    function generateNewQuestion() {
+        currentQuestion = generateMathQuestion();
+        questionEl.innerText = currentQuestion.text;
+        const correct = currentQuestion.correctAnswer;
+        let variants = new Set();
+        variants.add(correct);
+        while(variants.size < 4) {
+            let offset = Math.floor(Math.random() * 5) - 2;
+            let candidate = correct + offset;
+            if(candidate < 0) candidate = correct + 1;
+            if(candidate > 20) candidate = correct - 1;
+            if(candidate < 0) candidate = correct;
+            if(candidate > 20) candidate = correct;
+            variants.add(candidate);
+        }
+        let shuffled = Array.from(variants).sort(() => Math.random() - 0.5);
+        const btns = document.querySelectorAll('.answer-btn');
+        for(let i=0; i<btns.length; i++) {
+            btns[i].innerText = shuffled[i];
+            btns[i].setAttribute('data-value', shuffled[i]);
+            btns[i].disabled = false;
+            btns[i].style.opacity = "1";
+            btns[i].style.background = "linear-gradient(135deg, #f9a826, #f39c12)";
+        }
+        isProcessing = false;
+    }
+
+    function animateMonster(isCorrect) {
+        if(isCorrect) {
+            monsterFace.style.transform = 'scale(1.2)';
+            setTimeout(() => { if(lives>0) monsterFace.style.transform = 'scale(1)'; }, 300);
+        } else {
+            monsterFace.style.transform = 'scale(0.8)';
+            setTimeout(() => { if(lives>0) monsterFace.style.transform = 'scale(1)'; }, 300);
+        }
+    }
+
+    function handleAnswer(selectedValue) {
+        if(!canAnswer || lives <= 0 || isProcessing) return;
+        
+        isProcessing = true;
+        const selectedNum = parseInt(selectedValue);
+        const isCorrect = (selectedNum === currentQuestion.correctAnswer);
+        
+        const btns = document.querySelectorAll('.answer-btn');
+        btns.forEach(btn => btn.disabled = true);
+
+        if(isCorrect) {
+            currentScore++;
+            scoreSpan.innerText = currentScore;
+            showTemporaryMessage("✅ ПРАВИЛЬНО! +1 очко 🎉", 600);
+            animateMonster(true);
+            saveBestScore();
+            tryUnlockNewFact();
+
+            setTimeout(() => {
+                if(lives > 0) {
+                    generateNewQuestion();
+                    canAnswer = true;
+                } else gameOver();
+            }, 700);
+        } else {
+            lives--;
+            updateHeartsUI();
+            showTemporaryMessage(`❌ Ошибка! Правильно: ${currentQuestion.correctAnswer}. Жизней: ${lives}`, 1000);
+            animateMonster(false);
+            
+            if(lives <= 0) {
+                setTimeout(() => gameOver(), 500);
+            } else {
+                setTimeout(() => {
+                    if(lives > 0) {
+                        generateNewQuestion();
+                        canAnswer = true;
+                    } else gameOver();
+                }, 1000);
+            }
+        }
+    }
+
+    function gameOver() {
+        canAnswer = false;
+        isProcessing = true;
+        showTemporaryMessage("💀 ИГРА ОКОНЧЕНА 💀", 2000);
+        monsterImg.style.display = 'none';
+        monsterFallback.style.display = 'block';
+        monsterFallback.innerText = "😭";
+        
+        const btns = document.querySelectorAll('.answer-btn');
+        btns.forEach(btn => btn.disabled = true);
+        saveBestScore();
+        restartBtn.classList.add('show');
+        
+        // Безопасный вызов рекламы
+        if(window.YaGames && window.YaGames.adv) {
+            try {
+                window.YaGames.adv.showFullscreen().catch(function(e) {
+                    console.log("Реклама не показана:", e);
+                });
+            } catch(e) {
+                console.log("Ошибка рекламы:", e);
+            }
+        }
+    }
+
+    function restartGame() {
+        currentScore = 0;
+        lives = 3;
+        canAnswer = true;
+        isProcessing = false;
+        scoreSpan.innerText = "0";
+        updateHeartsUI();
+        monsterImg.style.display = 'block';
+        monsterFallback.style.display = 'none';
+        restartBtn.classList.remove('show');
+        
+        const btns = document.querySelectorAll('.answer-btn');
+        btns.forEach(btn => { btn.disabled = false; btn.style.opacity = "1"; });
+        generateNewQuestion();
+    }
+
+    function bindEvents() {
+        const btns = document.querySelectorAll('.answer-btn');
+        btns.forEach(btn => {
+            btn.removeEventListener('click', btn._listener);
+            const handler = () => { 
+                if(canAnswer && lives > 0 && !isProcessing) {
+                    handleAnswer(btn.getAttribute('data-value'));
+                }
+            };
+            btn.addEventListener('click', handler);
+            btn._listener = handler;
+        });
+        
+        restartBtn.onclick = () => restartGame();
+        
+        const modal = document.getElementById('collectionModal');
+        const openBtn = document.getElementById('openCollectionBtn');
+        const closeBtn = document.getElementById('closeModalBtn');
+        
+        openBtn.onclick = () => {
+            renderFactsList();
+            modal.style.display = 'flex';
+        };
+        closeBtn.onclick = () => modal.style.display = 'none';
+        window.onclick = (e) => { if(e.target === modal) modal.style.display = 'none'; };
+    }
+
+    function renderFactsList() {
+        const factsDiv = document.getElementById('factsList');
+        factsDiv.innerHTML = '';
+        for(let i=0; i<ALL_FACTS.length; i++) {
+            let isUnlocked = unlockedFacts[i];
+            let div = document.createElement('div');
+            div.className = 'fact-item' + (isUnlocked ? '' : ' fact-locked');
+            if(isUnlocked) {
+                div.innerHTML = `<div class="fact-title">🔓 Факт #${i+1}</div><div>${ALL_FACTS[i]}</div>`;
+            } else {
+                let needed = (unlockedFacts.filter(f=>f===true).length + 1) * FACTS_PER_CHECKPOINT;
+                div.innerHTML = `<div class="fact-title">🔒 ЗАКРЫТ (откроется после ${needed} очков)</div><div>???</div>`;
+            }
+            factsDiv.appendChild(div);
+        }
+    }
+
+    function initGame() {
+        loadBestScore();
+        loadCollection();
+        restartGame();
+        bindEvents();
+    }
+    
+    initGame();
+</script>
+</body>
+</html>
