@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net6.0</TargetFramework>
+		<StartupObject>AppConnect.Program_WithBuilder</StartupObject>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<MSBuildSDKsPath>C:\Program Files\dotnet\sdk\6.0.403</MSBuildSDKsPath>
