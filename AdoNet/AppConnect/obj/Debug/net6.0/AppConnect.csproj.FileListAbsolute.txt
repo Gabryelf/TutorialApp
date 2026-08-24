@@ -1,0 +1,15 @@
+D:\TutorialApp\AdoNet\AppConnect\bin\Debug\net6.0\AppConnect.exe
+D:\TutorialApp\AdoNet\AppConnect\bin\Debug\net6.0\AppConnect.deps.json
+D:\TutorialApp\AdoNet\AppConnect\bin\Debug\net6.0\AppConnect.runtimeconfig.json
+D:\TutorialApp\AdoNet\AppConnect\bin\Debug\net6.0\AppConnect.dll
+D:\TutorialApp\AdoNet\AppConnect\bin\Debug\net6.0\AppConnect.pdb
+D:\TutorialApp\AdoNet\AppConnect\obj\Debug\net6.0\AppConnect.GeneratedMSBuildEditorConfig.editorconfig
+D:\TutorialApp\AdoNet\AppConnect\obj\Debug\net6.0\AppConnect.AssemblyInfoInputs.cache
+D:\TutorialApp\AdoNet\AppConnect\obj\Debug\net6.0\AppConnect.AssemblyInfo.cs
+D:\TutorialApp\AdoNet\AppConnect\obj\Debug\net6.0\AppConnect.csproj.CoreCompileInputs.cache
+D:\TutorialApp\AdoNet\AppConnect\obj\Debug\net6.0\AppConnect.dll
+D:\TutorialApp\AdoNet\AppConnect\obj\Debug\net6.0\refint\AppConnect.dll
+D:\TutorialApp\AdoNet\AppConnect\obj\Debug\net6.0\AppConnect.pdb
+D:\TutorialApp\AdoNet\AppConnect\obj\Debug\net6.0\AppConnect.genruntimeconfig.cache
+D:\TutorialApp\AdoNet\AppConnect\obj\Debug\net6.0\ref\AppConnect.dll
+D:\TutorialApp\AdoNet\AppConnect\obj\Debug\net6.0\AppConnect.csproj.Up2Date

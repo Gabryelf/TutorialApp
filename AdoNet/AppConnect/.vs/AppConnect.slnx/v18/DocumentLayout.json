@@ -1,0 +1,75 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\TutorialApp\\AdoNet\\AppConnect\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{3D47A03B-40B4-5963-F887-F35D17B68875}|AppConnect.csproj|d:\\tutorialapp\\adonet\\appconnect\\appconnect.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{3D47A03B-40B4-5963-F887-F35D17B68875}|AppConnect.csproj|solutionrelative:appconnect.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3D47A03B-40B4-5963-F887-F35D17B68875}|AppConnect.csproj|d:\\tutorialapp\\adonet\\appconnect\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D47A03B-40B4-5963-F887-F35D17B68875}|AppConnect.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3D47A03B-40B4-5963-F887-F35D17B68875}|AppConnect.csproj|d:\\tutorialapp\\adonet\\appconnect\\global.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{3D47A03B-40B4-5963-F887-F35D17B68875}|AppConnect.csproj|solutionrelative:global.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "global.json",
+              "DocumentMoniker": "D:\\TutorialApp\\AdoNet\\AppConnect\\global.json",
+              "RelativeDocumentMoniker": "global.json",
+              "ToolTip": "D:\\TutorialApp\\AdoNet\\AppConnect\\global.json",
+              "RelativeToolTip": "global.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-08-24T12:13:32.33Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AppConnect.csproj",
+              "DocumentMoniker": "D:\\TutorialApp\\AdoNet\\AppConnect\\AppConnect.csproj",
+              "RelativeDocumentMoniker": "AppConnect.csproj",
+              "ToolTip": "D:\\TutorialApp\\AdoNet\\AppConnect\\AppConnect.csproj",
+              "RelativeToolTip": "AppConnect.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-08-24T10:23:18.11Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\TutorialApp\\AdoNet\\AppConnect\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "D:\\TutorialApp\\AdoNet\\AppConnect\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAgwBIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-24T10:19:34.218Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
