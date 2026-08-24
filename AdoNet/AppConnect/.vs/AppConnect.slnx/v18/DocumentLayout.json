@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "D:\\TutorialApp\\AdoNet\\AppConnect\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{3D47A03B-40B4-5963-F887-F35D17B68875}|AppConnect.csproj|d:\\tutorialapp\\adonet\\appconnect\\appconnect.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{3D47A03B-40B4-5963-F887-F35D17B68875}|AppConnect.csproj|solutionrelative:appconnect.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{3D47A03B-40B4-5963-F887-F35D17B68875}|AppConnect.csproj|d:\\tutorialapp\\adonet\\appconnect\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3D47A03B-40B4-5963-F887-F35D17B68875}|AppConnect.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3D47A03B-40B4-5963-F887-F35D17B68875}|AppConnect.csproj|d:\\tutorialapp\\adonet\\appconnect\\appconnect.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{3D47A03B-40B4-5963-F887-F35D17B68875}|AppConnect.csproj|solutionrelative:appconnect.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
       "AbsoluteMoniker": "D:0:0:{3D47A03B-40B4-5963-F887-F35D17B68875}|AppConnect.csproj|d:\\tutorialapp\\adonet\\appconnect\\global.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
@@ -22,7 +22,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -38,12 +38,11 @@
               "RelativeToolTip": "global.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-08-24T12:13:32.33Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-24T12:13:32.33Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "AppConnect.csproj",
               "DocumentMoniker": "D:\\TutorialApp\\AdoNet\\AppConnect\\AppConnect.csproj",
               "RelativeDocumentMoniker": "AppConnect.csproj",
@@ -56,13 +55,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\TutorialApp\\AdoNet\\AppConnect\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "D:\\TutorialApp\\AdoNet\\AppConnect\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAAcAAAAAAAAAAAAgwBIAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAgwA0AAABFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-08-24T10:19:34.218Z",
               "EditorCaption": ""
